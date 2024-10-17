@@ -1,0 +1,6 @@
+﻿services:
+  trainerjournal.api:
+    image: trainerjournal.api
+    build:
+      context: .
+      dockerfile: TrainerJournal.API/Dockerfile
