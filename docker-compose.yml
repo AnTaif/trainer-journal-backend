@@ -3,4 +3,4 @@
     image: trainerjournal.api
     build:
       context: .
-      dockerfile: TrainerJournal.API/Dockerfile
+      dockerfile: src/TrainerJournal.API/Dockerfile
