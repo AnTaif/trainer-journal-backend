@@ -7,10 +7,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TrainerJournal.API/TrainerJournal.API.csproj", "TrainerJournal.API/"]
-RUN dotnet restore "TrainerJournal.API/TrainerJournal.API.csproj"
+COPY ["src/TrainerJournal.API/TrainerJournal.API.csproj", "src/TrainerJournal.API/"]
+RUN dotnet restore "src/TrainerJournal.API/TrainerJournal.API.csproj"
 COPY . .
-WORKDIR "/src/TrainerJournal.API"
+WORKDIR "/src/src/TrainerJournal.API"
 RUN dotnet build "TrainerJournal.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
