@@ -1,8 +1,11 @@
 using DotNetEnv;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Sprache;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.Domain.Options;
+
+var a = new IdentityRole<Guid>("123") { Id = Guid.NewGuid() };
 
 Env.Load("../../.env");
 
