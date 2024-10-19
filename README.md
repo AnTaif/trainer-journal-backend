@@ -12,9 +12,18 @@ git clone https://github.com/AnTaif/trainer-journal-backend
 ```
 2. Navigate to the project directory:
 ```bash
-cd CRM-master-backend
+cd trainer-journal-backend
 ```
 3. Create .env file by following [.env.example](https://github.com/AnTaif/trainer-journal-backend/blob/main/.env.example)
+4. Build and run the application using Docker Compose:
+```bash
+docker-compose up -d
+```
+Once the api is running, you can access it at http://localhost:8080 or swagger docs at http://localhost:8080/swagger
+To stop the application and remove the containers, run:
+```bash
+docker-compose down
+```
 
 ## Migrations:
 1. Navigate to the Infrastructure project:
