@@ -1,11 +1,7 @@
 using DotNetEnv;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Sprache;
+using Microsoft.EntityFrameworkCore;
 using TrainerJournal.API.Extensions;
-using TrainerJournal.Domain.Options;
-
-var a = new IdentityRole<Guid>("123") { Id = Guid.NewGuid() };
+using TrainerJournal.Infrastructure.Data;
 
 Env.Load("../../.env");
 
@@ -22,6 +18,10 @@ builder.Services.AddInfrastructureLayer();
 
 var app = builder.Build();
 
+await using var serviceScope = app.Services.CreateAsyncScope();
+await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+await dbContext.Database.MigrateAsync();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -32,6 +32,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/", () => "123");
 
 app.MapControllers();
 
