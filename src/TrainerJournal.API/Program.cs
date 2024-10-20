@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TrainerJournal.API.Extensions;
+using TrainerJournal.API.Middlewares;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Infrastructure.Data;
 
@@ -48,6 +49,8 @@ builder.Services.AddInfrastructureLayer();
 
 var app = builder.Build();
 
+app.UseMiddleware<StatusExceptionsHandlingMiddleware>();
+
 await using (var serviceScope = app.Services.CreateAsyncScope()) 
 {
     using (var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>())
@@ -69,7 +72,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", () => "123");
+app.MapGet("/", () => "lalilulelolalilulelo");
 
 app.MapControllers();
 
