@@ -1,8 +1,8 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using TrainerJournal.Application.Auth.Token;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Options;
 using TrainerJournal.Infrastructure.Data;
@@ -57,6 +57,11 @@ public static class IServiceCollectionExtensions
             .AddDefaultTokenProviders();
 
         services.AddAuthorization();
+    }
+
+    public static void AddApplicationLayer(this IServiceCollection services)
+    {
+        services.AddTransient<ITokenGenerator, JwtTokenGenerator>();
     }
     
     public static void AddInfrastructureLayer(this IServiceCollection services)
