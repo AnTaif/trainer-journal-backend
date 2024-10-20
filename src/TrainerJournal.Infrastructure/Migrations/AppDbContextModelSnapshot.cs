@@ -51,24 +51,24 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b748ac99-b18c-4cee-890a-f9325763ce1e"),
-                            ConcurrencyStamp = "7daa331e-cc24-4a94-b419-caee1b2736f3",
+                            Id = new Guid("c29ae6a8-9a9a-4511-982e-2c5d3e0ddd4f"),
+                            ConcurrencyStamp = "d22f2b12-4e60-4702-a706-6986ae3b0591",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("a67ab4be-6f61-4efe-9bd0-8725369f5a2d"),
-                            ConcurrencyStamp = "a2e11778-283e-4580-8712-ffccbb1ee403",
+                            Id = new Guid("1b7fc97e-c04a-4f14-8f5d-2f22d82ef538"),
+                            ConcurrencyStamp = "866ccaec-1571-4192-ab3e-ea2ffe42c363",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         },
                         new
                         {
-                            Id = new Guid("b3b059df-1f3b-4172-b99b-5469ea5fb17a"),
-                            ConcurrencyStamp = "2a0542fb-dfbe-450c-be15-174c4c9bab7f",
-                            Name = "Student",
-                            NormalizedName = "STUDENT"
+                            Id = new Guid("e882c4ba-9337-455a-8ca9-2b4799c2c4f6"),
+                            ConcurrencyStamp = "53b7b3db-3cc6-450f-9222-b1b9fd7d8aeb",
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -412,7 +412,6 @@ namespace TrainerJournal.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MiddleName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")

@@ -35,7 +35,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    MiddleName = table.Column<string>(type: "text", nullable: false),
+                    MiddleName = table.Column<string>(type: "text", nullable: true),
                     Gender = table.Column<int>(type: "integer", nullable: false),
                     TelegramUsername = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -350,9 +350,9 @@ namespace TrainerJournal.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("a67ab4be-6f61-4efe-9bd0-8725369f5a2d"), "a2e11778-283e-4580-8712-ffccbb1ee403", "Trainer", "TRAINER" },
-                    { new Guid("b3b059df-1f3b-4172-b99b-5469ea5fb17a"), "2a0542fb-dfbe-450c-be15-174c4c9bab7f", "Student", "STUDENT" },
-                    { new Guid("b748ac99-b18c-4cee-890a-f9325763ce1e"), "7daa331e-cc24-4a94-b419-caee1b2736f3", "Admin", "ADMIN" }
+                    { new Guid("1b7fc97e-c04a-4f14-8f5d-2f22d82ef538"), "866ccaec-1571-4192-ab3e-ea2ffe42c363", "Trainer", "TRAINER" },
+                    { new Guid("c29ae6a8-9a9a-4511-982e-2c5d3e0ddd4f"), "d22f2b12-4e60-4702-a706-6986ae3b0591", "Admin", "ADMIN" },
+                    { new Guid("e882c4ba-9337-455a-8ca9-2b4799c2c4f6"), "53b7b3db-3cc6-450f-9222-b1b9fd7d8aeb", "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(

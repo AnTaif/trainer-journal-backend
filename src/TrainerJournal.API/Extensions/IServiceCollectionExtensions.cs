@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using TrainerJournal.Application.Auth;
 using TrainerJournal.Application.Auth.Token;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Options;
@@ -27,6 +28,20 @@ public static class IServiceCollectionExtensions
             options.ExpiryMinutes = jwtOptions.ExpiryMinutes;
         });
 
+        services.AddIdentity<User, IdentityRole<Guid>>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = true;
+                //options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -42,26 +57,13 @@ public static class IServiceCollectionExtensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-        services.AddIdentity<User, IdentityRole<Guid>>(options =>
-            {
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireDigit = true;
-                options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedAccount = false;
-            })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
-
         services.AddAuthorization();
     }
 
     public static void AddApplicationLayer(this IServiceCollection services)
     {
         services.AddTransient<ITokenGenerator, JwtTokenGenerator>();
+        services.AddTransient<IAuthService, AuthService>();
     }
     
     public static void AddInfrastructureLayer(this IServiceCollection services)

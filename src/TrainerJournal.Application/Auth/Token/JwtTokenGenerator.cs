@@ -10,7 +10,7 @@ namespace TrainerJournal.Application.Auth.Token;
 
 public class JwtTokenGenerator(IOptions<JwtOptions> options) : ITokenGenerator
 {
-    public string GenerateTokenAsync(User user, IEnumerable<string> roles)
+    public string GenerateToken(User user, IEnumerable<string> roles)
     {
         var claims = CreateClaims(user, roles);
         var signingCredentials = CreateSigningCredentials();
@@ -42,17 +42,17 @@ public class JwtTokenGenerator(IOptions<JwtOptions> options) : ITokenGenerator
 
     private List<Claim> CreateClaims(User user, IEnumerable<string> roles)
     {
-        if (user.Email == null)
-            throw new ArgumentNullException();
+        if (user.UserName == null)
+            throw new ArgumentNullException(nameof(user), "Username cannot be null");
         
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.GivenName, user.FirstName),
             new(JwtRegisteredClaimNames.FamilyName, user.LastName),
-            new(JwtRegisteredClaimNames.Email, user.Email),
+            new(JwtRegisteredClaimNames.UniqueName, user.UserName),
             new(JwtRegisteredClaimNames.Sid, user.Id.ToString()), 
-            new(JwtRegisteredClaimNames.Sub, user.Email)
+            new(JwtRegisteredClaimNames.Sub, user.UserName)
         };
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
         

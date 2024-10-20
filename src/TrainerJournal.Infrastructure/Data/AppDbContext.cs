@@ -25,7 +25,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        DataSeeder.Seed(modelBuilder);
+        DataSeeder.SeedOnModelCreating(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
 }
