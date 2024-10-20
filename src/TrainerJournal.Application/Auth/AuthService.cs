@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Auth.Requests;
 using TrainerJournal.Application.Auth.Responses;
 using TrainerJournal.Application.Auth.Token;
@@ -10,10 +11,12 @@ namespace TrainerJournal.Application.Auth;
 
 public class AuthService(
     UserManager<User> userManager, 
-    ITokenGenerator tokenGenerator) : IAuthService
+    ITokenGenerator tokenGenerator,
+    ILogger<AuthService> logger) : IAuthService
 {
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {
+        logger.LogInformation("Trying to login user: {userName}", request.UserName);
         var user = await userManager.FindByNameAsync(request.UserName);
         if (user == null)
             throw new NotFoundException("User not found");
@@ -26,6 +29,7 @@ public class AuthService(
 
         var token = tokenGenerator.GenerateToken(user, roles);
 
+        logger.LogInformation("User '{userName}' logged in successfully", request.UserName);
         return new LoginResponse(user.Id, user.UserName!, token);
     }
 }

@@ -2,7 +2,7 @@ using TrainerJournal.Domain.Exceptions;
 
 namespace TrainerJournal.API.Middlewares;
 
-public class StatusExceptionsHandlingMiddleware(RequestDelegate next)
+public class StatusExceptionsHandlingMiddleware(RequestDelegate next, ILogger<StatusExceptionsHandlingMiddleware> logger)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -21,6 +21,8 @@ public class StatusExceptionsHandlingMiddleware(RequestDelegate next)
         context.Response.StatusCode = (int)exception.StatusCode;
         context.Response.ContentType = "text/plain";
 
+        logger.LogInformation("Handle {statusCode} status code exception: {message}", 
+            (int)exception.StatusCode, exception.Message);
         return context.Response.WriteAsJsonAsync(exception.Message);
     }
 }
