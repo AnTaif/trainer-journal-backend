@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.API.Middlewares;
+using TrainerJournal.Application;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Infrastructure;
 using TrainerJournal.Infrastructure.Data;
 
 Env.Load("../../.env");
@@ -44,8 +46,9 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddJwtAuth(builder.Configuration.GetSection("JwtOptions"));
 
-builder.Services.AddApplicationLayer();
-builder.Services.AddInfrastructureLayer();
+builder.Services
+    .AddApplicationLayer()
+    .AddInfrastructureLayer();
 
 var app = builder.Build();
 
