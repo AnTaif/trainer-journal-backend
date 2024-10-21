@@ -1,3 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+
 namespace TrainerJournal.API.Middlewares;
 
 public class UserLoggingMiddleware(RequestDelegate next, ILogger<UserLoggingMiddleware> logger)
@@ -6,9 +9,9 @@ public class UserLoggingMiddleware(RequestDelegate next, ILogger<UserLoggingMidd
     {
         string userId;
         if (context.User.Identity == null || !context.User.Identity.IsAuthenticated)
-            userId = "Anonymous";
+            userId = "";
         else
-            userId = context.User.Identity.Name ?? "Unknown";
+            userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sid) ?? "";
 
         using (logger.BeginScope(new Dictionary<string, object>
                {

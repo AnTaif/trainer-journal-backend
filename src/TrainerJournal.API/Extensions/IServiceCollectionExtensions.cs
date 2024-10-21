@@ -9,7 +9,7 @@ namespace TrainerJournal.API.Extensions;
 
 public static class IServiceCollectionExtensions
 {
-    public static void AddJwtAuth(this IServiceCollection services, IConfigurationSection jwtSection)
+    public static IServiceCollection AddJwtAuth(this IServiceCollection services, IConfigurationSection jwtSection)
     {
         var jwtOptions = new JwtOptions();
         jwtSection.Bind(jwtOptions);
@@ -27,18 +27,21 @@ public static class IServiceCollectionExtensions
 
         services.AddIdentity<User, IdentityRole<Guid>>(options =>
             {
-                options.Password.RequiredLength = 8;
+                options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequireDigit = true;
+                options.Password.RequireDigit = false;
                 options.SignIn.RequireConfirmedAccount = false;
             })
-            .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -53,6 +56,8 @@ public static class IServiceCollectionExtensions
                     ClockSkew = TimeSpan.Zero
                 };
             });
-        services.AddAuthorization();
+        //services.AddAuthorization();
+
+        return services;
     }
 }

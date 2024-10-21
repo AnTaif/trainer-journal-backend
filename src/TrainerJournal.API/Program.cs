@@ -68,9 +68,6 @@ builder.Services
 
 var app = builder.Build();
 
-app.UseMiddleware<UserLoggingMiddleware>();
-
-app.UseMiddleware<StatusExceptionsHandlingMiddleware>();
 
 await using (var serviceScope = app.Services.CreateAsyncScope()) 
 {
@@ -91,7 +88,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseMiddleware<UserLoggingMiddleware>();
+app.UseMiddleware<StatusExceptionsHandlingMiddleware>();
 app.UseAuthorization();
+
 
 app.MapGet("/", () => "lalilulelolalilulelo");
 
