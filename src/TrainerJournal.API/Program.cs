@@ -1,9 +1,7 @@
 using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.API.Logger;
 using TrainerJournal.API.Middlewares;
@@ -20,9 +18,6 @@ var logger = Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .Enrich.With(new RemovePropertiesEnricher())
-    .WriteTo.Console(
-        outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.ff} {Level:u4}] {Message:lj} {NewLine} {Properties}{NewLine}{Exception}", 
-        theme: AnsiConsoleTheme.Code)
     .CreateLogger();
 
 logger.Information("Starting web host...");
@@ -32,33 +27,7 @@ builder.Host.UseSerilog();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option =>
-{
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Trainer Journal API", Version = "v1" });
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
+builder.Services.AddSwaggerWithJwtSecurity();
 
 builder.Services.AddJwtAuth(builder.Configuration.GetSection("JwtOptions"));
 
@@ -67,7 +36,6 @@ builder.Services
     .AddInfrastructureLayer();
 
 var app = builder.Build();
-
 
 await using (var serviceScope = app.Services.CreateAsyncScope()) 
 {
@@ -88,7 +56,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseMiddleware<UserLoggingMiddleware>();
 app.UseMiddleware<StatusExceptionsHandlingMiddleware>();
 app.UseAuthorization();
 
