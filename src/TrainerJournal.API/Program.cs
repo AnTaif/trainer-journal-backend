@@ -14,13 +14,11 @@ Env.Load("../../.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
-var logger = Log.Logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
     .Enrich.With(new RemovePropertiesEnricher())
     .CreateLogger();
-
-logger.Information("Starting web host...");
 
 builder.Host.UseSerilog();
 
@@ -43,7 +41,7 @@ await using (var serviceScope = app.Services.CreateAsyncScope())
     await using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>())
     {
         await dbContext.Database.MigrateAsync();
-        await DataSeeder.SeedUsersAsync(userManager);
+        await DataSeeder.SeedOnMigratingAsync(userManager, dbContext);
     }
 }
 
