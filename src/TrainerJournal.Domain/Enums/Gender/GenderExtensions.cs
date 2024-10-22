@@ -11,6 +11,16 @@ public static class GenderExtensions
             _ => throw new ArgumentException($"Invalid gender string: {genderStr}")
         };
     }
+    
+    public static bool IsGenderEnum(this string genderStr)
+    {
+        return genderStr.ToLower() switch
+        {
+            "м" => true,
+            "ж" => true,
+            _ => false
+        };
+    }
 
     public static string ToGenderString(this Gender gender)
     {

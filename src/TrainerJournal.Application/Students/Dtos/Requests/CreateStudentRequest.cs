@@ -1,7 +1,11 @@
+using TrainerJournal.Application.DataAnnotations;
+
 namespace TrainerJournal.Application.Students.Dtos.Requests;
 
 public record CreateStudentRequest(
+    [MinimumWordsCount(2)]
     string FullName, 
+    [GenderEnum]
     string Gender,
     DateTime BirthDate, 
     int SchoolGrade, 

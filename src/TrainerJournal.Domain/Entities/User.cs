@@ -1,4 +1,3 @@
-using System.Text;
 using Microsoft.AspNetCore.Identity;
 using TrainerJournal.Domain.Enums.Gender;
 
@@ -64,7 +63,10 @@ public class User : IdentityUser<Guid>
     
     public static (string first, string last, string? middle) SplitFullName(string fullName)
     {
-        var names = fullName.Split();
+        var names = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        if (names.Length < 2)
+            throw new ArgumentException("FullName must consist of at least 2 words");
         
         var lastName = names[0];
         var firstName = names[1];
