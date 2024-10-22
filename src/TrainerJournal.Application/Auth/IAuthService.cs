@@ -1,5 +1,5 @@
-using TrainerJournal.Application.Auth.Requests;
-using TrainerJournal.Application.Auth.Responses;
+using TrainerJournal.Application.Auth.Dtos.Requests;
+using TrainerJournal.Application.Auth.Dtos.Responses;
 
 namespace TrainerJournal.Application.Auth;
 

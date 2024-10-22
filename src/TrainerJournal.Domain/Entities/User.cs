@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Identity;
 using TrainerJournal.Domain.Enums.Gender;
 
@@ -70,5 +71,14 @@ public class User : IdentityUser<Guid>
         var middleName = names.Length > 2 ? names[2] : null;
 
         return (firstName, lastName, middleName);
+    }
+
+    public string GetFullName()
+    {
+        var fullName = $"{LastName} {FirstName}";
+        if (MiddleName != null)
+            fullName += " " + MiddleName;
+
+        return fullName;
     }
 }

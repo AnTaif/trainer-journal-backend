@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using TrainerJournal.Application.Students.Requests;
-using TrainerJournal.Application.Students.Responses;
+using TrainerJournal.Application.Students.Dtos.Requests;
+using TrainerJournal.Application.Students.Dtos.Responses;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
@@ -47,8 +47,7 @@ public class StudentService(
         studentRepository.AddStudent(student);
         await studentRepository.SaveChangesAsync();
 
-        return new CreateStudentResponse(student.Id, student.User.FirstName, student.User.LastName,
-            student.User.MiddleName, student.User.UserName);
+        return new CreateStudentResponse(student.Id, username, password, student.User.GetFullName());
     }
 
     private void AddToGroup(Student student, Guid groupId)

@@ -1,5 +1,5 @@
-using TrainerJournal.Application.Students.Requests;
-using TrainerJournal.Application.Students.Responses;
+using TrainerJournal.Application.Students.Dtos.Requests;
+using TrainerJournal.Application.Students.Dtos.Responses;
 
 namespace TrainerJournal.Application.Students;
 

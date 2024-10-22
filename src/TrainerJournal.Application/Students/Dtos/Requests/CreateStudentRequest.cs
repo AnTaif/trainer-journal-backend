@@ -1,4 +1,4 @@
-namespace TrainerJournal.Application.Students.Requests;
+namespace TrainerJournal.Application.Students.Dtos.Requests;
 
 public record CreateStudentRequest(
     string FullName, 

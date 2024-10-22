@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TrainerJournal.Application.Auth;
-using TrainerJournal.Application.Auth.Requests;
-using TrainerJournal.Application.Auth.Responses;
+using TrainerJournal.Application.Auth.Dtos.Requests;
+using TrainerJournal.Application.Auth.Dtos.Responses;
 
 namespace TrainerJournal.API.Controllers;
 

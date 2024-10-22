@@ -15,4 +15,9 @@
       <ProjectReference Include="..\TrainerJournal.Domain\TrainerJournal.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Auth\Dtos\" />
+      <Folder Include="Students\Dtos\" />
+    </ItemGroup>
+
 </Project>

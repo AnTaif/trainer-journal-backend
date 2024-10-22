@@ -1,4 +1,4 @@
-namespace TrainerJournal.Domain.Entities.Abstract;
+namespace TrainerJournal.Domain.Common;
 
 public abstract class Entity<TId>(TId id)
 {

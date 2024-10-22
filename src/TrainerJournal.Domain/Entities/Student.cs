@@ -1,4 +1,4 @@
-using TrainerJournal.Domain.Entities.Abstract;
+using TrainerJournal.Domain.Common;
 
 namespace TrainerJournal.Domain.Entities;
 

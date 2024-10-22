@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrainerJournal.Application.Students;
-using TrainerJournal.Application.Students.Requests;
-using TrainerJournal.Application.Students.Responses;
+using TrainerJournal.Application.Students.Dtos.Requests;
+using TrainerJournal.Application.Students.Dtos.Responses;
 using TrainerJournal.Domain.Common;
 
 namespace TrainerJournal.API.Controllers;

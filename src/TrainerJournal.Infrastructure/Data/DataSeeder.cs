@@ -16,11 +16,6 @@ public static class DataSeeder
     private static readonly Guid hall1Guid = new("16de890d-b54b-4365-865e-25e39be7c5b6");
     
     private const string password = "Password123"; // Get from environment
-    
-    public static void SeedOnModelCreating(ModelBuilder modelBuilder)
-    {
-        SeedRoles(modelBuilder);
-    }
 
     public static async Task SeedOnMigratingAsync(UserManager<User> userManager, AppDbContext dbContext)
     {
@@ -56,21 +51,6 @@ public static class DataSeeder
             if (result.Succeeded)
                 await userManager.AddToRoleAsync(trainerUser, RoleConstants.Trainer);
         }
-    }
-
-    private static void SeedRoles(ModelBuilder modelBuilder)
-    {
-        var roles = new[] { RoleConstants.Admin, RoleConstants.Trainer, RoleConstants.User };
-        var identityRoles = roles.Select(role => 
-                new IdentityRole<Guid>
-                {
-                    Id = Guid.NewGuid(), 
-                    Name = role, 
-                    NormalizedName = role.ToUpper(), 
-                    ConcurrencyStamp = Guid.NewGuid().ToString()
-                });
-
-        modelBuilder.Entity<IdentityRole<Guid>>().HasData(identityRoles);
     }
     
     private static async Task SeedTrainersAsync(AppDbContext dbContext)
