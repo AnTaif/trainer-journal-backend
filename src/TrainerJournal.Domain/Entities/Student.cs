@@ -9,7 +9,7 @@ public class Student : Entity<Guid>
     
     public Guid GroupId { get; private set; }
     public virtual Group Group { get; private set; } = null!;
-    
+
     public float Balance { get; private set; }
     
     public DateTime BirthDate { get; private set; }
@@ -32,8 +32,6 @@ public class Student : Entity<Guid>
     
     public Student(
         Guid userId,
-        Guid groupId,
-        float balance, 
         DateTime birthDate, 
         int schoolGrade, 
         int aikidoGrade, 
@@ -44,8 +42,6 @@ public class Student : Entity<Guid>
         string? secondParentName = null, 
         string? secondParentContact = null) : base(Guid.NewGuid())
     {
-        GroupId = groupId;
-        Balance = balance;
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
         AikidoGrade = aikidoGrade;
@@ -57,5 +53,39 @@ public class Student : Entity<Guid>
         this.firstParentContact = firstParentContact;
         this.secondParentName = secondParentName;
         this.secondParentContact = secondParentContact;
+    }
+    
+    public Student(
+        Guid userId,
+        DateTime birthDate, 
+        int schoolGrade, 
+        int aikidoGrade,
+        string address, 
+        string? firstParentName = null, 
+        string? firstParentContact = null, 
+        string? secondParentName = null, 
+        string? secondParentContact = null) : base(Guid.NewGuid())
+    {
+        BirthDate = birthDate;
+        SchoolGrade = schoolGrade;
+        AikidoGrade = aikidoGrade;
+        LastAikidoGradeDate = DateTime.UtcNow;
+        TrainingStartDate = DateTime.UtcNow;
+        Address = address;
+        UserId = userId;
+        this.firstParentName = firstParentName;
+        this.firstParentContact = firstParentContact;
+        this.secondParentName = secondParentName;
+        this.secondParentContact = secondParentContact;
+    }
+
+    public void UpdateBalance(float balanceDiff)
+    {
+        Balance += balanceDiff;
+    }
+
+    public void ChangeGroup(Guid groupId)
+    {
+        GroupId = groupId;
     }
 }

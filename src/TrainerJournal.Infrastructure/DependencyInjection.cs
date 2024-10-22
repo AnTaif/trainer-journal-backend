@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TrainerJournal.Application.Students;
 using TrainerJournal.Infrastructure.Data;
+using TrainerJournal.Infrastructure.Data.Repositories;
 
 namespace TrainerJournal.Infrastructure;
 
@@ -13,6 +15,8 @@ public static class DependencyInjection
         {
             options.UseNpgsql(connectionString);
         });
+
+        services.AddTransient<IStudentRepository, StudentRepository>();
         
         return services;
     }

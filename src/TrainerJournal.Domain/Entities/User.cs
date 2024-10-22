@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using TrainerJournal.Domain.Enums.Gender;
 
 namespace TrainerJournal.Domain.Entities;
 
