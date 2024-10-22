@@ -1,3 +1,4 @@
+using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 using TrainerJournal.Application.Auth;
 using TrainerJournal.Application.Auth.Dtos.Requests;
@@ -12,7 +13,14 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest request)
     {
-        var response = await authService.LoginAsync(request);
-        return response;
+        var result = await authService.LoginAsync(request);
+
+        return result.MatchFirst<ActionResult<LoginResponse>>(
+            onValue: response => Ok(response), 
+            onFirstError: error => error.Type switch
+        {
+            ErrorType.NotFound => NotFound(error.Description),
+            _ => BadRequest(error.Description)
+        });
     }
 }

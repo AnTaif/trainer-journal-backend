@@ -1,3 +1,4 @@
+using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Auth.Dtos.Requests;
@@ -14,22 +15,26 @@ public class AuthService(
     ITokenGenerator tokenGenerator,
     ILogger<AuthService> logger) : IAuthService
 {
-    public async Task<LoginResponse> LoginAsync(LoginRequest request)
+    public async Task<ErrorOr<LoginResponse>> LoginAsync(LoginRequest request)
     {
-        logger.LogInformation("Trying to login user: {userName}", request.UserName);
-        var user = await userManager.FindByNameAsync(request.UserName);
+        var user = await userManager.FindByNameAsync(request.Username);
         if (user == null)
-            throw new NotFoundException("User not found");
+        {
+            logger.LogWarning("User does not exists: {username}", request.Username);
+            return Error.NotFound("Auth.Login", "User not found");
+        }
 
         var isPasswordValid = await userManager.CheckPasswordAsync(user, request.Password);
         if (!isPasswordValid)
-            throw new BadRequestException("Bad credentials");
+        {
+            logger.LogWarning("Invalid password for user: {username}", request.Username);
+            return Error.Failure("Auth.Login", "Bad credentials");
+        }
         
         var roles = await userManager.GetRolesAsync(user);
 
         var token = tokenGenerator.GenerateToken(user, roles);
 
-        logger.LogInformation("User '{userName}' logged in successfully", request.UserName);
         return new LoginResponse(user.Id, user.UserName!, token);
     }
 }

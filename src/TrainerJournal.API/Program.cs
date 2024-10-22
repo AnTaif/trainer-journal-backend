@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.API.Logger;
-using TrainerJournal.API.Middlewares;
 using TrainerJournal.Application;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Infrastructure;
@@ -54,7 +53,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseMiddleware<StatusExceptionsHandlingMiddleware>();
 app.UseAuthorization();
 
 

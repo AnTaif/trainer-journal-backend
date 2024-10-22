@@ -1,3 +1,4 @@
+using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrainerJournal.Application.Students;
@@ -18,7 +19,13 @@ public class GroupController(IStudentService studentService) : ControllerBase
     {
         //TODO: protect from other trainers
         
-        var response = await studentService.CreateAsync(request, id);
-        return CreatedAtAction("CreateStudent", response);
+        var result = await studentService.CreateAsync(request, id);
+
+        return result.MatchFirst<ActionResult<CreateStudentResponse>>(
+            onValue: response => CreatedAtAction("CreateStudent", response),
+            onFirstError: error => error.Type switch
+            {
+                _ => BadRequest(error.Description)
+            });
     }
 }

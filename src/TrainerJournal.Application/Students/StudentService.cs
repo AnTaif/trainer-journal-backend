@@ -1,3 +1,4 @@
+using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Students.Dtos.Requests;
@@ -5,7 +6,6 @@ using TrainerJournal.Application.Students.Dtos.Responses;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
-using TrainerJournal.Domain.Exceptions;
 
 namespace TrainerJournal.Application.Students;
 
@@ -14,7 +14,7 @@ public class StudentService(
     IStudentRepository studentRepository,
     ILogger<StudentService> logger) : IStudentService
 {
-    public async Task<CreateStudentResponse> CreateAsync(CreateStudentRequest request, Guid groupId)
+    public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId)
     {
         var username = Guid.NewGuid().ToString(); // TODO: add auto-generation of the Username
         var password = Guid.NewGuid().ToString(); // TODO: add auto-generation of the Password
@@ -22,8 +22,8 @@ public class StudentService(
         var existedUser = await userManager.FindByNameAsync(username);
         if (existedUser != null)
         {
-            logger.LogWarning("User with username {username} already exists", username);            
-            throw new BadRequestException("User is already exists");
+            logger.LogWarning("User with username {username} already exists", username);
+            return Error.Failure("Student.Create", "User is already exists");
         }
 
         var user = new User(username, request.Email, request.Phone, request.FullName, request.Gender.ToGenderEnum(),
@@ -33,7 +33,7 @@ public class StudentService(
         if (!result.Succeeded)
         {
             logger.LogError("Failed to create user: {username}", username);
-            throw new BadRequestException("User not created");
+            return Error.Failure("User not created");
         }
 
         await userManager.AddToRoleAsync(user, RoleConstants.User);
