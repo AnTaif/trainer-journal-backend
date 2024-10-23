@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <Folder Include="Auth\Dtos\" />
+      <Folder Include="Groups\Dtos\Responses\" />
     </ItemGroup>
 
 </Project>

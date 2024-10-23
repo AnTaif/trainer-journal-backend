@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TrainerJournal.Application.Groups;
 using TrainerJournal.Application.Students;
 using TrainerJournal.Application.Trainers;
 using TrainerJournal.Infrastructure.Data;
@@ -19,6 +20,7 @@ public static class DependencyInjection
 
         services.AddTransient<IStudentRepository, StudentRepository>();
         services.AddTransient<ITrainerRepository, TrainerRepository>();
+        services.AddTransient<IGroupRepository, GroupRepository>();
         
         return services;
     }

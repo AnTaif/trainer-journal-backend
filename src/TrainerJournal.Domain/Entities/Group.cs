@@ -18,4 +18,11 @@ public class Group : Entity<Guid>
         TrainerId = trainerId;
         HallId = hallId;
     }
+
+    public void Update(string? name, Guid? trainerId, Guid? hallId)
+    {
+        if (name != null) Name = name;
+        if (trainerId != null) TrainerId = trainerId.Value;
+        if (hallId != null) HallId = hallId.Value;
+    }
 }

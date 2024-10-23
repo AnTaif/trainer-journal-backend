@@ -3,4 +3,4 @@ using TrainerJournal.Application.Trainers.Dtos;
 
 namespace TrainerJournal.Application.Users.Dtos.Responses;
 
-public record GetUserInfoResponse(UserInfoDto UserInfo, StudentInfoDto? StudentInfo, TrainerInfoDto? TrainerInfo);
+public record GetUserInfoResponse(Guid Id, UserInfoDto UserInfo, StudentInfoDto? StudentInfo, TrainerInfoDto? TrainerInfo);
