@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TrainerJournal.Application.Auth;
 using TrainerJournal.Application.Auth.Token;
 using TrainerJournal.Application.Students;
+using TrainerJournal.Application.Users;
 
 namespace TrainerJournal.Application;
 
@@ -13,6 +14,7 @@ public static class DependencyInjection
         services.AddTransient<IAuthService, AuthService>();
 
         services.AddTransient<IStudentService, StudentService>();
+        services.AddTransient<IUserService, UserService>();
 
         return services;
     }
