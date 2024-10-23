@@ -1,4 +1,5 @@
 using ErrorOr;
+using TrainerJournal.Application.Students.Dtos;
 using TrainerJournal.Application.Students.Dtos.Requests;
 using TrainerJournal.Application.Students.Dtos.Responses;
 
@@ -7,4 +8,6 @@ namespace TrainerJournal.Application.Students;
 public interface IStudentService
 {
     public Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request);
+
+    public Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId);
 }

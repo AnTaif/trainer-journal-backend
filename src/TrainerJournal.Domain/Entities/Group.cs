@@ -11,6 +11,8 @@ public class Group : Entity<Guid>
     
     public Guid HallId { get; private set; }
     public virtual Hall Hall { get; private set; } = null!;
+
+    public virtual List<Student> Students { get; private set; } = null!;
     
     public Group(string name, Guid trainerId, Guid hallId) : base(Guid.NewGuid())
     {

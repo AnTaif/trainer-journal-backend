@@ -15,7 +15,8 @@ public class GroupRepository(AppDbContext dbContext) : IGroupRepository
 
     public async Task<Group?> GetByIdAsync(Guid id)
     {
-        return await groups.FindAsync(id);
+        return await groups
+            .FirstOrDefaultAsync(g => g.Id == id);
     }
 
     public void Add(Group group)

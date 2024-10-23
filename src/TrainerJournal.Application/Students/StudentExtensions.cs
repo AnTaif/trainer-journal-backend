@@ -11,4 +11,17 @@ public static class StudentExtensions
             student.AikidoGrade, student.LastAikidoGradeDate, student.TrainingStartDate, student.Address,
             student.firstParentName, student.firstParentContact, student.secondParentName, student.secondParentContact);
     }
+
+    public static StudentItemDto ToItemDto(this Student student)
+    {
+        return new StudentItemDto(student.Id, student.User.GetFullName(), student.GroupId, student.Balance, 
+            student.BirthDate, GetYearsSince(student.BirthDate), student.SchoolGrade, student.AikidoGrade);
+    }
+
+    private static int GetYearsSince(DateTime a)
+    {
+        var zeroTime = new DateTime(1, 1, 1);
+        var span = DateTime.UtcNow - a;
+        return (zeroTime + span).Year - 1;
+    }
 }

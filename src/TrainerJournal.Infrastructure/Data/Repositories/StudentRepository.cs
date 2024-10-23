@@ -11,7 +11,16 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
     public async Task<Student?> GetByUserIdAsync(Guid userId)
     {
         return await students
+            .Include(s => s.User)
             .FirstOrDefaultAsync(student => student.UserId == userId);
+    }
+
+    public async Task<List<Student>> GetAllByGroupIdAsync(Guid groupId)
+    {
+        return await students
+            .Include(s => s.User)
+            .Where(s => s.GroupId == groupId)
+            .ToListAsync();
     }
 
     public void AddStudent(Student student)

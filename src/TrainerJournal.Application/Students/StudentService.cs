@@ -1,5 +1,7 @@
 using ErrorOr;
 using Microsoft.Extensions.Logging;
+using TrainerJournal.Application.Groups;
+using TrainerJournal.Application.Students.Dtos;
 using TrainerJournal.Application.Students.Dtos.Requests;
 using TrainerJournal.Application.Students.Dtos.Responses;
 using TrainerJournal.Application.Users;
@@ -11,6 +13,7 @@ namespace TrainerJournal.Application.Students;
 public class StudentService(
     IUserService userService,
     IStudentRepository studentRepository,
+    IGroupRepository groupRepository,
     ILogger<StudentService> logger) : IStudentService
 {
     public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request)
@@ -33,6 +36,29 @@ public class StudentService(
         await studentRepository.SaveChangesAsync();
 
         return new CreateStudentResponse(student.Id, user.UserName, user.Password, student.User.GetFullName());
+    }
+
+    public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId)
+    {
+        var group = await groupRepository.GetByIdAsync(groupId);
+        if (group == null)
+        {
+            logger.LogWarning("Group not found by id: {id}", groupId);
+            return Error.NotFound(description: "Group not found");
+        }
+
+        if (group.TrainerId != userId)
+        {
+            var student = await studentRepository.GetByUserIdAsync(userId);
+            if (student == null || student.GroupId == groupId)
+            {
+                logger.LogWarning("User {userId} don't have access to group {groupId}", userId, groupId);
+                return Error.Forbidden(description: "You don't have access to this group");
+            }
+        }
+        
+        var students = await studentRepository.GetAllByGroupIdAsync(groupId);
+        return students.Select(s => s.ToItemDto()).ToList();
     }
 
     private void AddToGroup(Student student, Guid groupId)
