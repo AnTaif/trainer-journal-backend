@@ -54,14 +54,14 @@ public class User : IdentityUser<Guid>
         Email = email;
         PhoneNumber = phone;
         var splitFullName = SplitFullName(fullName);
-        FirstName = splitFullName.first;
-        LastName = splitFullName.last;
-        MiddleName = splitFullName.middle;
+        FirstName = splitFullName.FirstName;
+        LastName = splitFullName.LastName;
+        MiddleName = splitFullName.MiddleName;
         Gender = gender;
         TelegramUsername = telegramUsername;
     }
     
-    public static (string first, string last, string? middle) SplitFullName(string fullName)
+    public static (string FirstName, string LastName, string? MiddleName) SplitFullName(string fullName)
     {
         var names = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 

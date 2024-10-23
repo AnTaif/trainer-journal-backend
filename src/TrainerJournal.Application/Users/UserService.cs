@@ -1,10 +1,12 @@
 using ErrorOr;
+using idunno.Password;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Students;
 using TrainerJournal.Application.Trainers;
 using TrainerJournal.Application.Users.Dtos.Responses;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Domain.Services;
 
 namespace TrainerJournal.Application.Users;
 
@@ -32,5 +34,26 @@ public class UserService(
             logger.LogWarning("User with an id {id} has both accounts: trainer and student", id);
 
         return new GetUserInfoResponse(user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
+    }
+    
+    public static string GenerateUsername(string fullname, UserManager<User> userManager)
+    {
+        var latinSplit = User.SplitFullName(CyrillicTextConverter.ConvertToLatin(fullname));
+
+        var userName = latinSplit.MiddleName != null 
+            ? $"{latinSplit.FirstName.First()}.{latinSplit.MiddleName.First()}.{latinSplit.LastName}" 
+            : $"{latinSplit.FirstName}.{latinSplit.LastName}";
+
+        var count = userManager.Users.Count(u => u.UserName!.Contains(userName));
+        if (count == 0)
+            return userName;
+
+        return userName + count;
+    }
+
+    public static string GeneratePassword()
+    {
+        var generator = new PasswordGenerator();
+        return generator.Generate(10, 4, 0, false, true);
     }
 }

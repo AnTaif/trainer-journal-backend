@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Students.Dtos.Requests;
 using TrainerJournal.Application.Students.Dtos.Responses;
+using TrainerJournal.Application.Users;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
@@ -16,8 +17,9 @@ public class StudentService(
 {
     public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId)
     {
-        var username = Guid.NewGuid().ToString(); // TODO: add auto-generation of the Username
-        var password = Guid.NewGuid().ToString(); // TODO: add auto-generation of the Password
+        //TODO: move user creation to the UserService
+        var username = UserService.GenerateUsername(request.FullName, userManager);
+        var password = UserService.GeneratePassword();
         
         var existedUser = await userManager.FindByNameAsync(username);
         if (existedUser != null)
