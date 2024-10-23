@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Students;
 using TrainerJournal.Application.Trainers;
+using TrainerJournal.Application.Users.Dtos;
+using TrainerJournal.Application.Users.Dtos.Requests;
 using TrainerJournal.Application.Users.Dtos.Responses;
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Domain.Enums.Gender;
 using TrainerJournal.Domain.Services;
 
 namespace TrainerJournal.Application.Users;
@@ -35,8 +39,36 @@ public class UserService(
 
         return new GetUserInfoResponse(user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
     }
-    
-    public static string GenerateUsername(string fullname, UserManager<User> userManager)
+
+    public async Task<ErrorOr<CreateUserResponse>> CreateAsync(CreateUserRequest request)
+    {
+        var username = GenerateUsername(request.FullName);
+        var password = GeneratePassword();
+        
+        var existedUser = await userManager.FindByNameAsync(username);
+        if (existedUser != null)
+        {
+            logger.LogWarning("User with username {username} already exists", username);
+            return Error.Failure("Student.Create", "User is already exists");
+        }
+
+        var user = new User(username, request.Email, request.Phone, request.FullName, request.Gender.ToGenderEnum(),
+            request.TelegramUsername);
+
+        var result = await userManager.CreateAsync(user, password);
+        if (!result.Succeeded)
+        {
+            logger.LogError("Failed to create user: {username}", username);
+            return Error.Failure("User not created");
+        }
+
+        await userManager.AddToRoleAsync(user, RoleConstants.User);
+
+        return new CreateUserResponse(user.Id, password, user.GetFullName(), user.UserName!, user.Email, user.PhoneNumber,
+            user.Gender.ToGenderString(), user.TelegramUsername);
+    }
+
+    private string GenerateUsername(string fullname)
     {
         var latinSplit = User.SplitFullName(CyrillicTextConverter.ConvertToLatin(fullname));
 
@@ -51,7 +83,7 @@ public class UserService(
         return userName + count;
     }
 
-    public static string GeneratePassword()
+    private static string GeneratePassword()
     {
         var generator = new PasswordGenerator();
         return generator.Generate(10, 4, 0, false, true);

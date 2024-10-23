@@ -1,7 +1,8 @@
-namespace TrainerJournal.Application.Users.Dtos;
+namespace TrainerJournal.Application.Users.Dtos.Responses;
 
-public record UserInfoDto(
+public record CreateUserResponse(
     Guid Id,
+    string Password,
     string FullName, 
     string UserName,
     string? Email,
