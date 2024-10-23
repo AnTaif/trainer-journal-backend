@@ -40,7 +40,7 @@ public class Student : Entity<Guid>
         string address, string? firstParentName = null, 
         string? firstParentContact = null, 
         string? secondParentName = null, 
-        string? secondParentContact = null) : base(Guid.NewGuid())
+        string? secondParentContact = null) : base(userId)
     {
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
@@ -64,7 +64,7 @@ public class Student : Entity<Guid>
         string? firstParentName = null, 
         string? firstParentContact = null, 
         string? secondParentName = null, 
-        string? secondParentContact = null) : base(Guid.NewGuid())
+        string? secondParentContact = null) : base(userId)
     {
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;

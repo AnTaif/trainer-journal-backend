@@ -8,7 +8,7 @@ public static class UserExtensions
 {
     public static UserInfoDto ToInfoDto(this User user)
     {
-        return new UserInfoDto(user.Id, user.GetFullName(), user.UserName, user.Email, user.PhoneNumber,
+        return new UserInfoDto(user.GetFullName(), user.UserName, user.Email, user.PhoneNumber,
             user.Gender.ToGenderString(), user.TelegramUsername);
     }
 }

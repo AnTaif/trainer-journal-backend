@@ -7,6 +7,6 @@ public static class TrainerExtensions
 {
     public static TrainerInfoDto ToInfoDto(this Trainer trainer)
     {
-        return new TrainerInfoDto(trainer.Id);
+        return new TrainerInfoDto();
     }
 }

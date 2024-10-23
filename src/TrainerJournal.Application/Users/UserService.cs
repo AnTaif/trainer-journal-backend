@@ -37,7 +37,7 @@ public class UserService(
         else if (student != null && trainer != null)
             logger.LogWarning("User with an id {id} has both accounts: trainer and student", id);
 
-        return new GetUserInfoResponse(user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
+        return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
     }
 
     public async Task<ErrorOr<CreateUserResponse>> CreateAsync(CreateUserRequest request)
