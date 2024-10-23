@@ -4,9 +4,7 @@ using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Auth.Dtos.Requests;
 using TrainerJournal.Application.Auth.Dtos.Responses;
 using TrainerJournal.Application.Auth.Token;
-using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
-using TrainerJournal.Domain.Exceptions;
 
 namespace TrainerJournal.Application.Auth;
 

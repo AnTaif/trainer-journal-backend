@@ -55,8 +55,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-app.MapGet("/", () => "lalilulelolalilulelo");
+app.MapGet("/", () => TypedResults.Content(
+    content: "<html><body><a href=\"./swagger\">swagger</a></body></html>", contentType: "text/html"));
 
 app.MapControllers();
 
