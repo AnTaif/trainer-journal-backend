@@ -101,20 +101,4 @@ public class GroupController(IGroupService groupService, IStudentService student
                 _ => BadRequest(err.Description)
             });
     }
-    
-    [HttpPost("{id}/students")]
-    [Authorize(Roles = $"{RoleConstants.Trainer},{RoleConstants.Admin}")]
-    public async Task<ActionResult<CreateStudentResponse>> CreateStudentAsync(CreateStudentRequest request, Guid id)
-    {
-        //TODO: protect from other trainers
-        
-        var result = await studentService.CreateAsync(request, id);
-
-        return result.MatchFirst<ActionResult<CreateStudentResponse>>(
-            onValue: response => CreatedAtAction("CreateStudent", response),
-            onFirstError: error => error.Type switch
-            {
-                _ => BadRequest(error.Description)
-            });
-    }
 }

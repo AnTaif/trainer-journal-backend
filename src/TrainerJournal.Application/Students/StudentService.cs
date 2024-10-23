@@ -13,7 +13,7 @@ public class StudentService(
     IStudentRepository studentRepository,
     ILogger<StudentService> logger) : IStudentService
 {
-    public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId)
+    public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request)
     {
         var userResult = await userService.CreateAsync(
             new CreateUserRequest(request.FullName, request.Email, request.Phone, request.Gender, request.TelegramUsername));
@@ -27,12 +27,12 @@ public class StudentService(
             request.Address, request.FirstParentName, request.FirstParentContact, request.SecondParentName,
             request.SecondParentContact);
         
-        AddToGroup(student, groupId);
+        AddToGroup(student, request.GroupId);
         
         studentRepository.AddStudent(student);
         await studentRepository.SaveChangesAsync();
 
-        return new CreateStudentResponse(student.Id, user.UserName!, user.Password, student.User.GetFullName());
+        return new CreateStudentResponse(student.Id, user.UserName, user.Password, student.User.GetFullName());
     }
 
     private void AddToGroup(Student student, Guid groupId)
