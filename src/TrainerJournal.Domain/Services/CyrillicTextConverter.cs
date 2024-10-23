@@ -71,7 +71,8 @@ public static class CyrillicTextConverter
         {'Ь', ""},
         {'Э', "E"},
         {'Ю', "Yu"},
-        {'Я', "Ya"}
+        {'Я', "Ya"},
+        {' ', " "}
     };
 
     public static string ConvertToLatin(string source)
@@ -79,10 +80,8 @@ public static class CyrillicTextConverter
         var result = new StringBuilder();
         foreach (var letter in source)
         {
-            if (char.IsWhiteSpace(letter))
-                result.Append(' ');
-            else 
-                result.Append(convertedLetters[letter]);
+            if (!convertedLetters.TryGetValue(letter, out var convertedLetter)) return source;
+            result.Append(convertedLetter);
         }
         return result.ToString();
     }
