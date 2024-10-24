@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
-using TrainerJournal.Application.Auth;
-using TrainerJournal.Application.Auth.Token;
-using TrainerJournal.Application.Groups;
-using TrainerJournal.Application.Students;
-using TrainerJournal.Application.Users;
+using TrainerJournal.Application.Services.Auth;
+using TrainerJournal.Application.Services.Auth.Tokens;
+using TrainerJournal.Application.Services.Groups;
+using TrainerJournal.Application.Services.Students;
+using TrainerJournal.Application.Services.Users;
 
 namespace TrainerJournal.Application;
 

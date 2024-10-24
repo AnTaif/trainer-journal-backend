@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Constants;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
 
@@ -36,7 +37,7 @@ public static class DataSeeder
             var result = await userManager.CreateAsync(adminUser, password);
 
             if (result.Succeeded)
-                await userManager.AddToRolesAsync(adminUser, [RoleConstants.Admin, RoleConstants.Trainer]);
+                await userManager.AddToRolesAsync(adminUser, [Roles.Admin, Roles.Trainer]);
         }
 
         if (await userManager.FindByNameAsync("trainer1") == null)
@@ -48,7 +49,7 @@ public static class DataSeeder
             var result = await userManager.CreateAsync(trainerUser, password);
 
             if (result.Succeeded)
-                await userManager.AddToRoleAsync(trainerUser, RoleConstants.Trainer);
+                await userManager.AddToRoleAsync(trainerUser, Roles.Trainer);
         }
     }
     

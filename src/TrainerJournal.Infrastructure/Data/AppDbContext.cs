@@ -26,7 +26,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var roles = new[] { RoleConstants.Admin, RoleConstants.Trainer, RoleConstants.User };
+        var roles = new[] { Domain.Constants.Roles.Admin, Domain.Constants.Roles.Trainer, Domain.Constants.Roles.User };
         var identityRoles = roles.Select(role => 
             new IdentityRole<Guid>
             {

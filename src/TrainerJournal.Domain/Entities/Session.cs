@@ -1,4 +1,5 @@
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Enums;
 
 namespace TrainerJournal.Domain.Entities;
 

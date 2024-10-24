@@ -3,14 +3,13 @@ using System.Security.Claims;
 using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrainerJournal.Application.Groups;
-using TrainerJournal.Application.Groups.Dtos;
-using TrainerJournal.Application.Groups.Dtos.Requests;
-using TrainerJournal.Application.Students;
-using TrainerJournal.Application.Students.Dtos;
-using TrainerJournal.Application.Students.Dtos.Requests;
-using TrainerJournal.Application.Students.Dtos.Responses;
+using TrainerJournal.Application.Services.Groups;
+using TrainerJournal.Application.Services.Groups.Dtos;
+using TrainerJournal.Application.Services.Groups.Dtos.Requests;
+using TrainerJournal.Application.Services.Students;
+using TrainerJournal.Application.Services.Students.Dtos;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Constants;
 
 namespace TrainerJournal.API.Controllers;
 
@@ -20,7 +19,7 @@ namespace TrainerJournal.API.Controllers;
 public class GroupController(IGroupService groupService, IStudentService studentService) : ControllerBase
 {
     [HttpGet]
-    [Authorize(Roles = RoleConstants.Trainer)]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<List<GroupItemDto>>> GetAllAsync()
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -52,7 +51,7 @@ public class GroupController(IGroupService groupService, IStudentService student
     }
 
     [HttpPost]
-    [Authorize(Roles = RoleConstants.Trainer)]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GroupDto>> CreateGroupAsync(CreateGroupRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -69,7 +68,7 @@ public class GroupController(IGroupService groupService, IStudentService student
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = RoleConstants.Trainer)]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GroupDto>> ChangeGroupAsync(ChangeGroupRequest request, Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -88,7 +87,7 @@ public class GroupController(IGroupService groupService, IStudentService student
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = RoleConstants.Trainer)]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<IActionResult> DeleteGroupAsync(Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);

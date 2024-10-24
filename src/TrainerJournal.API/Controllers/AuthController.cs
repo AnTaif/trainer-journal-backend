@@ -1,8 +1,8 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
-using TrainerJournal.Application.Auth;
-using TrainerJournal.Application.Auth.Dtos.Requests;
-using TrainerJournal.Application.Auth.Dtos.Responses;
+using TrainerJournal.Application.Services.Auth;
+using TrainerJournal.Application.Services.Auth.Dtos.Requests;
+using TrainerJournal.Application.Services.Auth.Dtos.Responses;
 
 namespace TrainerJournal.API.Controllers;
 

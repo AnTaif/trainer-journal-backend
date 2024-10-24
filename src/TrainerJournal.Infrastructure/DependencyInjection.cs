@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using TrainerJournal.Application.Groups;
-using TrainerJournal.Application.Students;
-using TrainerJournal.Application.Trainers;
+using TrainerJournal.Application.Services.Groups;
+using TrainerJournal.Application.Services.Students;
+using TrainerJournal.Application.Services.Trainers;
 using TrainerJournal.Infrastructure.Data;
 using TrainerJournal.Infrastructure.Data.Repositories;
 

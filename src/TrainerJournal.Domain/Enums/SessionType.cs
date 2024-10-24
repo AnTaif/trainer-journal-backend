@@ -1,4 +1,4 @@
-namespace TrainerJournal.Domain.Entities;
+namespace TrainerJournal.Domain.Enums;
 
 public enum SessionType
 {

@@ -3,8 +3,8 @@ using System.Security.Claims;
 using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrainerJournal.Application.Users;
-using TrainerJournal.Application.Users.Dtos.Responses;
+using TrainerJournal.Application.Services.Users;
+using TrainerJournal.Application.Services.Users.Dtos.Responses;
 
 namespace TrainerJournal.API.Controllers;
 

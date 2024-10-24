@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using TrainerJournal.Application.Trainers;
+using TrainerJournal.Application.Services.Trainers;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Infrastructure.Data.Repositories;
