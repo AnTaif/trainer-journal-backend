@@ -1,14 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Groups.Dtos.Requests;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Application.Services.Students.Dtos;
-using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Constants;
 
 namespace TrainerJournal.API.Controllers;
@@ -26,28 +25,14 @@ public class GroupController(IGroupService groupService, IStudentService student
         if (userId == null) return Unauthorized();
 
         var result = await groupService.GetGroupsByTrainerIdAsync(Guid.Parse(userId));
-
-        return result.MatchFirst<ActionResult<List<GroupItemDto>>>(
-            onValue: value => Ok(value),
-            onFirstError: err => err.Type switch
-            {
-                ErrorType.NotFound => NotFound(err.Description),
-                _ => BadRequest(err.Description)
-            });
+        return this.ToActionResult(result, Ok);
     }
     
     [HttpGet("{id}")]
     public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
     {
         var result = await groupService.GetGroupByIdAsync(id);
-
-        return result.MatchFirst<ActionResult<GroupDto>>(
-            onValue: value => Ok(value),
-            onFirstError: err => err.Type switch
-            {
-                ErrorType.NotFound => NotFound(err.Description),
-                _ => BadRequest(err.Description)
-            });
+        return this.ToActionResult(result, Ok);
     }
 
     [HttpPost]
@@ -58,13 +43,7 @@ public class GroupController(IGroupService groupService, IStudentService student
         if (userId == null) return Unauthorized();
 
         var result = await groupService.CreateGroup(request, Guid.Parse(userId));
-
-        return result.MatchFirst<ActionResult<GroupDto>>(
-            onValue: value => CreatedAtAction("CreateGroup", value),
-            onFirstError: err => err.Type switch
-            {
-                _ => BadRequest(err.Description)
-            });
+        return this.ToActionResult(result, value => CreatedAtAction("CreateGroup", value));
     }
 
     [HttpPut("{id}")]
@@ -75,15 +54,7 @@ public class GroupController(IGroupService groupService, IStudentService student
         if (userId == null) return Unauthorized();
 
         var result = await groupService.ChangeGroupAsync(request, id, Guid.Parse(userId));
-        
-        return result.MatchFirst<ActionResult<GroupDto>>(
-            onValue: value => Ok(value),
-            onFirstError: err => err.Type switch
-            {
-                ErrorType.NotFound => NotFound(err.Description),
-                ErrorType.Forbidden => Forbid(err.Description),
-                _ => BadRequest(err.Description)
-            });
+        return this.ToActionResult(result, Ok);
     }
 
     [HttpDelete("{id}")]
@@ -94,15 +65,7 @@ public class GroupController(IGroupService groupService, IStudentService student
         if (userId == null) return Unauthorized();
 
         var result = await groupService.DeleteGroupAsync(id, Guid.Parse(userId));
-
-        return result.MatchFirst<IActionResult>(
-            onValue: _ => NoContent(),
-            onFirstError: err => err.Type switch
-            {
-                ErrorType.NotFound => NotFound(err.Description),
-                ErrorType.Forbidden => Forbid(err.Description),
-                _ => BadRequest(err.Description)
-            });
+        return this.ToActionResult(result, _ => NoContent());
     }
 
     [HttpGet("{id}/students")]
@@ -112,14 +75,6 @@ public class GroupController(IGroupService groupService, IStudentService student
         if (userId == null) return Unauthorized();
 
         var result = await studentService.GetStudentsByGroupAsync(id, Guid.Parse(userId));
-
-        return result.MatchFirst<ActionResult<List<StudentItemDto>>>(
-            onValue: value => Ok(value),
-            onFirstError: err => err.Type switch
-            {
-                ErrorType.NotFound => NotFound(err.Description),
-                ErrorType.Forbidden => Forbid(err.Description),
-                _ => BadRequest(err.Description)
-            });
+        return this.ToActionResult(result, Ok);
     }
 }

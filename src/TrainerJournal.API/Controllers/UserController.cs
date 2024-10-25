@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Application.Services.Users.Dtos.Responses;
 
@@ -20,13 +20,6 @@ public class UserController(IUserService userService) : ControllerBase
         if (userId == null) return Unauthorized();
 
         var result = await userService.GetInfoAsync(Guid.Parse(userId));
-
-        return result.MatchFirst<ActionResult<GetUserInfoResponse>>(
-            onValue: response => Ok(response),
-            onFirstError: error => error.Type switch
-            {
-                ErrorType.NotFound => NotFound(error.Description),
-                _ => BadRequest(error.Description)
-            });
+        return this.ToActionResult(result, Ok);
     }
 }
