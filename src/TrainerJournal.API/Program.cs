@@ -26,6 +26,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithJwtSecurity();
 
+var corsOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]?>();
+builder.Services.AddCustomCors(corsOrigins);
+
 builder.Services.AddJwtAuth(builder.Configuration.GetSection("JwtOptions"));
 
 builder.Services
@@ -51,6 +54,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("FrontendPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();

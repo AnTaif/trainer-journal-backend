@@ -60,6 +60,20 @@ public static class IServiceCollectionExtensions
 
         return services;
     }
+    
+    public static void AddCustomCors(this IServiceCollection services, string[]? origins)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy", policy =>
+            {
+                if (origins != null)
+                    policy.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod();
+                else
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            });
+        });
+    }
 
     public static IServiceCollection AddSwaggerWithJwtSecurity(this IServiceCollection services)
     {
