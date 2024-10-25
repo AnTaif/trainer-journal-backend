@@ -35,7 +35,7 @@ public class StudentService(
         studentRepository.AddStudent(student);
         await studentRepository.SaveChangesAsync();
 
-        return new CreateStudentResponse(student.Id, user.UserName, user.Password, student.User.GetFullName());
+        return new CreateStudentResponse(student.Id, user.Username, user.Password, student.User.GetFullName());
     }
 
     public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId)
