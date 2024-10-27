@@ -7,12 +7,12 @@ public class Visit : Entity<Guid>
     public Guid StudentId { get; private set; }
     public Student Student { get; private set; } = null!;
     
-    public Guid SessionId { get; private set; }
-    public Session Session { get; private set; } = null!;
+    public Guid PracticeId { get; private set; }
+    public Practice Practice { get; private set; } = null!;
     
-    public Visit(Guid studentId, Guid sessionId) : base(Guid.NewGuid())
+    public Visit(Guid studentId, Guid practiceId) : base(Guid.NewGuid())
     {
         StudentId = studentId;
-        SessionId = sessionId;
+        PracticeId = practiceId;
     }
 }

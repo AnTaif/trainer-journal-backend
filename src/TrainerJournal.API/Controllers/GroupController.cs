@@ -6,16 +6,24 @@ using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Groups.Dtos.Requests;
+using TrainerJournal.Application.Services.Practices;
+using TrainerJournal.Application.Services.Practices.Dtos;
+using TrainerJournal.Application.Services.Practices.Dtos.Requests;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Application.Services.Students.Dtos;
 using TrainerJournal.Domain.Constants;
+using TrainerJournal.Domain.Enums;
+using TrainerJournal.Domain.Enums.ViewSchedule;
 
 namespace TrainerJournal.API.Controllers;
 
 [ApiController]
 [Route("/groups")]
 [Authorize]
-public class GroupController(IGroupService groupService, IStudentService studentService) : ControllerBase
+public class GroupController(
+    IGroupService groupService, 
+    IStudentService studentService,
+    IPracticeService practiceService) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = Roles.Trainer)]
@@ -75,6 +83,28 @@ public class GroupController(IGroupService groupService, IStudentService student
         if (userId == null) return Unauthorized();
 
         var result = await studentService.GetStudentsByGroupAsync(id, Guid.Parse(userId));
+        return this.ToActionResult(result, Ok);
+    }
+
+    [HttpPost("{id}/create-schedule")]
+    public async Task<ActionResult<List<PracticeItemDto>>> CreateScheduleAsync(CreateScheduleRequest request, Guid id)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await practiceService.CreateScheduleAsync(request, id, Guid.Parse(userId));
+        return this.ToActionResult(result, value => CreatedAtAction("CreateSchedule", value));
+    }
+
+    [HttpGet("{id}/schedule")]
+    public async Task<ActionResult<List<PracticeItemDto>>> GetScheduleAsync(
+        Guid id, [FromQuery] DateTime startDate, [FromQuery] ViewSchedule view)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await practiceService.GetByGroupIdAsync(
+            id, Guid.Parse(userId), startDate.ToUniversalTime(), view.ToDaysCount());
         return this.ToActionResult(result, Ok);
     }
 }

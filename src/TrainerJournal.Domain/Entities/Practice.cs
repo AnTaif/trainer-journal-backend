@@ -1,9 +1,9 @@
 using TrainerJournal.Domain.Common;
-using TrainerJournal.Domain.Enums;
+using TrainerJournal.Domain.Enums.PracticeType;
 
 namespace TrainerJournal.Domain.Entities;
 
-public class Session : Entity<Guid>
+public class Practice : Entity<Guid>
 {
     public Guid GroupId { get; private set; }
     public Group Group { get; private set; } = null!;
@@ -15,10 +15,10 @@ public class Session : Entity<Guid>
     public DateTime EndDate { get; private set; }
     
     public bool IsCanceled { get; private set; }
+
+    public string CancelComment { get; private set; } = "";
     
-    public string CancelComment { get; private set; }
-    
-    public SessionType SessionType { get; private set; }
+    public PracticeType PracticeType { get; private set; }
     
     public Guid TrainerId { get; private set; }
     public Trainer Trainer { get; private set; } = null!;
@@ -26,14 +26,12 @@ public class Session : Entity<Guid>
     public Guid HallId { get; private set; }
     public Hall Hall { get; private set; } = null!;
     
-    public Session(
+    public Practice(
         Guid groupId, 
         float price, 
         DateTime startDate, 
-        DateTime endDate, 
-        bool isCanceled, 
-        string cancelComment, 
-        SessionType sessionType, 
+        DateTime endDate,
+        PracticeType practiceType, 
         Guid trainerId, 
         Guid hallId) : base(Guid.NewGuid())
     {
@@ -41,10 +39,14 @@ public class Session : Entity<Guid>
         Price = price;
         StartDate = startDate;
         EndDate = endDate;
-        IsCanceled = isCanceled;
-        CancelComment = cancelComment;
-        SessionType = sessionType;
+        PracticeType = practiceType;
         TrainerId = trainerId;
         HallId = hallId;
+    }
+
+    public void Cancel(string comment = "")
+    {
+        IsCanceled = true;
+        CancelComment = comment;
     }
 }

@@ -18,6 +18,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     public DbSet<Payment> Payments { get; set; } = null!;
 
+    public DbSet<Practice> Practices { get; set; } = null!;
+
     public DbSet<Visit> Visits { get; set; } = null!;
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
