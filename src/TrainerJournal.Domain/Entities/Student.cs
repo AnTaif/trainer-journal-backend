@@ -16,9 +16,9 @@ public class Student : Entity<Guid>
     
     public int SchoolGrade { get; private set; }
     
-    public int AikidoGrade { get; private set; }
+    public int Kyu { get; private set; }
     
-    public DateTime LastAikidoGradeDate { get; private set; }
+    public DateTime KyuUpdatedAt { get; private set; }
     
     public DateTime TrainingStartDate { get; private set; }
     
@@ -34,32 +34,7 @@ public class Student : Entity<Guid>
         Guid userId,
         DateTime birthDate, 
         int schoolGrade, 
-        int aikidoGrade, 
-        DateTime lastAikidoGradeDate, 
-        DateTime trainingStartDate, 
-        string address, string? firstParentName = null, 
-        string? firstParentContact = null, 
-        string? secondParentName = null, 
-        string? secondParentContact = null) : base(userId)
-    {
-        BirthDate = birthDate;
-        SchoolGrade = schoolGrade;
-        AikidoGrade = aikidoGrade;
-        LastAikidoGradeDate = lastAikidoGradeDate;
-        TrainingStartDate = trainingStartDate;
-        Address = address;
-        UserId = userId;
-        this.firstParentName = firstParentName;
-        this.firstParentContact = firstParentContact;
-        this.secondParentName = secondParentName;
-        this.secondParentContact = secondParentContact;
-    }
-    
-    public Student(
-        Guid userId,
-        DateTime birthDate, 
-        int schoolGrade, 
-        int aikidoGrade,
+        int kyu,
         string address, 
         string? firstParentName = null, 
         string? firstParentContact = null, 
@@ -68,15 +43,20 @@ public class Student : Entity<Guid>
     {
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
-        AikidoGrade = aikidoGrade;
-        LastAikidoGradeDate = DateTime.UtcNow;
         TrainingStartDate = DateTime.UtcNow;
+        UpdateKyu(kyu);
         Address = address;
         UserId = userId;
         this.firstParentName = firstParentName;
         this.firstParentContact = firstParentContact;
         this.secondParentName = secondParentName;
         this.secondParentContact = secondParentContact;
+    }
+
+    public void UpdateKyu(int kyu)
+    {
+        Kyu = kyu;
+        KyuUpdatedAt = DateTime.UtcNow;
     }
 
     public void UpdateBalance(float balanceDiff)

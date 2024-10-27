@@ -48,7 +48,7 @@ public class PracticeService(
 
         var practices = new List<Practice>();
         var oneWeek = new TimeSpan(7, 0, 0, 0);
-        for (var i = 0; i < request.RepeatInWeeks; i++)
+        for (var i = 0; i < request.RepeatWeeks; i++)
         {
             var offsetTimeSpan = oneWeek * i;
             practices.AddRange(request.Practices.Select(p => 

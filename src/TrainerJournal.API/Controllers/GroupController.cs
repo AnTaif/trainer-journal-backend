@@ -98,13 +98,13 @@ public class GroupController(
 
     [HttpGet("{id}/schedule")]
     public async Task<ActionResult<List<PracticeItemDto>>> GetScheduleAsync(
-        Guid id, [FromQuery] DateTime startDate, [FromQuery] ViewSchedule view)
+        Guid id, [FromQuery] DateTime date, [FromQuery] ViewSchedule view)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
         var result = await practiceService.GetByGroupIdAsync(
-            id, Guid.Parse(userId), startDate.ToUniversalTime(), view.ToDaysCount());
+            id, Guid.Parse(userId), date.ToUniversalTime(), view.ToDaysCount());
         return this.ToActionResult(result, Ok);
     }
 }

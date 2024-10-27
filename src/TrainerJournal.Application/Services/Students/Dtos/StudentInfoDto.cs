@@ -6,12 +6,10 @@ public record StudentInfoDto(
     float Balance,
     DateTime BirthDate,
     int SchoolGrade,
-    int AikidoGrade,
-    DateTime LastAikidoGradeDate,
+    int Kyu,
+    DateTime KyuUpdatedAt,
     DateTime TrainingStartDate,
     string Address,
-    string? FirstParentName,
-    string? FirstParentContact,
-    string? SecondParentName,
-    string? SecondParentContact
+    ParentInfo? FirstParentInfo,
+    ParentInfo? SecondParentInfo
     );
