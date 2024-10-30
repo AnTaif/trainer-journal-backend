@@ -3,7 +3,6 @@ using TrainerJournal.Application.DataAnnotations;
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 
 public record CreateStudentRequest(
-    Guid GroupId,
     [MinimumWordsCount(2)]
     string FullName, 
     [GenderEnum]

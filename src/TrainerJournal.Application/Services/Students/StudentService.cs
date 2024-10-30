@@ -16,7 +16,7 @@ public class StudentService(
     IGroupRepository groupRepository,
     ILogger<StudentService> logger) : IStudentService
 {
-    public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request)
+    public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId)
     {
         var userResult = await userService.CreateAsync(
             new CreateUserRequest(request.FullName, request.Email, request.Phone, request.Gender, request.TelegramUsername));
@@ -30,7 +30,7 @@ public class StudentService(
             request.Address, request.FirstParentInfo?.Name, request.FirstParentInfo?.Contact, request.SecondParentInfo?.Name,
             request.SecondParentInfo?.Contact);
         
-        AddToGroup(student, request.GroupId);
+        AddToGroup(student, groupId);
         
         studentRepository.AddStudent(student);
         await studentRepository.SaveChangesAsync();

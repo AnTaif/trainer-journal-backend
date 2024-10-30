@@ -48,6 +48,7 @@ public class GroupService(
         if (group.TrainerId != trainerId) return Error.Forbidden(description: "You don't have access to this group");
         
         group.Update(request.Name, request.TrainerId, request.HallId);
+        await groupRepository.SaveChangesAsync();
 
         return group.ToDto();
     }

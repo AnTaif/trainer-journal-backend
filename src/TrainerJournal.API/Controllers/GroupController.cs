@@ -11,8 +11,9 @@ using TrainerJournal.Application.Services.Practices.Dtos;
 using TrainerJournal.Application.Services.Practices.Dtos.Requests;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Application.Services.Students.Dtos;
+using TrainerJournal.Application.Services.Students.Dtos.Requests;
+using TrainerJournal.Application.Services.Students.Dtos.Responses;
 using TrainerJournal.Domain.Constants;
-using TrainerJournal.Domain.Enums;
 using TrainerJournal.Domain.Enums.ViewSchedule;
 
 namespace TrainerJournal.API.Controllers;
@@ -36,13 +37,6 @@ public class GroupController(
         return this.ToActionResult(result, Ok);
     }
     
-    [HttpGet("{id}")]
-    public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
-    {
-        var result = await groupService.GetGroupByIdAsync(id);
-        return this.ToActionResult(result, Ok);
-    }
-
     [HttpPost]
     [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GroupDto>> CreateGroupAsync(CreateGroupRequest request)
@@ -52,6 +46,13 @@ public class GroupController(
 
         var result = await groupService.CreateGroup(request, Guid.Parse(userId));
         return this.ToActionResult(result, value => CreatedAtAction("CreateGroup", value));
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
+    {
+        var result = await groupService.GetGroupByIdAsync(id);
+        return this.ToActionResult(result, Ok);
     }
 
     [HttpPut("{id}")]
@@ -84,6 +85,17 @@ public class GroupController(
 
         var result = await studentService.GetStudentsByGroupAsync(id, Guid.Parse(userId));
         return this.ToActionResult(result, Ok);
+    }
+
+    [HttpPost("{id}/students")]
+    public async Task<ActionResult<CreateStudentResponse>> CreateGroupStudentAsync(Guid id,
+        CreateStudentRequest request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await studentService.CreateAsync(request, id);
+        return this.ToActionResult(result, value => CreatedAtAction("CreateGroupStudent", value));
     }
 
     [HttpPost("{id}/create-schedule")]
