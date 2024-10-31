@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using TrainerJournal.Application.DataAnnotations;
 using TrainerJournal.Domain.Common;
 
@@ -9,10 +10,14 @@ public record CreateStudentRequest(
     [GenderEnum]
     string Gender,
     DateTime BirthDate, 
+    [Range(0, 11)]
     int SchoolGrade, 
+    [Range(1, 10)]
     int Kyu,
     string Address,
+    [EmailAddress]
     string? Email = null,
+    [Phone]
     string? Phone = null,
     ParentInfo? FirstParentInfo = null, 
     ParentInfo? SecondParentInfo = null);
