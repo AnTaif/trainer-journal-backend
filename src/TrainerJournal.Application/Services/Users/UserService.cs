@@ -52,8 +52,7 @@ public class UserService(
             return Error.Failure("Student.Create", "User is already exists");
         }
 
-        var user = new User(username, request.Email, request.Phone, request.FullName, request.Gender.ToGenderEnum(),
-            request.TelegramUsername);
+        var user = new User(username, request.Email, request.Phone, new PersonName(request.FullName), request.Gender.ToGenderEnum());
 
         var result = await userManager.CreateAsync(user, password);
         if (!result.Succeeded)
@@ -64,23 +63,19 @@ public class UserService(
 
         await userManager.AddToRoleAsync(user, Roles.User);
 
-        return new CreateUserResponse(user.Id, password, user.GetFullName(), user.UserName!, user.Email, user.PhoneNumber,
+        return new CreateUserResponse(user.Id, password, user.FullName.ToString(), user.UserName!, user.Email, user.PhoneNumber,
             user.Gender.ToGenderString(), user.TelegramUsername);
     }
 
-    private string GenerateUsername(string fullname)
+    private string GenerateUsername(string fullName)
     {
-        var latinSplit = User.SplitFullName(CyrillicTextConverter.ConvertToLatin(fullname));
-
-        var userName = latinSplit.MiddleName != null 
+        var latinSplit = PersonName.SplitFullName(CyrillicTextConverter.ConvertToLatin(fullName));
+        var username = latinSplit.MiddleName != null 
             ? $"{latinSplit.FirstName.First()}.{latinSplit.MiddleName.First()}.{latinSplit.LastName}" 
             : $"{latinSplit.FirstName}.{latinSplit.LastName}";
-
-        var count = userManager.Users.Count(u => u.UserName!.Contains(userName));
-        if (count == 0)
-            return userName;
-
-        return userName + count;
+        
+        var count = userManager.Users.Count(u => u.UserName!.Contains(username));
+        return username + (count == 0 ? string.Empty : count);
     }
 
     private static string GeneratePassword()

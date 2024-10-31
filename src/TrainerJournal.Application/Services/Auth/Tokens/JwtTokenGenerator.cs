@@ -48,8 +48,8 @@ public class JwtTokenGenerator(IOptions<JwtOptions> options) : ITokenGenerator
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.GivenName, user.FirstName),
-            new(JwtRegisteredClaimNames.FamilyName, user.LastName),
+            new(JwtRegisteredClaimNames.GivenName, user.FullName.FirstName),
+            new(JwtRegisteredClaimNames.FamilyName, user.FullName.LastName),
             new(JwtRegisteredClaimNames.UniqueName, user.UserName),
             new(JwtRegisteredClaimNames.Sid, user.Id.ToString()), 
             new(JwtRegisteredClaimNames.Sub, user.UserName)

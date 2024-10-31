@@ -10,7 +10,7 @@ public static class PracticeExtensions
     {
         return new PracticeInfoDto(practice.Id, practice.StartDate, practice.EndDate, practice.IsCanceled,
             practice.CancelComment, practice.PracticeType.ToPracticeTypeString(), practice.Price,
-            new PracticeTrainerInfoDto(practice.Trainer.Id, practice.Trainer.User.GetFullName()),
+            new PracticeTrainerInfoDto(practice.Trainer.Id, practice.Trainer.User.FullName.ToString()),
             new PracticeGroupInfoDto(practice.GroupId, practice.Group.Name),
             new PracticeHallInfoDto(practice.HallId, practice.Hall.Location));
     }

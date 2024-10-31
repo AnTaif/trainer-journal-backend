@@ -14,5 +14,4 @@ public record CreateStudentRequest(
     string? Email = null,
     string? Phone = null,
     ParentInfo? FirstParentInfo = null, 
-    ParentInfo? SecondParentInfo = null, 
-    string? TelegramUsername = null);
+    ParentInfo? SecondParentInfo = null);

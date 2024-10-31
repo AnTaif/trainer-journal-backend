@@ -19,7 +19,7 @@ public class StudentService(
     public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId)
     {
         var userResult = await userService.CreateAsync(
-            new CreateUserRequest(request.FullName, request.Email, request.Phone, request.Gender, request.TelegramUsername));
+            new CreateUserRequest(request.FullName, request.Email, request.Phone, request.Gender));
 
         if (userResult.IsError)
             return userResult.FirstError;
@@ -35,7 +35,7 @@ public class StudentService(
         studentRepository.AddStudent(student);
         await studentRepository.SaveChangesAsync();
 
-        return new CreateStudentResponse(student.Id, user.Username, user.Password, student.User.GetFullName());
+        return new CreateStudentResponse(student.Id, user.Username, user.Password, student.User.FullName.ToString());
     }
 
     public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId)

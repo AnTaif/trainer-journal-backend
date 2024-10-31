@@ -21,7 +21,7 @@ public static class StudentExtensions
 
     public static StudentItemDto ToItemDto(this Student student)
     {
-        return new StudentItemDto(student.Id, student.User.GetFullName(), student.GroupId, student.Balance, 
+        return new StudentItemDto(student.Id, student.User.FullName.ToString(), student.GroupId, student.Balance, 
             student.BirthDate, GetYearsSince(student.BirthDate), student.SchoolGrade, student.Kyu);
     }
 
