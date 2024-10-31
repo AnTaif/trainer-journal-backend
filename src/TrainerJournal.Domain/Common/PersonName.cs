@@ -1,6 +1,9 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace TrainerJournal.Domain.Common;
 
-public struct PersonName
+[ComplexType]
+public class PersonName
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

@@ -27,8 +27,7 @@ public class StudentService(
         var user = userResult.Value;
         
         var student = new Student(user.Id, request.BirthDate.ToUniversalTime(), request.SchoolGrade, request.Kyu,
-            request.Address, request.FirstParentInfo?.Name, request.FirstParentInfo?.Contact, request.SecondParentInfo?.Name,
-            request.SecondParentInfo?.Contact);
+            request.Address, request.FirstParentInfo, request.SecondParentInfo);
         
         AddToGroup(student, groupId);
         

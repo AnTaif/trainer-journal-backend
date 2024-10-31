@@ -40,6 +40,56 @@ public class UserService(
         return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
     }
 
+    public async Task<ErrorOr<GetUserInfoResponse>> UpdateAsync(Guid id, UpdateUserRequest request)
+    {
+        var user = await userManager.FindByIdAsync(id.ToString());
+        if (user == null) return Error.NotFound(description: "User not found");
+
+        var student = await studentRepository.GetByUserIdAsync(id);
+        if (student == null && request.StudentInfo != null)
+            return Error.Validation(metadata: new Dictionary<string, object>
+            {
+                {"StudentInfo", "This user is not a student"}
+            });
+        
+        var trainer = await trainerRepository.GetByUserIdAsync(id);
+        if (trainer == null && request.TrainerInfo != null)
+            return Error.Validation(metadata: new Dictionary<string, object>
+            {
+                {"TrainerInfo", "This user is not a trainer"}
+            });
+        
+        if (request.UserInfo != null)
+        {
+            var userReq = request.UserInfo;
+            var fullName = userReq.FullName != null ? new PersonName(userReq.FullName) : null;
+            user.Update(fullName, userReq.Email, userReq.Phone, userReq.Gender?.ToGenderEnum(), userReq.TelegramUsername);
+        }
+
+        if (request.StudentInfo != null)
+        {
+            var studentReq = request.StudentInfo;
+            student!.Update(
+                studentReq.BirthDate, 
+                studentReq.SchoolGrade, 
+                studentReq.Address, 
+                studentReq.FirstParentInfo == null 
+                    ? null 
+                    : new ParentInfo(studentReq.FirstParentInfo.Name ?? "", studentReq.FirstParentInfo.Contact ?? ""), 
+                studentReq.SecondParentInfo == null 
+                    ? null 
+                    : new ParentInfo(studentReq.SecondParentInfo.Name ?? "", studentReq.SecondParentInfo.Contact ?? ""));
+        }
+
+        if (request.TrainerInfo != null)
+        {
+            //TODO: add trainer update
+        }
+        
+        await userManager.UpdateAsync(user);
+        return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
+    }
+
     public async Task<ErrorOr<CreateUserResponse>> CreateAsync(CreateUserRequest request)
     {
         var username = GenerateUsername(request.FullName);

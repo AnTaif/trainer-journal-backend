@@ -7,6 +7,8 @@ namespace TrainerJournal.Application.Services.Users;
 public interface IUserService
 {
     public Task<ErrorOr<GetUserInfoResponse>> GetInfoAsync(Guid id);
+    
+    public Task<ErrorOr<GetUserInfoResponse>> UpdateAsync(Guid id, UpdateUserRequest request);
 
     public Task<ErrorOr<CreateUserResponse>> CreateAsync(CreateUserRequest request);
 }

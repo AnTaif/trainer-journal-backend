@@ -1,4 +1,5 @@
 using TrainerJournal.Application.DataAnnotations;
+using TrainerJournal.Domain.Common;
 
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 

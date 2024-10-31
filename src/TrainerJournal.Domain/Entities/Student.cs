@@ -9,26 +9,21 @@ public class Student : Entity<Guid>
     
     public Guid GroupId { get; private set; }
     public virtual Group Group { get; private set; } = null!;
-
+    
     public float Balance { get; private set; }
-    
     public DateTime BirthDate { get; private set; }
-    
     public int SchoolGrade { get; private set; }
     
     public int Kyu { get; private set; }
-    
     public DateTime KyuUpdatedAt { get; private set; }
     
     public DateTime TrainingStartDate { get; private set; }
-    
     public string Address { get; private set; }
     
-    public string? firstParentName { get; private set; }
-    public string? firstParentContact { get; private set; }
+    public ParentInfo? FirstParent { get; set; }
+    public ParentInfo? SecondParent { get; set; }
     
-    public string? secondParentName { get; private set; }
-    public string? secondParentContact { get; private set; }
+    public Student() : base(Guid.NewGuid()) { }
     
     public Student(
         Guid userId,
@@ -36,25 +31,47 @@ public class Student : Entity<Guid>
         int schoolGrade, 
         int kyu,
         string address, 
-        string? firstParentName = null, 
-        string? firstParentContact = null, 
-        string? secondParentName = null, 
-        string? secondParentContact = null) : base(userId)
+        ParentInfo? firstParent = null,
+        ParentInfo? secondParent = null) : base(userId)
     {
+        var curr = DateTime.UtcNow;
+        
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
-        TrainingStartDate = DateTime.UtcNow;
-        UpdateKyu(kyu);
+        TrainingStartDate = curr;
+        Kyu = kyu;
+        KyuUpdatedAt = curr;
         Address = address;
         UserId = userId;
-        this.firstParentName = firstParentName;
-        this.firstParentContact = firstParentContact;
-        this.secondParentName = secondParentName;
-        this.secondParentContact = secondParentContact;
+        FirstParent = firstParent;
+        SecondParent = secondParent;
+    }
+
+    public void Update(
+        DateTime? birthDate = null, 
+        int? schoolGrade = null,
+        string? address = null,
+        ParentInfo? firstParent = null,
+        ParentInfo? secondParent = null)
+    {
+        BirthDate = birthDate ?? BirthDate;
+        SchoolGrade = schoolGrade ?? SchoolGrade;
+        Address = address ?? Address;
+        
+        if (FirstParent == null)
+            FirstParent = firstParent;
+        else
+            FirstParent.Update(firstParent?.Name, firstParent?.Contact);
+        
+        if (SecondParent == null)
+            SecondParent = secondParent;
+        else
+            SecondParent.Update(secondParent?.Name, secondParent?.Contact);
     }
 
     public void UpdateKyu(int kyu)
     {
+        //TODO: add event
         Kyu = kyu;
         KyuUpdatedAt = DateTime.UtcNow;
     }

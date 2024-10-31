@@ -28,6 +28,17 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Student>(b =>
+        {
+            b.ComplexProperty(e => e.FirstParent, e => e.IsRequired());
+            b.ComplexProperty(e => e.SecondParent, e => e.IsRequired());
+        });
+        
+        modelBuilder.Entity<User>(b =>
+        {
+            b.ComplexProperty(e => e.FullName, e => e.IsRequired());
+        });
+        
         var roles = new[] { Domain.Constants.Roles.Admin, Domain.Constants.Roles.Trainer, Domain.Constants.Roles.User };
         var identityRoles = roles.Select(role => 
             new IdentityRole<Guid>

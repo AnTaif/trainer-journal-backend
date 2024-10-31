@@ -1,3 +1,3 @@
 namespace TrainerJournal.Application.Services.Students.Dtos;
 
-public record ParentInfo(string Name, string Contact);
+public record ParentInfoDto(string? Name, string? Contact);

@@ -98,25 +98,25 @@ public class GroupController(
         return this.ToActionResult(result, value => CreatedAtAction("CreateGroupStudent", value));
     }
 
-    [HttpPost("{id}/create-schedule")]
-    public async Task<ActionResult<List<PracticeItemDto>>> CreateScheduleAsync(CreateScheduleRequest request, Guid id)
-    {
-        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
-        if (userId == null) return Unauthorized();
-
-        var result = await practiceService.CreateScheduleAsync(request, id, Guid.Parse(userId));
-        return this.ToActionResult(result, value => CreatedAtAction("CreateSchedule", value));
-    }
-
-    [HttpGet("{id}/schedule")]
-    public async Task<ActionResult<List<PracticeItemDto>>> GetScheduleAsync(
-        Guid id, [FromQuery] DateTime date, [FromQuery] ViewSchedule view)
-    {
-        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
-        if (userId == null) return Unauthorized();
-
-        var result = await practiceService.GetByGroupIdAsync(
-            id, Guid.Parse(userId), date.ToUniversalTime(), view.ToDaysCount());
-        return this.ToActionResult(result, Ok);
-    }
+    // [HttpPost("{id}/create-schedule")]
+    // public async Task<ActionResult<List<PracticeItemDto>>> CreateScheduleAsync(CreateScheduleRequest request, Guid id)
+    // {
+    //     var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+    //     if (userId == null) return Unauthorized();
+    //
+    //     var result = await practiceService.CreateScheduleAsync(request, id, Guid.Parse(userId));
+    //     return this.ToActionResult(result, value => CreatedAtAction("CreateSchedule", value));
+    // }
+    //
+    // [HttpGet("{id}/schedule")]
+    // public async Task<ActionResult<List<PracticeItemDto>>> GetScheduleAsync(
+    //     Guid id, [FromQuery] DateTime date, [FromQuery] ViewSchedule view)
+    // {
+    //     var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+    //     if (userId == null) return Unauthorized();
+    //
+    //     var result = await practiceService.GetByGroupIdAsync(
+    //         id, Guid.Parse(userId), date.ToUniversalTime(), view.ToDaysCount());
+    //     return this.ToActionResult(result, Ok);
+    // }
 }

@@ -6,9 +6,11 @@ namespace TrainerJournal.Domain.Entities;
 
 public sealed class User : IdentityUser<Guid>
 {
-    public PersonName FullName { get; private set; }
+    public PersonName FullName { get; set; }
     public Gender Gender { get; private set; }
     public string? TelegramUsername { get; private set; }
+
+    public User() { Id = Guid.NewGuid(); }
     
     public User(string? userName, string? email, string? phone, PersonName fullName, Gender gender)
     {

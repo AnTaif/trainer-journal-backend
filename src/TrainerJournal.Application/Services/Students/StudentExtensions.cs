@@ -7,16 +7,9 @@ public static class StudentExtensions
 {
     public static StudentInfoDto ToInfoDto(this Student student)
     {
-        var firstParentInfo = student.firstParentName != null 
-            ? new ParentInfo(student.firstParentName, student.firstParentContact ?? "") 
-            : null;
-        var secondParentInfo = student.secondParentName != null
-            ? new ParentInfo(student.secondParentName, student.secondParentContact ?? "")
-            : null;
-        
         return new StudentInfoDto(student.GroupId, student.Balance, student.BirthDate, student.SchoolGrade,
             student.Kyu, student.KyuUpdatedAt, student.TrainingStartDate, student.Address,
-           firstParentInfo, secondParentInfo);
+           student.FirstParent, student.SecondParent);
     }
 
     public static StudentItemDto ToItemDto(this Student student)

@@ -1,3 +1,5 @@
+using TrainerJournal.Domain.Common;
+
 namespace TrainerJournal.Application.Services.Students.Dtos;
 
 //TODO(!): replace GroupId with GroupInfoDto
