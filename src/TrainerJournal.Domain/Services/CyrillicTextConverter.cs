@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.Extensions.Primitives;
 
 namespace TrainerJournal.Domain.Services;
 
@@ -80,9 +81,22 @@ public static class CyrillicTextConverter
         var result = new StringBuilder();
         foreach (var letter in source)
         {
-            if (!convertedLetters.TryGetValue(letter, out var convertedLetter)) return source;
-            result.Append(convertedLetter);
+            if (IsLatin(letter))
+            {
+                result.Append(letter);
+                continue;
+            }
+            
+            if (convertedLetters.TryGetValue(letter, out var convertedLetter))
+            {
+                result.Append(convertedLetter);
+            }
         }
         return result.ToString();
+    }
+    
+    private static bool IsLatin(char c)
+    {
+        return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
     }
 }
