@@ -6,7 +6,7 @@ public static class PracticeTypeExtensions
     {
         return practiceType switch
         {
-            PracticeType.Training => "Тренировка",
+            PracticeType.Regular => "Тренировка",
             PracticeType.Seminar => "Семинар",
             PracticeType.MasterClass => "Мастер-класс",
             _ => throw new ArgumentException($"Invalid practiceType enum: {practiceType}")
@@ -17,7 +17,7 @@ public static class PracticeTypeExtensions
     {
         return practiceTypeStr.ToLower() switch
         {
-            "тренировка" => PracticeType.Training,
+            "тренировка" => PracticeType.Regular,
             "семинар" => PracticeType.Seminar,
             "мастер-класс" => PracticeType.MasterClass,
             _ => throw new ArgumentException($"Invalid practiceType string: {practiceTypeStr}")

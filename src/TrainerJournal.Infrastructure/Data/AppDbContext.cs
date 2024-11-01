@@ -18,7 +18,9 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     public DbSet<Payment> Payments { get; set; } = null!;
 
-    public DbSet<Practice> Practices { get; set; } = null!;
+    public DbSet<SchedulePractice> SchedulePractices { get; set; } = null!;
+    
+    public DbSet<SinglePractice> SinglePractices { get; set; } = null!;
 
     public DbSet<Visit> Visits { get; set; } = null!;
     

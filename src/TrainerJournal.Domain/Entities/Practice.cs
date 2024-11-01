@@ -3,50 +3,41 @@ using TrainerJournal.Domain.Enums.PracticeType;
 
 namespace TrainerJournal.Domain.Entities;
 
-public class Practice : Entity<Guid>
+public abstract class Practice : Entity<Guid>
 {
-    public Guid GroupId { get; private set; }
-    public Group Group { get; private set; } = null!;
+    public float Price { get; protected set; }
     
-    public float Price { get; private set; }
+    public DateTime Start { get; protected set; }
     
-    public DateTime StartDate { get; private set; }
+    public DateTime End { get; protected set; }
     
-    public DateTime EndDate { get; private set; }
+    public Guid GroupId { get; protected set; }
+    public Group Group { get; protected set; } = null!;
     
-    public bool IsCanceled { get; private set; }
-
-    public string CancelComment { get; private set; } = "";
+    public Guid TrainerId { get; protected set; }
+    public Trainer Trainer { get; protected set; } = null!;
     
-    public PracticeType PracticeType { get; private set; }
+    public Guid HallId { get; protected set; }
+    public Hall Hall { get; protected set; } = null!;
     
-    public Guid TrainerId { get; private set; }
-    public Trainer Trainer { get; private set; } = null!;
+    public PracticeType PracticeType { get; protected set; }
     
-    public Guid HallId { get; private set; }
-    public Hall Hall { get; private set; } = null!;
-    
-    public Practice(
+    //TODO: при изменении цены тренировок необходимо создавать новый SchedulePractice 
+    protected Practice(
         Guid groupId, 
         float price, 
-        DateTime startDate, 
-        DateTime endDate,
+        DateTime start, 
+        DateTime end,
         PracticeType practiceType, 
         Guid trainerId, 
         Guid hallId) : base(Guid.NewGuid())
     {
         GroupId = groupId;
         Price = price;
-        StartDate = startDate;
-        EndDate = endDate;
+        Start = start;
+        End = end;
         PracticeType = practiceType;
         TrainerId = trainerId;
         HallId = hallId;
-    }
-
-    public void Cancel(string comment = "")
-    {
-        IsCanceled = true;
-        CancelComment = comment;
     }
 }
