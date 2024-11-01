@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\Practices\" />
+      <Folder Include="Services\Schedule\Dtos\Responses\" />
       <Folder Include="Services\Trainers\Dtos\Responses\" />
     </ItemGroup>
 
