@@ -14,6 +14,13 @@ public class StudentService(
     IStudentRepository studentRepository,
     IGroupRepository groupRepository) : IStudentService
 {
+    public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByTrainerAsync(Guid trainerId, bool withGroup)
+    {
+        var students = await studentRepository.GetAllByTrainerIdAsync(trainerId, withGroup);
+
+        return students.Select(s => s.ToItemDto()).ToList();
+    }
+
     public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId)
     {
         var group = await groupRepository.GetByIdAsync(groupId);

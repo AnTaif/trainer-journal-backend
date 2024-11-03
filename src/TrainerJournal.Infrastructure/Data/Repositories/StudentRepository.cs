@@ -26,6 +26,23 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
             .ToListAsync();
     }
 
+    public async Task<List<Student>> GetAllByTrainerIdAsync(Guid trainerId, bool withGroup)
+    {
+        var includableQuery = students
+            .Include(s => s.User)
+            .Include(s => s.ExtraContacts)
+            .Include(s => s.Group);
+
+        if (withGroup)
+            return await includableQuery
+                .Where(s => s.Group.TrainerId == trainerId)
+                .ToListAsync();
+        
+        return await includableQuery
+            .Where(s => s.GroupId == null)
+            .ToListAsync();
+    }
+
     public void AddStudent(Student student)
     {
         students.Add(student);
