@@ -1,17 +1,12 @@
 using TrainerJournal.Application.Services.Students.Dtos;
-using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Students;
 
 public static class ParentInfoExtensions
 {
-    public static ParentInfo ToInfo(this ParentInfoDto dto)
+    public static ExtraContactDto ToDto(this ExtraContact info)
     {
-        return new ParentInfo(dto.Name, dto.Contact);
-    }
-
-    public static ParentInfoDto ToDto(this ParentInfo info)
-    {
-        return new ParentInfoDto(info.Name, info.Contact);
+        return new ExtraContactDto(info.Name, info.Contact);
     }
 }

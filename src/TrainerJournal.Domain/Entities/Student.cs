@@ -12,58 +12,60 @@ public class Student : Entity<Guid>
     
     public float Balance { get; private set; }
     public DateTime BirthDate { get; private set; }
-    public int? SchoolGrade { get; private set; }
+    public int SchoolGrade { get; private set; }
     
     public int? Kyu { get; private set; }
     public DateTime? KyuUpdatedAt { get; private set; }
     
-    public DateTime TrainingStartDate { get; private set; }
-    public string? Address { get; private set; }
-    
-    public ParentInfo FirstParent { get; set; } = null!;
-    public ParentInfo SecondParent { get; set; } = null!;
+    public DateTime TrainingStartDate { get; private set; } = DateTime.UtcNow;
+    public string Address { get; private set; }
+
+    public List<ExtraContact> ExtraContacts { get; set; } = null!;
 
     public Student() : base(Guid.NewGuid()) { }
     
     public Student(
         Guid userId,
         DateTime birthDate, 
-        int? schoolGrade, 
+        int schoolGrade, 
         int? kyu,
         string? address, 
-        ParentInfo firstParent,
-        ParentInfo? secondParent = null) : base(userId)
+        List<ExtraContact> extraContacts) : base(userId)
     {
-        var curr = DateTime.UtcNow;
-        
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
-        TrainingStartDate = curr;
-        Kyu = kyu;
-        KyuUpdatedAt = kyu == null ? null : curr;
-        Address = address;
+        UpdateKyu(kyu);
+        Address = address ?? "";
         UserId = userId;
-        FirstParent = firstParent;
-        SecondParent = secondParent ?? new ParentInfo("", "");
+        ExtraContacts = extraContacts;
     }
 
     public void Update(
         DateTime? birthDate = null, 
         int? schoolGrade = null,
         string? address = null,
-        ParentInfo? firstParent = null,
-        ParentInfo? secondParent = null)
+        int? kyu = null,
+        List<(string? Name, string? Contact)>? extraContacts = null)
     {
         BirthDate = birthDate ?? BirthDate;
         SchoolGrade = schoolGrade ?? SchoolGrade;
         Address = address ?? Address;
+
+         UpdateKyu(kyu);
         
-        if (firstParent != null) FirstParent.Update(firstParent);
-        if (secondParent != null) SecondParent.Update(secondParent);
+        if (extraContacts != null)
+        {
+            ExtraContacts.Clear();
+            foreach (var ex in extraContacts)
+            {
+                ExtraContacts.Add(new ExtraContact(ex.Name, ex.Contact));
+            }
+        }
     }
 
-    public void UpdateKyu(int kyu)
+    public void UpdateKyu(int? kyu)
     {
+        if (kyu == null || Kyu == kyu) return;
         //TODO: add event
         Kyu = kyu;
         KyuUpdatedAt = DateTime.UtcNow;

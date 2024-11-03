@@ -7,5 +7,5 @@ public record UpdateStudentInfoRequest(
     [Range(0, 11)]
     int? SchoolGrade, 
     string? Address, 
-    ParentInfoDto? FirstParentInfo, 
-    ParentInfoDto? SecondParentInfo);
+    int? Kyu,
+    List<ExtraContactDto>? ExtraContacts);

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using TrainerJournal.Application.DataAnnotations;
-using TrainerJournal.Domain.Common;
 
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 
@@ -11,9 +10,8 @@ public record CreateStudentRequest(
     string Gender,
     DateTime BirthDate, 
     [Range(0, 11)]
-    int? SchoolGrade, 
+    int SchoolGrade, 
     [Range(1, 10)]
     int? Kyu,
     string? Address,
-    ParentInfoDto FirstParentInfo,
-    ParentInfoDto? SecondParentInfo);
+    List<CreateExtraContactRequest> ExtraContacts);

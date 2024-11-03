@@ -10,7 +10,9 @@ public class GenderEnumAttribute : ValidationAttribute
         if (value is string s)
             if (s.IsGenderEnum())
                 return ValidationResult.Success;
-
-        return new ValidationResult($"Invalid enum string: {value}");
+            else 
+                return new ValidationResult($"Invalid enum string: {value}");
+        
+        return ValidationResult.Success;
     }
 }

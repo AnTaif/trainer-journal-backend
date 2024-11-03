@@ -9,7 +9,7 @@ public static class StudentExtensions
     {
         return new StudentInfoDto(student.GroupId, student.Balance, student.BirthDate, student.SchoolGrade,
             student.Kyu, student.KyuUpdatedAt, student.TrainingStartDate, student.Address,
-           student.FirstParent.ToDto(), student.SecondParent.ToDto());
+           student.ExtraContacts.Select(e => e.ToDto()).ToList());
     }
 
     public static StudentItemDto ToItemDto(this Student student)

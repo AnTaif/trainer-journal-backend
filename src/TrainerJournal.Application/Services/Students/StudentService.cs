@@ -5,7 +5,6 @@ using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Students.Dtos.Responses;
 using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
-using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Students;
@@ -15,6 +14,13 @@ public class StudentService(
     IStudentRepository studentRepository,
     IGroupRepository groupRepository) : IStudentService
 {
+    public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByTrainerAsync(Guid trainerId, bool withGroup)
+    {
+        var students = await studentRepository.GetAllByTrainerIdAsync(trainerId, withGroup);
+
+        return students.Select(s => s.ToItemDto()).ToList();
+    }
+
     public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId)
     {
         var group = await groupRepository.GetByIdAsync(groupId);
@@ -28,19 +34,13 @@ public class StudentService(
 
         var user = userResult.Value;
         
-        var firstParentInfo = new ParentInfo(request.FirstParentInfo.Name, request.FirstParentInfo.Contact);
-        
-        var secondParentInfo = request.SecondParentInfo == null ? null
-            : new ParentInfo(request.SecondParentInfo.Name, request.SecondParentInfo.Contact);
-        
         var student = new Student(
             user.Id, 
             request.BirthDate.ToUniversalTime(), 
             request.SchoolGrade, 
             request.Kyu,
             request.Address, 
-            firstParentInfo, 
-            secondParentInfo);
+            request.ExtraContacts.Select(e => new ExtraContact(e.Name, e.Contact)).ToList());
         
         student.ChangeGroup(groupId);
         
@@ -72,8 +72,11 @@ public class StudentService(
         if (student == null) return Error.NotFound(description: "Student not found");
         if (student.Group.TrainerId != trainerId) return Error.Forbidden(description: "You are not the trainer of this student");
 
-        var group = await groupRepository.GetByIdAsync(request.GroupId);
-        if (group == null) return Error.NotFound("Group not found");
+        if (request.GroupId != null)
+        {
+            var group = await groupRepository.GetByIdAsync(request.GroupId.Value);
+            if (group == null) return Error.NotFound("Group not found");
+        }
         
         student.ChangeGroup(request.GroupId);
         await studentRepository.SaveChangesAsync();
