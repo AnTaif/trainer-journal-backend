@@ -16,6 +16,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       DB_CONTAINER: "trainer-journal.db"
+    depends_on:
+      - trainer-journal.db
       
   trainer-journal.db:
     container_name: trainer-journal.db
@@ -28,8 +30,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    depends_on:
-      - trainer-journal.api
 
 volumes:
   postgres-data:
