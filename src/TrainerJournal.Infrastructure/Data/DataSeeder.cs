@@ -28,13 +28,13 @@ public static class DataSeeder
 
     private static async Task SeedUsersAsync(UserManager<User> userManager)
     {
-        var adminUser = new User("admin", null, null, new PersonName("admin user"), Gender.Male)
+        var adminUser = new User("admin", new PersonName("admin user"), Gender.Male)
         {
             Id = adminGuid
         };
         await AddUserAsync(userManager, adminUser, Roles.Admin, Roles.Trainer);
 
-        var trainerUser = new User("D.S.Smirnov", null, null, new PersonName("Смирнов Денис Сергеевич"), Gender.Male)
+        var trainerUser = new User("D.S.Smirnov", new PersonName("Смирнов Денис Сергеевич"), Gender.Male)
         {
             Id = trainer1Guid
         };

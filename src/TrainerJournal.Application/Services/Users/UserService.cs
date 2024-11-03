@@ -63,7 +63,7 @@ public class UserService(
         {
             var userReq = request.UserInfo;
             var fullName = userReq.FullName != null ? new PersonName(userReq.FullName) : null;
-            user.Update(fullName, userReq.Email, userReq.Phone, userReq.Gender?.ToGenderEnum(), userReq.TelegramUsername);
+            user.Update(fullName, userReq.Gender?.ToGenderEnum(), userReq.TelegramUsername);
         }
 
         if (request.StudentInfo != null)
@@ -73,12 +73,10 @@ public class UserService(
                 studentReq.BirthDate, 
                 studentReq.SchoolGrade, 
                 studentReq.Address, 
-                studentReq.FirstParentInfo == null 
-                    ? null 
-                    : new ParentInfo(studentReq.FirstParentInfo.Name ?? "", studentReq.FirstParentInfo.Contact ?? ""), 
-                studentReq.SecondParentInfo == null 
-                    ? null 
-                    : new ParentInfo(studentReq.SecondParentInfo.Name ?? "", studentReq.SecondParentInfo.Contact ?? ""));
+                studentReq.FirstParentInfo == null ? null 
+                    : new ParentInfo(studentReq.FirstParentInfo.Name, studentReq.FirstParentInfo.Contact), 
+                studentReq.SecondParentInfo == null ? null 
+                    : new ParentInfo(studentReq.SecondParentInfo.Name, studentReq.SecondParentInfo.Contact));
         }
 
         if (request.TrainerInfo != null)
@@ -102,7 +100,7 @@ public class UserService(
             return Error.Failure("Student.Create", "User is already exists");
         }
 
-        var user = new User(username, request.Email, request.Phone, new PersonName(request.FullName), request.Gender.ToGenderEnum());
+        var user = new User(username, new PersonName(request.FullName), request.Gender.ToGenderEnum());
 
         var result = await userManager.CreateAsync(user, password);
         if (!result.Succeeded)

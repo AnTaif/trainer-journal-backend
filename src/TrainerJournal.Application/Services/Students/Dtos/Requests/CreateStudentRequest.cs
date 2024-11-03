@@ -11,13 +11,9 @@ public record CreateStudentRequest(
     string Gender,
     DateTime BirthDate, 
     [Range(0, 11)]
-    int SchoolGrade, 
+    int? SchoolGrade, 
     [Range(1, 10)]
-    int Kyu,
-    string Address,
-    [EmailAddress]
-    string? Email = null,
-    [Phone]
-    string? Phone = null,
-    ParentInfo? FirstParentInfo = null, 
-    ParentInfo? SecondParentInfo = null);
+    int? Kyu,
+    string? Address,
+    ParentInfoDto FirstParentInfo,
+    ParentInfoDto? SecondParentInfo);
