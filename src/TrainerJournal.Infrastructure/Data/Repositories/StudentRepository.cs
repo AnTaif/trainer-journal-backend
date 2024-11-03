@@ -13,6 +13,7 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
         return await students
             .Include(s => s.User)
             .Include(s => s.Group)
+            .Include(s => s.ExtraContacts)
             .FirstOrDefaultAsync(student => student.UserId == userId);
     }
 
@@ -20,6 +21,7 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
     {
         return await students
             .Include(s => s.User)
+            .Include(s => s.ExtraContacts)
             .Where(s => s.GroupId == groupId)
             .ToListAsync();
     }

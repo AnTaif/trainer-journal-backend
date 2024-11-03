@@ -7,5 +7,5 @@ public record StudentItemDto(
     float Balance,
     DateTime BirthDate,
     int Age,
-    int? SchoolGrade,
+    int SchoolGrade,
     int? Kyu);

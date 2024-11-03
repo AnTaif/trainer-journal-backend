@@ -5,7 +5,6 @@ using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Students.Dtos.Responses;
 using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
-using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Students;
@@ -28,19 +27,13 @@ public class StudentService(
 
         var user = userResult.Value;
         
-        var firstParentInfo = new ParentInfo(request.FirstParentInfo.Name, request.FirstParentInfo.Contact);
-        
-        var secondParentInfo = request.SecondParentInfo == null ? null
-            : new ParentInfo(request.SecondParentInfo.Name, request.SecondParentInfo.Contact);
-        
         var student = new Student(
             user.Id, 
             request.BirthDate.ToUniversalTime(), 
             request.SchoolGrade, 
             request.Kyu,
             request.Address, 
-            firstParentInfo, 
-            secondParentInfo);
+            request.ExtraContacts.Select(e => new ExtraContact(e.Name, e.Contact)).ToList());
         
         student.ChangeGroup(groupId);
         

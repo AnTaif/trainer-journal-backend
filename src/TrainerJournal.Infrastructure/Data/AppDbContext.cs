@@ -11,6 +11,8 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Trainer> Trainers { get; set; } = null!;
     
     public DbSet<Student> Students { get; set; } = null!;
+
+    public DbSet<ExtraContact> ExtraContacts { get; set; } = null!;
     
     public DbSet<Group> Groups { get; set; } = null!;
     
@@ -30,12 +32,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Student>(b =>
-        {
-            b.ComplexProperty(e => e.FirstParent, e => e.IsRequired());
-            b.ComplexProperty(e => e.SecondParent, e => e.IsRequired());
-        });
-        
         modelBuilder.Entity<User>(b =>
         {
             b.ComplexProperty(e => e.FullName, e => e.IsRequired());

@@ -2,9 +2,7 @@ using ErrorOr;
 using idunno.Password;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Students;
-using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Trainers;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
 using TrainerJournal.Application.Services.Users.Dtos.Responses;
@@ -19,17 +17,14 @@ namespace TrainerJournal.Application.Services.Users;
 public class UserService(
     UserManager<User> userManager,
     IStudentRepository studentRepository,
+    IExtraContactsRepository extraContactsRepository,
     ITrainerRepository trainerRepository,
     ILogger<UserService> logger) : IUserService
 {
     public async Task<ErrorOr<GetUserInfoResponse>> GetInfoAsync(Guid id)
     {
         var user = await userManager.FindByIdAsync(id.ToString());
-        if (user == null)
-        {
-            logger.LogWarning("User not found by id: {id}", id);
-            return Error.NotFound("User.GetInfo", "User not found");
-        }
+        if (user == null) return Error.NotFound(description: "User not found");
 
         var student = await studentRepository.GetByUserIdAsync(id);
         var trainer = await trainerRepository.GetByUserIdAsync(id);
@@ -71,21 +66,21 @@ public class UserService(
         if (request.StudentInfo != null)
         {
             var studentReq = request.StudentInfo;
+            if (studentReq.ExtraContacts != null) extraContactsRepository.RemoveRange(student!.ExtraContacts);
             student!.Update(
                 studentReq.BirthDate, 
                 studentReq.SchoolGrade, 
                 studentReq.Address, 
-                studentReq.FirstParentInfo == null ? null 
-                    : new ParentInfo(studentReq.FirstParentInfo.Name, studentReq.FirstParentInfo.Contact), 
-                studentReq.SecondParentInfo == null ? null 
-                    : new ParentInfo(studentReq.SecondParentInfo.Name, studentReq.SecondParentInfo.Contact));
+                studentReq.Kyu,
+                studentReq.ExtraContacts?.Select(e => (e.Name, e.Contact)).ToList());
+            if (studentReq.ExtraContacts != null) extraContactsRepository.AddRange(student.ExtraContacts);
         }
 
         if (request.TrainerInfo != null)
         {
             //TODO: add trainer update
         }
-        
+
         await userManager.UpdateAsync(user);
         return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
     }

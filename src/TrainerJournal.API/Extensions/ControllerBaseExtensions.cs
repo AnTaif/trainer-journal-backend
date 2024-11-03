@@ -13,7 +13,7 @@ public static class ControllerBaseExtensions
             onFirstError: error => error.Type switch
             {
                 ErrorType.NotFound => controller.NotFound(error.Description),
-                ErrorType.Forbidden => controller.Forbid(error.Description),
+                ErrorType.Forbidden => controller.Forbid(),
                 _ => controller.BadRequest(error.Description)
             }
         );
