@@ -10,12 +10,16 @@ public class GroupRepository(AppDbContext dbContext) : IGroupRepository
     
     public async Task<List<Group>> GetAllByTrainerIdAsync(Guid trainerId)
     {
-        return await groups.Where(g => g.TrainerId == trainerId).ToListAsync();
+        return await groups
+            .Include(g => g.Students)
+            .Where(g => !g.IsDeleted && g.TrainerId == trainerId)
+            .ToListAsync();
     }
 
     public async Task<Group?> GetByIdAsync(Guid id)
     {
         return await groups
+            .Include(g => g.Students)
             .FirstOrDefaultAsync(g => g.Id == id);
     }
 

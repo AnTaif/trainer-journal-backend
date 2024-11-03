@@ -5,26 +5,36 @@ namespace TrainerJournal.Domain.Entities;
 public class Group : Entity<Guid>
 {
     public string Name { get; private set; }
+    public HexColor HexColor { get; private set; }
+    
+    public bool IsDeleted { get; private set; }
     
     public Guid TrainerId { get; private set; }
-    public virtual Trainer Trainer { get; private set; } = null!;
-    
-    public Guid HallId { get; private set; }
-    public virtual Hall Hall { get; private set; } = null!;
+    public Trainer Trainer { get; private set; } = null!;
 
-    public virtual List<Student> Students { get; private set; } = null!;
+    public List<Student> Students { get; private set; } = [];
     
-    public Group(string name, Guid trainerId, Guid hallId) : base(Guid.NewGuid())
+    public Group() : base(Guid.NewGuid()) { }
+    
+    public Group(string name, HexColor hexColor, Guid trainerId) : base(Guid.NewGuid())
     {
         Name = name;
         TrainerId = trainerId;
-        HallId = hallId;
+        HexColor = hexColor;
     }
 
-    public void Update(string? name, Guid? trainerId, Guid? hallId)
+    public void UpdateInfo(string? name, string? hexCode)
     {
         if (name != null) Name = name;
-        if (trainerId != null) TrainerId = trainerId.Value;
-        if (hallId != null) HallId = hallId.Value;
+        if (hexCode != null) HexColor = new HexColor(hexCode);
+    }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+        foreach (var student in Students)
+        {
+            student.ChangeGroup(null);
+        }
     }
 }

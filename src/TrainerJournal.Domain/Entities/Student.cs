@@ -7,31 +7,31 @@ public class Student : Entity<Guid>
     public Guid UserId { get; private set; }
     public User User { get; private set; } = null!;
     
-    public Guid GroupId { get; private set; }
+    public Guid? GroupId { get; private set; }
     public virtual Group Group { get; private set; } = null!;
     
     public float Balance { get; private set; }
     public DateTime BirthDate { get; private set; }
-    public int SchoolGrade { get; private set; }
+    public int? SchoolGrade { get; private set; }
     
-    public int Kyu { get; private set; }
-    public DateTime KyuUpdatedAt { get; private set; }
+    public int? Kyu { get; private set; }
+    public DateTime? KyuUpdatedAt { get; private set; }
     
     public DateTime TrainingStartDate { get; private set; }
-    public string Address { get; private set; }
+    public string? Address { get; private set; }
     
-    public ParentInfo? FirstParent { get; set; }
-    public ParentInfo? SecondParent { get; set; }
-    
+    public ParentInfo FirstParent { get; set; } = null!;
+    public ParentInfo SecondParent { get; set; } = null!;
+
     public Student() : base(Guid.NewGuid()) { }
     
     public Student(
         Guid userId,
         DateTime birthDate, 
-        int schoolGrade, 
-        int kyu,
-        string address, 
-        ParentInfo? firstParent = null,
+        int? schoolGrade, 
+        int? kyu,
+        string? address, 
+        ParentInfo firstParent,
         ParentInfo? secondParent = null) : base(userId)
     {
         var curr = DateTime.UtcNow;
@@ -40,11 +40,11 @@ public class Student : Entity<Guid>
         SchoolGrade = schoolGrade;
         TrainingStartDate = curr;
         Kyu = kyu;
-        KyuUpdatedAt = curr;
+        KyuUpdatedAt = kyu == null ? null : curr;
         Address = address;
         UserId = userId;
         FirstParent = firstParent;
-        SecondParent = secondParent;
+        SecondParent = secondParent ?? new ParentInfo("", "");
     }
 
     public void Update(
@@ -58,15 +58,8 @@ public class Student : Entity<Guid>
         SchoolGrade = schoolGrade ?? SchoolGrade;
         Address = address ?? Address;
         
-        if (FirstParent == null)
-            FirstParent = firstParent;
-        else
-            FirstParent.Update(firstParent?.Name, firstParent?.Contact);
-        
-        if (SecondParent == null)
-            SecondParent = secondParent;
-        else
-            SecondParent.Update(secondParent?.Name, secondParent?.Contact);
+        if (firstParent != null) FirstParent.Update(firstParent);
+        if (secondParent != null) SecondParent.Update(secondParent);
     }
 
     public void UpdateKyu(int kyu)
@@ -81,7 +74,7 @@ public class Student : Entity<Guid>
         Balance += balanceDiff;
     }
 
-    public void ChangeGroup(Guid groupId)
+    public void ChangeGroup(Guid? groupId)
     {
         GroupId = groupId;
     }

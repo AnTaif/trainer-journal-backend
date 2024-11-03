@@ -12,6 +12,7 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
     {
         return await students
             .Include(s => s.User)
+            .Include(s => s.Group)
             .FirstOrDefaultAsync(student => student.UserId == userId);
     }
 

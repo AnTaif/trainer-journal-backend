@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrainerJournal.Infrastructure.Data;
@@ -12,9 +13,11 @@ using TrainerJournal.Infrastructure.Data;
 namespace TrainerJournal.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241103171634_ChangeStudentEntity")]
+    partial class ChangeStudentEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,22 +55,22 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("70d75240-a1f5-4ac8-8a06-74f5d5a81d72"),
-                            ConcurrencyStamp = "c861a562-033f-4144-baad-4064d4ce56f4",
+                            Id = new Guid("8fbdf7f9-76f2-4166-b2da-3c96733b734d"),
+                            ConcurrencyStamp = "4c17a6ce-a737-425b-b1a2-439320238ca5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("c40415e7-9afe-42ba-a27f-aaf8a25da23b"),
-                            ConcurrencyStamp = "34bf01f9-5d57-45c5-a235-4719e621132d",
+                            Id = new Guid("6bbf1243-ff7c-4a01-931f-ae14fc266f4d"),
+                            ConcurrencyStamp = "ed730048-6633-46e6-bc1d-aa7ef79d58a0",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         },
                         new
                         {
-                            Id = new Guid("17fac322-6e57-4c99-b007-cbd98804aa53"),
-                            ConcurrencyStamp = "a490f0b4-261a-4fb0-9457-6fb6cc94897f",
+                            Id = new Guid("ef8ed6da-5753-4023-ba63-2d3d1dc33240"),
+                            ConcurrencyStamp = "c20be062-22e5-4452-b054-b4daab43b474",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -334,7 +337,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<int?>("Kyu")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("KyuUpdatedAt")
+                    b.Property<DateTime>("KyuUpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("SchoolGrade")
