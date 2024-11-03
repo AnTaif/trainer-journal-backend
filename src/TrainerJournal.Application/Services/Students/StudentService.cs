@@ -65,8 +65,11 @@ public class StudentService(
         if (student == null) return Error.NotFound(description: "Student not found");
         if (student.Group.TrainerId != trainerId) return Error.Forbidden(description: "You are not the trainer of this student");
 
-        var group = await groupRepository.GetByIdAsync(request.GroupId);
-        if (group == null) return Error.NotFound("Group not found");
+        if (request.GroupId != null)
+        {
+            var group = await groupRepository.GetByIdAsync(request.GroupId.Value);
+            if (group == null) return Error.NotFound("Group not found");
+        }
         
         student.ChangeGroup(request.GroupId);
         await studentRepository.SaveChangesAsync();
