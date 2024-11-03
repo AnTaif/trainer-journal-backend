@@ -7,7 +7,7 @@ public class Student : Entity<Guid>
     public Guid UserId { get; private set; }
     public User User { get; private set; } = null!;
     
-    public Guid GroupId { get; private set; }
+    public Guid? GroupId { get; private set; }
     public virtual Group Group { get; private set; } = null!;
     
     public float Balance { get; private set; }
@@ -81,7 +81,7 @@ public class Student : Entity<Guid>
         Balance += balanceDiff;
     }
 
-    public void ChangeGroup(Guid groupId)
+    public void ChangeGroup(Guid? groupId)
     {
         GroupId = groupId;
     }

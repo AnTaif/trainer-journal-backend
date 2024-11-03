@@ -10,7 +10,6 @@ public static class DataSeeder
 {
     private static readonly Guid adminGuid = new("bb1e7f01-e532-470c-bda5-5be7b7e502dc");
     private static readonly Guid trainer1Guid = new("c21b2289-0537-42a6-ad1b-0fa76a25daa8");
-    private static readonly Guid hall1Guid = new("16de890d-b54b-4365-865e-25e39be7c5b6");
     private static readonly Guid group1Guid = new("084d03ac-6192-4f03-abe3-cdab8aa7ad74");
     private static readonly Guid group2Guid = new("b491d9a7-4428-46f2-bf09-71dbfc31919d");
     
@@ -23,7 +22,6 @@ public static class DataSeeder
         
         await SeedUsersAsync(userManager);
         await SeedTrainersAsync(dbContext);
-        await SeedHallsAsync(dbContext);
         await SeedGroupsAsync(dbContext);
         await dbContext.SaveChangesAsync();
     }
@@ -61,27 +59,17 @@ public static class DataSeeder
     
     private static Task SeedGroupsAsync(AppDbContext dbContext)
     {
-        var group1 = new Group("Группа 1", adminGuid, hall1Guid)
+        var group1 = new Group("Группа 1", new HexColor("#A293FF"), adminGuid)
         {
             Id = group1Guid
         };
 
-        var group2 = new Group("Младшая группа", trainer1Guid, hall1Guid)
+        var group2 = new Group("Младшая группа", new HexColor("#93FFCB"), trainer1Guid)
         {
             Id = group2Guid
         };
         
         dbContext.Groups.AddRange(group1, group2);
-        return Task.CompletedTask;
-    }
-    
-    private static Task SeedHallsAsync(AppDbContext dbContext)
-    {
-        var hall1 = new Hall("Юго-Западный район", "Спортивный зал ЮЗ")
-        {
-            Id = hall1Guid
-        };
-        dbContext.Halls.Add(hall1);
         return Task.CompletedTask;
     }
 }

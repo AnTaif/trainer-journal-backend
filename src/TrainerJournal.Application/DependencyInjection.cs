@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using TrainerJournal.Application.Services.Auth;
 using TrainerJournal.Application.Services.Auth.Tokens;
+using TrainerJournal.Application.Services.Colors;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Application.Services.Users;
@@ -17,6 +18,8 @@ public static class DependencyInjection
         services.AddTransient<IStudentService, StudentService>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IGroupService, GroupService>();
+        
+        services.AddTransient<IColorGenerator, ColorGenerator>();
 
         return services;
     }

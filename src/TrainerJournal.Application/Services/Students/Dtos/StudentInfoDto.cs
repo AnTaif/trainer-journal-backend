@@ -4,7 +4,7 @@ namespace TrainerJournal.Application.Services.Students.Dtos;
 
 //TODO(!): replace GroupId with GroupInfoDto
 public record StudentInfoDto(
-    Guid GroupId,
+    Guid? GroupId,
     float Balance,
     DateTime BirthDate,
     int SchoolGrade,

@@ -52,12 +52,12 @@ public class GroupController(
 
     [HttpPut("{id}")]
     [Authorize(Roles = Roles.Trainer)]
-    public async Task<ActionResult<GroupDto>> ChangeGroupAsync(ChangeGroupRequest request, Guid id)
+    public async Task<ActionResult<GroupDto>> ChangeGroupAsync(UpdateGroupInfoRequest infoRequest, Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await groupService.ChangeGroupAsync(request, id, Guid.Parse(userId));
+        var result = await groupService.UpdateGroupInfoAsync(infoRequest, id, Guid.Parse(userId));
         return this.ToActionResult(result, Ok);
     }
 
