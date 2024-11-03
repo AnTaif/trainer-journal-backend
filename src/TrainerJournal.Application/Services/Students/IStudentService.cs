@@ -10,4 +10,6 @@ public interface IStudentService
     public Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid groupId);
 
     public Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId);
+    
+    public Task<ErrorOr<StudentInfoDto>> ChangeStudentGroupAsync(Guid studentId, Guid trainerId, ChangeStudentGroupRequest request);
 }

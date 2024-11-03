@@ -1,4 +1,5 @@
 using ErrorOr;
+using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
 using TrainerJournal.Application.Services.Users.Dtos.Responses;
 

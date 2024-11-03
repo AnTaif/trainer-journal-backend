@@ -12,7 +12,7 @@ public class Group : Entity<Guid>
     public Guid TrainerId { get; private set; }
     public Trainer Trainer { get; private set; } = null!;
 
-    public List<Student> Students { get; private set; } = null!;
+    public List<Student> Students { get; private set; } = [];
     
     public Group() : base(Guid.NewGuid()) { }
     

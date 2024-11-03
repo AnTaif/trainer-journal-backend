@@ -65,4 +65,19 @@ public class StudentService(
         var students = await studentRepository.GetAllByGroupIdAsync(groupId);
         return students.Select(s => s.ToItemDto()).ToList();
     }
+    
+    public async Task<ErrorOr<StudentInfoDto>> ChangeStudentGroupAsync(Guid studentId, Guid trainerId, ChangeStudentGroupRequest request)
+    {
+        var student = await studentRepository.GetByUserIdAsync(studentId);
+        if (student == null) return Error.NotFound(description: "Student not found");
+        if (student.Group.TrainerId != trainerId) return Error.Forbidden(description: "You are not the trainer of this student");
+
+        var group = await groupRepository.GetByIdAsync(request.GroupId);
+        if (group == null) return Error.NotFound("Group not found");
+        
+        student.ChangeGroup(request.GroupId);
+        await studentRepository.SaveChangesAsync();
+        
+        return student.ToInfoDto();
+    }
 }
