@@ -9,29 +9,26 @@ namespace TrainerJournal.Domain.Entities;
 /// <remarks>
 /// При создании нового повторяемого расписания единичные тренировки, подпадающие под расписание - удаляются
 /// </remarks>
-public class SinglePractice : Practice
+public class SinglePractice(
+    Guid groupId,
+    float price,
+    DateTime start,
+    DateTime end,
+    PracticeType practiceType,
+    Guid trainerId,
+    Guid? overridenPracticeId = null,
+    DateTime? originalStart = null)
+    : Practice(groupId, price, start, end, practiceType, trainerId)
 {
     public bool IsCanceled { get; private set; }
 
     public string? CancelComment { get; private set; }
     
-    public Guid? OverridenPracticeId { get; init; }
+    public Guid? OverridenPracticeId { get; init; } = overridenPracticeId;
     public SchedulePractice? OverridenPractice { get; init; }
-    
-    public SinglePractice(
-        Guid groupId, 
-        float price, 
-        DateTime start, 
-        DateTime end, 
-        PracticeType practiceType, 
-        Guid trainerId, 
-        Guid hallId,
-        Guid? overridenPracticeId = null)
-        : base(groupId, price, start, end, practiceType, trainerId, hallId)
-    {
-        OverridenPracticeId = overridenPracticeId;
-    }
-    
+
+    public DateTime? OriginalStart { get; init; } = originalStart;
+
     public void Cancel(string comment = "")
     {
         IsCanceled = true;
@@ -48,11 +45,6 @@ public class SinglePractice : Practice
     {
         Start = start ?? Start;
         End = end ?? End;
-    }
-    
-    public void ChangeHall(Guid hallId)
-    {
-        HallId = hallId;
     }
     
     public void ChangeTrainer(Guid trainerId)
