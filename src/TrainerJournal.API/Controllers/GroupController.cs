@@ -6,6 +6,7 @@ using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Groups.Dtos.Requests;
+using TrainerJournal.Application.Services.Groups.Dtos.Responses;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Application.Services.Students.Dtos;
 using TrainerJournal.Application.Services.Students.Dtos.Requests;
@@ -23,7 +24,7 @@ public class GroupController(
 {
     [HttpGet]
     [Authorize(Roles = Roles.Trainer)]
-    public async Task<ActionResult<List<GroupItemDto>>> GetAllAsync()
+    public async Task<ActionResult<GetGroupsResponse>> GetAllAsync()
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();

@@ -1,10 +1,11 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Groups.Dtos.Requests;
 
-public record UpdateGroupInfoRequest(
-    string? Name, 
-    [Description("Color in format: #ffffff")]
+public class UpdateGroupInfoRequest(string? name, string? hexColor)
+{
+    public string? Name { get; init; } = name;
+    
     [RegularExpression("^#[a-zA-Z0-9]{6}$")]
-    string? HexColor);
+    public string? HexColor { get; init; } = hexColor;
+}

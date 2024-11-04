@@ -3,12 +3,18 @@ using TrainerJournal.Application.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Users.Dtos.Requests;
 
-public record UpdateUserInfoRequest(
-    string? FullName,
+public class UpdateUserInfoRequest(string? fullName, string? email, string? phone, string? gender, string? telegramUsername)
+{
+    public string? FullName { get; init; } = fullName;
+    
     [EmailAddress]
-    string? Email, 
+    public string? Email { get; init; } = email;
+    
     [Phone]
-    string? Phone,
+    public string? Phone { get; init; } = phone;
+    
     [GenderEnum]
-    string? Gender, 
-    string? TelegramUsername);
+    public string? Gender { get; init; } = gender;
+    
+    public string? TelegramUsername { get; init; } = telegramUsername;
+}

@@ -1,3 +1,6 @@
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 
-public record ChangeStudentGroupRequest(Guid? GroupId);
+public class ChangeStudentGroupRequest(Guid? groupId)
+{
+    public Guid? GroupId { get; init; } = groupId;
+}

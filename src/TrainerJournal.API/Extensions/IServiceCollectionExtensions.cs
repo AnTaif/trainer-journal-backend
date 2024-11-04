@@ -1,7 +1,9 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TrainerJournal.API.Swagger;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Options;
 using TrainerJournal.Infrastructure.Data;
@@ -77,10 +79,10 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddSwaggerWithJwtSecurity(this IServiceCollection services)
     {
-        services.AddSwaggerGen(option =>
+        services.AddSwaggerGen(options =>
         {
-            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Trainer Journal API", Version = "v1" });
-            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "Trainer Journal API", Version = "v1" });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
                 Description = "Please enter a valid token",
@@ -89,7 +91,7 @@ public static class IServiceCollectionExtensions
                 BearerFormat = "JWT",
                 Scheme = "Bearer"
             });
-            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
@@ -103,6 +105,8 @@ public static class IServiceCollectionExtensions
                     Array.Empty<string>()
                 }
             });
+            
+            options.SchemaFilter<NullDefaultSchemaFilter>();
         });
         return services;
     }
