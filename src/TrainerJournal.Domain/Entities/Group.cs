@@ -7,6 +7,8 @@ public class Group : Entity<Guid>
     public string Name { get; private set; }
     public HexColor HexColor { get; private set; }
     
+    public float Price { get; private set; }
+    
     public bool IsDeleted { get; private set; }
     
     public Guid TrainerId { get; private set; }
@@ -19,8 +21,8 @@ public class Group : Entity<Guid>
     public Group(string name, HexColor hexColor, Guid trainerId) : base(Guid.NewGuid())
     {
         Name = name;
-        TrainerId = trainerId;
         HexColor = hexColor;
+        TrainerId = trainerId;
     }
 
     public void UpdateInfo(string? name, string? hexCode)
@@ -36,5 +38,10 @@ public class Group : Entity<Guid>
         {
             student.ChangeGroup(null);
         }
+    }
+
+    public void SetPrice(float price)
+    {
+        Price = price;
     }
 }

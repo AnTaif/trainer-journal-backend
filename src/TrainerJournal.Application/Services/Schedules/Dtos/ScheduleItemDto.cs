@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using TrainerJournal.Application.DataAnnotations;
 
-namespace TrainerJournal.Application.Services.Schedule.Dtos;
+namespace TrainerJournal.Application.Services.Schedules.Dtos;
 
 public class ScheduleItemDto(
     Guid id,
@@ -10,7 +10,8 @@ public class ScheduleItemDto(
     DateTime end,
     string groupName,
     string practiceType,
-    float price)
+    float price,
+    bool isCanceled)
 {
     public Guid Id { get; init; } = id;
     public DateTime Start { get; init; } = start;
@@ -26,4 +27,5 @@ public class ScheduleItemDto(
     public string PracticeType { get; init; } = practiceType;
     
     public float Price { get; init; } = price;
+    public bool IsCanceled { get; } = isCanceled;
 }

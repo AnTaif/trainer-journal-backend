@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using TrainerJournal.Application.DataAnnotations;
-using TrainerJournal.Application.Services.Schedule.Dtos;
+using TrainerJournal.Application.Services.Schedules.Dtos;
 
 namespace TrainerJournal.Application.Services.Practices.Dtos;
 

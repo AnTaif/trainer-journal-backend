@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace TrainerJournal.Application.Services.Schedule.Dtos;
+namespace TrainerJournal.Application.Services.Schedules.Dtos;
 
 public class PracticeTrainerDto(Guid id, string fullName)
 {

@@ -1,4 +1,4 @@
-namespace TrainerJournal.Application.Services.Schedule.Dtos.Requests;
+namespace TrainerJournal.Application.Services.Schedules.Dtos.Requests;
 
 public class CreateScheduleRequest(
     Guid groupId,
@@ -7,7 +7,7 @@ public class CreateScheduleRequest(
     List<CreateSchedulePracticeRequest> practices)
 {
     public Guid GroupId { get; init; } = groupId;
-    public DateTime StartDay { get; init; } = startDay;
-    public DateTime? Until { get; init; } = until;
+    public DateTime StartDay { get; init; } = startDay.ToUniversalTime();
+    public DateTime? Until { get; init; } = until?.ToUniversalTime();
     public List<CreateSchedulePracticeRequest> Practices { get; init; } = practices;
 }

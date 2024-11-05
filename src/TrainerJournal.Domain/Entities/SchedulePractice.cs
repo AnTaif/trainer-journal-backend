@@ -6,6 +6,7 @@ namespace TrainerJournal.Domain.Entities;
 /// Основа повторяемого  занятия (на основе этого энтити генерируются тренировки на будущие недели) 
 /// </summary>
 public class SchedulePractice(
+    Guid scheduleId,
     Guid groupId,
     float price,
     DateTime start,
@@ -14,6 +15,6 @@ public class SchedulePractice(
     Guid trainerId)
     : Practice(groupId, price, start, end, practiceType, trainerId)
 {
-    public Guid ScheduleId { get; private set; }
+    public Guid ScheduleId { get; private set; } = scheduleId;
     public Schedule Schedule { get; private set; } = null!;
 }
