@@ -17,4 +17,9 @@ public class SchedulePractice(
 {
     public Guid ScheduleId { get; private set; } = scheduleId;
     public Schedule Schedule { get; private set; } = null!;
+    
+    public static DateTime CombineDateAndTime(DateTime datePart, DateTime timePart)
+    {
+        return datePart.Date + timePart.TimeOfDay;
+    }
 }

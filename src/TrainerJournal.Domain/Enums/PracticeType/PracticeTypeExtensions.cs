@@ -15,7 +15,7 @@ public static class PracticeTypeExtensions
 
     public static bool IsPracticeEnum(this string practiceTypeStr)
     {
-        return practiceTypeStr is "тренировка" or "семинар" or "мастер-класс";
+        return practiceTypeStr.ToLower() is "тренировка" or "семинар" or "мастер-класс";
     }
 
     public static PracticeType ToPracticeTypeEnum(this string practiceTypeStr)

@@ -10,6 +10,8 @@ public class TrainerRepository(AppDbContext dbContext) : ITrainerRepository
     
     public async Task<Trainer?> GetByUserIdAsync(Guid userId)
     {
-        return await trainers.FirstOrDefaultAsync(t => t.UserId == userId);
+        return await trainers
+            .Include(t => t.User)
+            .FirstOrDefaultAsync(t => t.UserId == userId);
     }
 }

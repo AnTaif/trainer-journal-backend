@@ -12,7 +12,11 @@ public class PracticeRepository(AppDbContext dbContext) : IPracticeRepository
     
     public async Task<Practice?> GetByIdAsync(Guid id)
     {
-        return await practices.FirstOrDefaultAsync(p => p.Id == id);
+        return await practices
+            .Include(p => p.Group)
+            .Include(p => p.Trainer)
+                .ThenInclude(t => t.User)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<List<SinglePractice>> GetSinglePracticesByUserIdAsync(Guid userId, DateTime start, DateTime end)

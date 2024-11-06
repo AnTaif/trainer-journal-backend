@@ -27,7 +27,19 @@ public class SinglePractice(
     public Guid? OverridenPracticeId { get; init; } = overridenPracticeId;
     public SchedulePractice? OverridenPractice { get; init; }
 
+    /// <summary>
+    /// Время, на котором должна была быть проекция перезаписанного SchedulePractice
+    /// </summary>
     public DateTime? OriginalStart { get; init; } = originalStart;
+
+    public void Update(Guid? groupId, DateTime? start, DateTime? end, PracticeType? practiceType, float? price)
+    {
+        GroupId = groupId ?? GroupId;
+        Start = start ?? Start;
+        End = end ?? End;
+        PracticeType = practiceType ?? PracticeType;
+        if (price != null && Math.Abs(price.Value - Price) > 0.0001) ChangePrice(price.Value);
+    }
 
     public void Cancel(string comment = "")
     {

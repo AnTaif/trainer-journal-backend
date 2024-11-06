@@ -12,7 +12,9 @@ public class PracticeDto(
     PracticeGroupDto group,
     PracticeTrainerDto trainer,
     string practiceType,
-    float price)
+    float price,
+    bool isCanceled,
+    string? cancelComment)
 {
     public Guid Id { get; init; } = id;
     public DateTime Start { get; init; } = start;
@@ -26,4 +28,6 @@ public class PracticeDto(
     public string PracticeType { get; init; } = practiceType;
     
     public float Price { get; init; } = price;
+    public bool IsCanceled { get; } = isCanceled;
+    public string? CancelComment { get; } = cancelComment;
 }

@@ -70,10 +70,10 @@ public class ScheduleService(
 
                 foreach (var practice in schedule.Practices.Where(p => p.Start.DayOfWeek == dayOfWeek))
                 {
-                    var currentStart = CombineDateAndTime(curr, practice.Start);
+                    var currentStart = SchedulePractice.CombineDateAndTime(curr, practice.Start);
                     if (currentStart < schedule.StartDay) continue;
                     
-                    var currentEnd = CombineDateAndTime(curr, practice.End);
+                    var currentEnd = SchedulePractice.CombineDateAndTime(curr, practice.End);
                     if (currentEnd > schedule.Until) continue;
 
                     if (overridenStarts.Contains(currentStart)) continue;
@@ -83,11 +83,6 @@ public class ScheduleService(
                 }
             }
         }
-    }
-
-    private static DateTime CombineDateAndTime(DateTime datePart, DateTime timePart)
-    {
-        return datePart.Date + timePart.TimeOfDay;
     }
 
     public async Task<ErrorOr<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, CreateScheduleRequest request)
