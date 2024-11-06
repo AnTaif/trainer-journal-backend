@@ -15,7 +15,7 @@ public static class StudentExtensions
     public static StudentItemDto ToItemDto(this Student student)
     {
         return new StudentItemDto(student.Id, student.User.FullName.ToString(), student.GroupId, student.Balance, 
-            student.BirthDate, GetYearsSince(student.BirthDate), student.SchoolGrade, student.Kyu);
+            GetYearsSince(student.BirthDate), student.SchoolGrade, student.Kyu, student.ExtraContacts.First().ToDto());
     }
 
     private static int GetYearsSince(DateTime a)

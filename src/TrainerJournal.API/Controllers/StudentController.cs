@@ -17,7 +17,7 @@ public class StudentController(
     IStudentService studentService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<StudentItemDto>>> GetStudents([FromQuery] bool withGroup)
+    public async Task<ActionResult<List<StudentItemDto>>> GetStudents([FromQuery] bool withGroup = true)
     {
         var trainerId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (trainerId == null) return Unauthorized();

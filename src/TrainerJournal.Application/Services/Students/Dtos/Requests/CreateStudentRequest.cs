@@ -29,5 +29,6 @@ public class CreateStudentRequest(string fullName, string gender, DateTime birth
     [DefaultValue("address")]
     public string? Address { get; init; } = address;
     
+    [Length(1, 2)]
     public List<CreateExtraContactRequest> ExtraContacts { get; init; } = extraContacts;
 }
