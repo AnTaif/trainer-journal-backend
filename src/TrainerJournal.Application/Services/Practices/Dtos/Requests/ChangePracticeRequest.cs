@@ -13,7 +13,7 @@ public class ChangePracticeRequest(
     /// <summary>
     /// Время начала практики в текущей неделе
     /// </summary>
-    public DateTime currentStart { get; init; } = currentStart;
+    public DateTime CurrentStart { get; init; } = currentStart;
     
     public Guid? GroupId { get; init; } = groupId;
     public DateTime? NewStart { get; init; } = newStart;

@@ -14,126 +14,136 @@ public class PracticeService(
     public async Task<ErrorOr<PracticeDto>> GetPractice(Guid userId, Guid practiceId, DateTime practiceDate)
     {
         var practice = await practiceRepository.GetByIdAsync(practiceId);
-        if (practice == null) return Error.NotFound(description: "Practice not found");
+        if (practice == null) return Error.NotFound("Practice not found");
         
-        if (practice is SinglePractice singlePractice)
+        return practice switch
         {
-            return singlePractice.ToDto();
-        }
-
-        if (practice is SchedulePractice schedulePractice)
-        {
-            if (practice.Start.DayOfWeek != practiceDate.DayOfWeek)
-                return Error.Validation(description: "Original practice and the 'practiceDate' must be the same day of the week.");
-            
-            return schedulePractice.ToDto(practiceDate);
-        }
-        
-        throw new Exception("Practice haven't type???");
+            SinglePractice singlePractice => singlePractice.ToDto(),
+            SchedulePractice schedulePractice => IsPracticeDateValid(schedulePractice, practiceDate) 
+                ? schedulePractice.ToDto(practiceDate) 
+                : Error.Validation("Original practice and the 'practiceDate' must be the same day of the week"),
+            _ => throw new Exception("Practice type is unrecognized")
+        };
     }
 
     public async Task<ErrorOr<PracticeDto>> CreateSinglePracticeAsync(Guid trainerId, CreateSinglePracticeRequest request)
     {
         var group = await groupRepository.GetByIdAsync(request.GroupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
-        
+        if (group == null) return Error.NotFound("Group not found");
+
         var newPractice = new SinglePractice(request.GroupId, request.Price ?? group.Price, request.Start, request.End,
-            request.PracticeType.ToPracticeTypeEnum(), trainerId);
+                                             request.PracticeType.ToPracticeTypeEnum(), trainerId);
 
         await practiceRepository.AddAsync(newPractice);
         await practiceRepository.SaveChangesAsync();
 
-        var practice = await practiceRepository.GetByIdAsync(newPractice.Id) as SinglePractice;
-        if (practice == null) return Error.Failure(description: "Practice does not created");
-        
-        return practice.ToDto();
+        return await GetPracticeDtoAsync(newPractice.Id);
     }
 
     public async Task<ErrorOr<PracticeDto>> ChangePracticeAsync(Guid trainerId, Guid practiceId, ChangePracticeRequest request)
     {
         var practice = await practiceRepository.GetByIdAsync(practiceId);
-        if (practice == null) return Error.NotFound(description: "Practice not found");
+        if (practice == null) return Error.NotFound("Practice not found");
         
-        if (practice is SinglePractice singlePractice)
+        return practice switch
         {
-            singlePractice.Update(request.GroupId, request.NewStart, request.NewEnd,
-                request.PracticeType?.ToPracticeTypeEnum(), request.Price);
-            await practiceRepository.SaveChangesAsync();
-            
-            return singlePractice.ToDto();
-        }
-
-        if (practice is SchedulePractice schedulePractice)
-        {
-            if (practice.Start.DayOfWeek != request.currentStart.DayOfWeek)
-                return Error.Validation(metadata: new Dictionary<string, object>
-                {
-                    {"practiceStart", "Original practice and the 'currentStart' must be the same day of the week."}
-                });
-
-            var newSinglePractice = new SinglePractice(
-                request.GroupId ?? schedulePractice.GroupId,
-                request.Price ?? schedulePractice.Price,
-                request.NewStart ?? SchedulePractice.CombineDateAndTime(request.currentStart, schedulePractice.Start),
-                request.NewEnd ?? SchedulePractice.CombineDateAndTime(request.currentStart, schedulePractice.End),
-                request.PracticeType?.ToPracticeTypeEnum() ?? schedulePractice.PracticeType, trainerId,
-                schedulePractice.Id, 
-                SchedulePractice.CombineDateAndTime(request.currentStart, schedulePractice.Start));
-
-            await practiceRepository.AddAsync(newSinglePractice);
-            await practiceRepository.SaveChangesAsync();
-
-            var newPractice = await practiceRepository.GetByIdAsync(newSinglePractice.Id) as SinglePractice;
-            if (newPractice == null) return Error.Failure(description: "Practice does not created");
-            
-            return newPractice.ToDto();
-        }
-        
-        throw new Exception("Practice haven't type???");
+            SinglePractice singlePractice => await UpdateSinglePractice(singlePractice, request),
+            SchedulePractice schedulePractice => await ChangeSchedulePractice(schedulePractice, trainerId, request),
+            _ => throw new Exception("Practice type is unrecognized")
+        };
     }
 
     public async Task<ErrorOr<PracticeDto>> CancelPracticeAsync(Guid trainerId, Guid practiceId, CancelPracticeRequest request)
     {
         var practice = await practiceRepository.GetByIdAsync(practiceId);
-        if (practice == null) return Error.NotFound(description: "Practice not found");
+        if (practice == null) return Error.NotFound("Practice not found");
         
-        if (practice is SinglePractice singlePractice)
+        return practice switch
         {
-            singlePractice.Cancel(request.Comment);
-            await practiceRepository.SaveChangesAsync();
-            
-            return singlePractice.ToDto();
-        }
+            SinglePractice singlePractice => await CancelSinglePractice(singlePractice, request),
+            SchedulePractice schedulePractice => await CancelSchedulePractice(schedulePractice, trainerId, request),
+            _ => throw new Exception("Practice type is unrecognized")
+        };
+    }
 
-        if (practice is SchedulePractice schedulePractice)
-        {
-            if (practice.Start.DayOfWeek != request.PracticeStart.DayOfWeek)
-                return Error.Validation(metadata: new Dictionary<string, object>
-                {
-                    {"practiceStart", "Original practice and the 'currentStart' must be the same day of the week."}
-                });
+    private async Task<ErrorOr<PracticeDto>> UpdateSinglePractice(
+        SinglePractice singlePractice, 
+        ChangePracticeRequest request)
+    {
+        singlePractice.Update(request.GroupId, request.NewStart, request.NewEnd, request.PracticeType?.ToPracticeTypeEnum(), request.Price);
+        await practiceRepository.SaveChangesAsync();
+        return singlePractice.ToDto();
+    }
 
-            var newSinglePractice = new SinglePractice(
-                schedulePractice.GroupId,
-                schedulePractice.Price,
-                SchedulePractice.CombineDateAndTime(request.PracticeStart, schedulePractice.Start),
-                SchedulePractice.CombineDateAndTime(request.PracticeStart, schedulePractice.End),
-                schedulePractice.PracticeType, 
-                trainerId,
-                schedulePractice.Id, 
-                SchedulePractice.CombineDateAndTime(request.PracticeStart, schedulePractice.Start));
-            
-            newSinglePractice.Cancel(request.Comment);
+    private async Task<ErrorOr<PracticeDto>> ChangeSchedulePractice(
+        SchedulePractice schedulePractice, 
+        Guid trainerId, 
+        ChangePracticeRequest request)
+    {
+        if (!IsPracticeDateValid(schedulePractice, request.CurrentStart))
+            return Error.Validation("Original practice and the 'currentStart' must be the same day of the week");
 
-            await practiceRepository.AddAsync(newSinglePractice);
-            await practiceRepository.SaveChangesAsync();
+        var newPractice = CreateSinglePracticeFromSchedule(schedulePractice, trainerId, request.CurrentStart, request.NewStart, request.NewEnd, request.Price, request.PracticeType?.ToPracticeTypeEnum());
+        await practiceRepository.AddAsync(newPractice);
+        await practiceRepository.SaveChangesAsync();
 
-            var newPractice = await practiceRepository.GetByIdAsync(newSinglePractice.Id) as SinglePractice;
-            if (newPractice == null) return Error.Failure(description: "Practice does not created");
-            
-            return newPractice.ToDto();
-        }
+        return await GetPracticeDtoAsync(newPractice.Id);
+    }
+
+    private async Task<ErrorOr<PracticeDto>> CancelSinglePractice(
+        SinglePractice singlePractice, 
+        CancelPracticeRequest request)
+    {
+        singlePractice.Cancel(request.Comment);
+        await practiceRepository.SaveChangesAsync();
+        return singlePractice.ToDto();
+    }
+
+    private async Task<ErrorOr<PracticeDto>> CancelSchedulePractice(
+        SchedulePractice schedulePractice, 
+        Guid trainerId, 
+        CancelPracticeRequest request)
+    {
+        if (!IsPracticeDateValid(schedulePractice, request.PracticeStart))
+            return Error.Validation("Original practice and the 'currentStart' must be the same day of the week");
+
+        var newPractice = CreateSinglePracticeFromSchedule(schedulePractice, trainerId, request.PracticeStart);
+        newPractice.Cancel(request.Comment);
         
-        throw new Exception("Practice haven't type???");
+        await practiceRepository.AddAsync(newPractice);
+        await practiceRepository.SaveChangesAsync();
+
+        return await GetPracticeDtoAsync(newPractice.Id);
+    }
+
+    private static bool IsPracticeDateValid(SchedulePractice schedulePractice, DateTime practiceDate)
+        => schedulePractice.Start.DayOfWeek == practiceDate.DayOfWeek;
+
+    private static SinglePractice CreateSinglePracticeFromSchedule(
+        SchedulePractice schedulePractice, 
+        Guid trainerId, 
+        DateTime currentStart, 
+        DateTime? newStart = null, 
+        DateTime? newEnd = null, 
+        float? price = null,
+        PracticeType? practiceType = null)
+    {
+        return new SinglePractice(
+            schedulePractice.GroupId,
+            price ?? schedulePractice.Price,
+            newStart ?? SchedulePractice.CombineDateAndTime(currentStart, schedulePractice.Start),
+            newEnd ?? SchedulePractice.CombineDateAndTime(currentStart, schedulePractice.End),
+            practiceType ?? schedulePractice.PracticeType,
+            trainerId,
+            schedulePractice.Id,
+            SchedulePractice.CombineDateAndTime(currentStart, schedulePractice.Start)
+        );
+    }
+
+    private async Task<ErrorOr<PracticeDto>> GetPracticeDtoAsync(Guid practiceId)
+    {
+        return await practiceRepository.GetByIdAsync(practiceId) is SinglePractice practice 
+            ? practice.ToDto() 
+            : Error.Failure("Practice was not created");
     }
 }
