@@ -1,14 +1,16 @@
-using TrainerJournal.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrainerJournal.Domain.Entities;
 
-public class Trainer : Entity<Guid>
+/// <remarks>
+/// Use the UserId as the Primary Key
+/// </remarks>
+public class Trainer(Guid userId)
 {
-    public Guid UserId { get; private set; }
+    /// <summary>
+    /// PrimaryKey for Trainer and ForeignKey for the User table
+    /// </summary>
+    public Guid UserId { get; init; } = userId;
+    [ForeignKey("UserId")]
     public User User { get; private set; } = null!;
-    
-    public Trainer(Guid userId) : base(userId)
-    {
-        UserId = userId;
-    }
 }

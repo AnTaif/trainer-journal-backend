@@ -23,7 +23,7 @@ public class ScheduleRepository(AppDbContext dbContext) : IScheduleRepository
             .Include(s => s.Practices)
             .Include(s => s.Group)
                 .ThenInclude(g => g.Students)
-            .Where(s => s.Group.TrainerId == userId || s.Group.Students.Any(st => st.Id == userId))
+            .Where(s => s.Group.TrainerId == userId || s.Group.Students.Any(st => st.UserId == userId))
             .Where(s => 
                 (start >= s.StartDay && start <= (s.Until ?? DateTime.MaxValue)) 
                 || (end >= s.StartDay && end <= (s.Until ?? DateTime.MaxValue)) 

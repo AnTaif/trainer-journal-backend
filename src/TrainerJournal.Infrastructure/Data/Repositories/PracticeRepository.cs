@@ -24,7 +24,7 @@ public class PracticeRepository(AppDbContext dbContext) : IPracticeRepository
         return await singlePractices
             .Include(p => p.Group)
                 .ThenInclude(g => g.Students)
-            .Where(p => p.TrainerId == userId || p.Group.Students.Any(s => s.Id == userId))
+            .Where(p => p.TrainerId == userId || p.Group.Students.Any(s => s.UserId == userId))
             .ToListAsync();
     }
 

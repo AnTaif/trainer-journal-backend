@@ -47,20 +47,13 @@ public class StudentService(
         studentRepository.AddStudent(student);
         await studentRepository.SaveChangesAsync();
 
-        return new CreateStudentResponse(student.Id, user.Username, user.Password, student.User.FullName.ToString());
+        return new CreateStudentResponse(student.UserId, user.Username, user.Password, student.User.FullName.ToString());
     }
 
     public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId)
     {
         var group = await groupRepository.GetByIdAsync(groupId);
         if (group == null) return Error.NotFound(description: "Group not found");
-
-        if (group.TrainerId != userId)
-        {
-            var student = await studentRepository.GetByUserIdAsync(userId);
-            if (student == null || student.GroupId == groupId) 
-                return Error.Forbidden(description: "You don't have access to this group");
-        }
         
         var students = await studentRepository.GetAllByGroupIdAsync(groupId);
         return students.Select(s => s.ToItemDto()).ToList();
@@ -70,13 +63,8 @@ public class StudentService(
     {
         var student = await studentRepository.GetByUserIdAsync(studentId);
         if (student == null) return Error.NotFound(description: "Student not found");
-        if (student.Group.TrainerId != trainerId) return Error.Forbidden(description: "You are not the trainer of this student");
-
-        if (request.GroupId != null)
-        {
-            var group = await groupRepository.GetByIdAsync(request.GroupId.Value);
-            if (group == null) return Error.NotFound("Group not found");
-        }
+        if (student.Group?.TrainerId != trainerId) return Error.Forbidden(description: "You are not the trainer of this student");
+        if (request.GroupId != null && student.Group == null) return Error.NotFound("Group not found");
         
         student.ChangeGroup(request.GroupId);
         await studentRepository.SaveChangesAsync();

@@ -40,6 +40,18 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         {
             b.ComplexProperty(e => e.FullName, e => e.IsRequired());
         });
+
+        modelBuilder.Entity<Trainer>(b =>
+        {
+            b.HasKey(t => t.UserId);
+            b.HasOne(t => t.User);
+        });
+
+        modelBuilder.Entity<Student>(b =>
+        {
+            b.HasKey(s => s.UserId);
+            b.HasOne(s => s.User);
+        });
         
         var roles = new[] { Domain.Constants.Roles.Admin, Domain.Constants.Roles.Trainer, Domain.Constants.Roles.User };
         var identityRoles = roles.Select(role => 

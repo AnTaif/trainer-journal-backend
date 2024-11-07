@@ -7,7 +7,7 @@ namespace TrainerJournal.Application.Services.Groups;
 
 public interface IGroupService
 {
-    public Task<ErrorOr<GetGroupsResponse>> GetGroupsByTrainerIdAsync(Guid trainerId);
+    public Task<ErrorOr<GetGroupsResponse>> GetGroupsByTrainerIdAsync(Guid userId);
 
     public Task<ErrorOr<GroupDto>> GetGroupByIdAsync(Guid id);
 

@@ -12,9 +12,9 @@ public class GroupService(
     IGroupRepository groupRepository,
     IColorGenerator colorGenerator) : IGroupService
 {
-    public async Task<ErrorOr<GetGroupsResponse>> GetGroupsByTrainerIdAsync(Guid trainerId)
+    public async Task<ErrorOr<GetGroupsResponse>> GetGroupsByTrainerIdAsync(Guid userId)
     {
-        var groups = await groupRepository.GetAllByTrainerIdAsync(trainerId);
+        var groups = await groupRepository.GetAllByUserIdAsync(userId);
 
         return new GetGroupsResponse(
             groups.Sum(g => g.Students.Count), 

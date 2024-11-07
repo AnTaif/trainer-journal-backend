@@ -1,14 +1,21 @@
-using TrainerJournal.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TrainerJournal.Domain.Entities;
 
-public class Student : Entity<Guid>
+/// <remarks>
+/// Use the UserId as the Primary Key
+/// </remarks>
+public class Student
 {
+    /// <summary>
+    /// PrimaryKey for Student and ForeignKey for the User table
+    /// </summary>
     public Guid UserId { get; private set; }
+    [ForeignKey("UserId")]
     public User User { get; private set; } = null!;
     
     public Guid? GroupId { get; private set; }
-    public virtual Group Group { get; private set; } = null!;
+    public virtual Group? Group { get; private set; }
     
     public float Balance { get; private set; }
     public DateTime BirthDate { get; private set; }
@@ -18,25 +25,25 @@ public class Student : Entity<Guid>
     public DateTime? KyuUpdatedAt { get; private set; }
     
     public DateTime TrainingStartDate { get; private set; } = DateTime.UtcNow;
-    public string Address { get; private set; }
+    public string Address { get; private set; } = null!;
 
     public List<ExtraContact> ExtraContacts { get; set; } = null!;
 
-    public Student() : base(Guid.NewGuid()) { }
+    public Student() { }
     
     public Student(
-        Guid userId,
+        Guid userUserId,
         DateTime birthDate, 
         int schoolGrade, 
         int? kyu,
         string? address, 
-        List<ExtraContact> extraContacts) : base(userId)
+        List<ExtraContact> extraContacts)
     {
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
         UpdateKyu(kyu);
         Address = address ?? "";
-        UserId = userId;
+        UserId = userUserId;
         ExtraContacts = extraContacts;
     }
 
@@ -45,7 +52,7 @@ public class Student : Entity<Guid>
         int? schoolGrade = null,
         string? address = null,
         int? kyu = null,
-        List<(string? Name, string? Contact)>? extraContacts = null)
+        List<(string Name, string Contact)>? extraContacts = null)
     {
         BirthDate = birthDate ?? BirthDate;
         SchoolGrade = schoolGrade ?? SchoolGrade;

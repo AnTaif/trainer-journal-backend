@@ -4,7 +4,7 @@ namespace TrainerJournal.Application.Services.Groups;
 
 public interface IGroupRepository
 {
-    public Task<List<Group>> GetAllByTrainerIdAsync(Guid trainerId);
+    public Task<List<Group>> GetAllByUserIdAsync(Guid userId);
 
     public Task<Group?> GetByIdAsync(Guid id);
 

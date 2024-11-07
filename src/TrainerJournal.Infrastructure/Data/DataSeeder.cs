@@ -51,8 +51,8 @@ public static class DataSeeder
     
     private static async Task SeedTrainersAsync(AppDbContext dbContext)
     {
-        var admin = new Trainer(adminGuid) { Id = adminGuid };
-        var trainer1 = new Trainer(trainer1Guid) { Id = trainer1Guid };
+        var admin = new Trainer(adminGuid) { UserId = adminGuid };
+        var trainer1 = new Trainer(trainer1Guid) { UserId = trainer1Guid };
         
         await dbContext.Trainers.AddRangeAsync(admin, trainer1);
     }

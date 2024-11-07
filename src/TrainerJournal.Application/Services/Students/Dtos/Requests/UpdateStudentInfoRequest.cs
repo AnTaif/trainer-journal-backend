@@ -16,5 +16,6 @@ public class UpdateStudentInfoRequest(DateTime? birthDate, int? schoolGrade, str
     public int? Kyu { get; init; } = kyu;
     
     [DefaultValue(null)]
+    [Length(1, 2)]
     public List<ExtraContactDto>? ExtraContacts { get; init; } = extraContacts;
 }

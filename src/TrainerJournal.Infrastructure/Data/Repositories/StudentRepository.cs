@@ -35,7 +35,7 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
 
         if (withGroup)
             return await includableQuery
-                .Where(s => s.Group.TrainerId == trainerId)
+                .Where(s => s.GroupId != null && s.Group!.TrainerId == trainerId)
                 .ToListAsync();
         
         return await includableQuery

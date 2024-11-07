@@ -8,11 +8,13 @@ public class GroupRepository(AppDbContext dbContext) : IGroupRepository
 {
     private DbSet<Group> groups => dbContext.Groups;
     
-    public async Task<List<Group>> GetAllByTrainerIdAsync(Guid trainerId)
+    public async Task<List<Group>> GetAllByUserIdAsync(Guid userId)
     {
         return await groups
             .Include(g => g.Students)
-            .Where(g => !g.IsDeleted && g.TrainerId == trainerId)
+            .Include(g => g.Trainer)
+            .Where(g => !g.IsDeleted 
+                        && (g.TrainerId == userId || g.Students.Any(s => s.UserId == userId)))
             .ToListAsync();
     }
 
@@ -20,6 +22,7 @@ public class GroupRepository(AppDbContext dbContext) : IGroupRepository
     {
         return await groups
             .Include(g => g.Students)
+            .Include(g => g.Trainer)
             .FirstOrDefaultAsync(g => g.Id == id);
     }
 
