@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Schedules;
@@ -25,6 +26,7 @@ public static class DependencyInjection
         services.AddTransient<IGroupRepository, GroupRepository>();
         services.AddTransient<IScheduleRepository, ScheduleRepository>();
         services.AddTransient<IPracticeRepository, PracticeRepository>();
+        services.AddTransient<IAttendanceRepository, AttendanceRepository>();
         
         return services;
     }

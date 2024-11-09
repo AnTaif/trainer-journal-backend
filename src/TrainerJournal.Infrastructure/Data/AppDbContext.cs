@@ -27,7 +27,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     public DbSet<SinglePractice> SinglePractices { get; set; } = null!;
 
-    public DbSet<Visit> Visits { get; set; } = null!;
+    public DbSet<AttendanceMark> AttendanceMarks { get; set; } = null!;
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
