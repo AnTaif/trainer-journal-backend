@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 
-public class UpdateStudentInfoRequest(DateTime? birthDate, int? schoolGrade, string? address, int? kyu, List<ExtraContactDto>? extraContacts)
+public class UpdateStudentInfoRequest(DateTime? birthDate, int? schoolGrade, string? address, int? kyu, List<ContactDto>? contacts)
 {
     public DateTime? BirthDate { get; init; } = birthDate;
     
@@ -17,5 +17,5 @@ public class UpdateStudentInfoRequest(DateTime? birthDate, int? schoolGrade, str
     
     [DefaultValue(null)]
     [Length(1, 2)]
-    public List<ExtraContactDto>? ExtraContacts { get; init; } = extraContacts;
+    public List<ContactDto>? Contacts { get; init; } = contacts;
 }

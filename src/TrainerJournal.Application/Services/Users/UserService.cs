@@ -17,7 +17,6 @@ namespace TrainerJournal.Application.Services.Users;
 public class UserService(
     UserManager<User> userManager,
     IStudentRepository studentRepository,
-    IExtraContactsRepository extraContactsRepository,
     ITrainerRepository trainerRepository,
     ILogger<UserService> logger) : IUserService
 {
@@ -66,21 +65,19 @@ public class UserService(
         if (request.StudentInfo != null)
         {
             var studentReq = request.StudentInfo;
-            if (studentReq.ExtraContacts != null) extraContactsRepository.RemoveRange(student!.ExtraContacts);
-            student!.Update(
-                studentReq.BirthDate, 
-                studentReq.SchoolGrade, 
-                studentReq.Address, 
-                studentReq.Kyu,
-                studentReq.ExtraContacts?.Select(e => (e.Name, e.Contact)).ToList());
-            if (studentReq.ExtraContacts != null) extraContactsRepository.AddRange(student.ExtraContacts);
+            student!.Update(studentReq.BirthDate, studentReq.SchoolGrade, studentReq.Address, studentReq.Kyu);
+            
+            var contacts = studentReq.Contacts?
+                .Select(c => c.ToEntity())
+                .ToList();
+            await studentRepository.UpdateContactsAsync(student, contacts);
         }
 
         if (request.TrainerInfo != null)
         {
             //TODO: add trainer update
         }
-
+        
         await userManager.UpdateAsync(user);
         return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
     }

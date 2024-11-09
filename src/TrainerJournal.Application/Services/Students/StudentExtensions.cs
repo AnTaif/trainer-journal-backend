@@ -7,15 +7,21 @@ public static class StudentExtensions
 {
     public static StudentInfoDto ToInfoDto(this Student student)
     {
-        return new StudentInfoDto(student.GroupId, student.Balance, student.BirthDate, student.SchoolGrade,
+        return new StudentInfoDto(student.Balance, student.BirthDate, student.SchoolGrade,
             student.Kyu, student.KyuUpdatedAt, student.TrainingStartDate, student.Address,
+            student.GroupId == null ? [] : [student.GroupId.Value],
            student.ExtraContacts.Select(e => e.ToDto()).ToList());
     }
 
     public static StudentItemDto ToItemDto(this Student student)
     {
-        return new StudentItemDto(student.UserId, student.User.FullName.ToString(), student.GroupId, student.Balance, 
-            GetYearsSince(student.BirthDate), student.SchoolGrade, student.Kyu, student.ExtraContacts.First().ToDto());
+        return new StudentItemDto(
+            student.UserId, 
+            student.User.FullName.ToString(),
+            student.Balance, 
+            GetYearsSince(student.BirthDate), student.SchoolGrade, student.Kyu, 
+            student.GroupId == null ? [] : [student.GroupId.Value], 
+            student.ExtraContacts.First().ToDto());
     }
 
     private static int GetYearsSince(DateTime a)

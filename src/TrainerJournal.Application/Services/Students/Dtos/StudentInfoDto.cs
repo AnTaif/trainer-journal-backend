@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 namespace TrainerJournal.Application.Services.Students.Dtos;
 
 public class StudentInfoDto(
-    Guid? groupId,
     float balance,
     DateTime birthDate,
     int schoolGrade,
@@ -12,9 +11,9 @@ public class StudentInfoDto(
     DateTime? kyuUpdatedAt,
     DateTime trainingStartDate,
     string address,
-    List<ExtraContactDto> extraContacts)
+    List<Guid> groups,
+    List<ContactDto> contacts)
 {
-    public Guid? GroupId { get; init; } = groupId;
     public float Balance { get; init; } = balance;
     public DateTime BirthDate { get; init; } = birthDate;
     public int SchoolGrade { get; init; } = schoolGrade;
@@ -26,5 +25,7 @@ public class StudentInfoDto(
     [DefaultValue("address")]
     public string Address { get; init; } = address;
     
-    public List<ExtraContactDto> ExtraContacts { get; init; } = extraContacts;
+    public List<Guid> Groups { get; init; } = groups;
+    
+    public List<ContactDto> Contacts { get; init; } = contacts;
 }

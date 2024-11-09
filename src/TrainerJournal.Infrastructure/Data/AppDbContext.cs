@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Infrastructure.Data;
@@ -12,7 +11,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     
     public DbSet<Student> Students { get; set; } = null!;
 
-    public DbSet<ExtraContact> ExtraContacts { get; set; } = null!;
+    public DbSet<Contact> Contacts { get; set; } = null!;
     
     public DbSet<Group> Groups { get; set; } = null!;
     

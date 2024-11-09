@@ -6,15 +6,14 @@ namespace TrainerJournal.Application.Services.Students.Dtos;
 public class StudentItemDto(
     Guid id,
     string fullName,
-    Guid? groupId,
     float balance,
     int age,
     int schoolGrade,
     int? kyu,
-    ExtraContactDto contact)
+    List<Guid> groups,
+    ContactDto contact)
 {
     public Guid Id { get; init; } = id;
-    public Guid? GroupId { get; init; } = groupId;
     
     [Required]
     [DefaultValue("Фамилия Имя Отчество")]
@@ -24,5 +23,8 @@ public class StudentItemDto(
     public int Age { get; init; } = age;
     public int SchoolGrade { get; init; } = schoolGrade;
     public int? Kyu { get; init; } = kyu;
-    public ExtraContactDto Contact { get; } = contact;
+    
+    public List<Guid> Groups { get; init; }= groups;
+    
+    public ContactDto Contact { get; } = contact;
 }

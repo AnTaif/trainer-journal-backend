@@ -7,6 +7,7 @@ namespace TrainerJournal.Infrastructure.Data.Repositories;
 public class StudentRepository(AppDbContext dbContext) : IStudentRepository
 {
     private DbSet<Student> students => dbContext.Students;
+    private DbSet<Contact> contacts => dbContext.Contacts;
     
     public async Task<Student?> GetByUserIdAsync(Guid userId)
     {
@@ -46,6 +47,15 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
     public void AddStudent(Student student)
     {
         students.Add(student);
+    }
+
+    public async Task UpdateContactsAsync(Student student, List<Contact>? newContacts)
+    {
+        if (newContacts == null) return;
+        
+        contacts.RemoveRange(student.ExtraContacts);
+        student.UpdateContacts(newContacts);
+        await contacts.AddRangeAsync(newContacts);
     }
 
     public Task SaveChangesAsync() => dbContext.SaveChangesAsync();

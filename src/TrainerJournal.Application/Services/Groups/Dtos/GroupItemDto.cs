@@ -8,7 +8,7 @@ public class GroupItemDto(Guid id, string name, string hexColor, int studentsCou
     public Guid Id { get; init; } = id;
     
     [Required]
-    [DefaultValue("name")]
+    [DefaultValue("Группа")]
     public string Name { get; init; } = name;
     
     [Required]

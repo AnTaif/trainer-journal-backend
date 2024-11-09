@@ -40,7 +40,7 @@ public class StudentService(
             request.SchoolGrade, 
             request.Kyu,
             request.Address, 
-            request.ExtraContacts.Select(e => new ExtraContact(e.Name, e.Contact)).ToList());
+            request.Contacts.Select(c => c.ToEntity()).ToList());
         
         student.ChangeGroup(groupId);
         

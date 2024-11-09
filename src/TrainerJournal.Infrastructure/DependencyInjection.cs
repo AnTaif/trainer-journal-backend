@@ -21,7 +21,6 @@ public static class DependencyInjection
         });
 
         services.AddTransient<IStudentRepository, StudentRepository>();
-        services.AddTransient<IExtraContactsRepository, ExtraContactsRepository>();
         services.AddTransient<ITrainerRepository, TrainerRepository>();
         services.AddTransient<IGroupRepository, GroupRepository>();
         services.AddTransient<IScheduleRepository, ScheduleRepository>();

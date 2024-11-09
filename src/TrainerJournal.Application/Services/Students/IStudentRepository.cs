@@ -12,5 +12,7 @@ public interface IStudentRepository
 
     public void AddStudent(Student student);
 
+    public Task UpdateContactsAsync(Student student, List<Contact>? contacts);
+
     public Task SaveChangesAsync();
 }
