@@ -35,6 +35,11 @@ builder.Services
     .AddApplicationLayer()
     .AddInfrastructureLayer();
 
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
+
 var app = builder.Build();
 
 await using (var serviceScope = app.Services.CreateAsyncScope()) 

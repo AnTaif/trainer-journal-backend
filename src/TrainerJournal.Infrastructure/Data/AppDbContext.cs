@@ -1,11 +1,15 @@
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TrainerJournal.Application.Common;
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Infrastructure.Data;
 
-public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class AppDbContext(DbContextOptions<AppDbContext> options, IMediator mediator)
+    : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<Trainer> Trainers { get; set; } = null!;
     
@@ -28,10 +32,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<SinglePractice> SinglePractices { get; set; } = null!;
 
     public DbSet<AttendanceMark> AttendanceMarks { get; set; } = null!;
-    
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,5 +65,30 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         modelBuilder.Entity<IdentityRole<Guid>>().HasData(identityRoles);
         
         base.OnModelCreating(modelBuilder);
+    }
+    
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var domainEvents = new List<IDomainEvent>();
+
+        foreach (var entry in ChangeTracker.Entries<Entity<object>>())
+        {
+            domainEvents.AddRange(entry.Entity.DomainEvents);
+            entry.Entity.ClearDomainEvents();
+        }
+
+        foreach (var domainEvent in domainEvents)
+        {
+            var notification = (INotification)Activator.CreateInstance(
+                typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), 
+                domainEvent)!;
+            await mediator.Publish(notification, cancellationToken);
+        }
+        
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        //TODO: add notifications (events that invokes after transaction commit)
+        
+        return result;
     }
 }
