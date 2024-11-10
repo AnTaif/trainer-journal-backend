@@ -13,32 +13,14 @@ public static class AttendanceMarkExtensions
             .Select(g => new GetStudentAttendanceResponse(
                 g.Key,
                 g.Select(a => new AttendanceMarkDto(
-                    a.Id,
-                    a.StudentId, 
                     a.PracticeId, 
                     a.PracticeTime
                 )).ToList()
             )).ToList();
     }
-
-    public static GetStudentAttendanceResponse ToResponse(this IList<AttendanceMark> attendanceMarks)
-    {
-        var studentId = attendanceMarks.First().StudentId;
-
-        return new GetStudentAttendanceResponse(
-            studentId,
-            attendanceMarks.Select(a => new AttendanceMarkDto(
-                a.Id,
-                a.StudentId,
-                a.PracticeId,
-                a.PracticeTime
-            )).ToList()
-        );
-    }
     
     public static AttendanceMarkDto ToDto(this AttendanceMark attendanceMark)
     {
-        return new AttendanceMarkDto(attendanceMark.Id, attendanceMark.StudentId, attendanceMark.PracticeId,
-            attendanceMark.PracticeTime);
+        return new AttendanceMarkDto(attendanceMark.PracticeId, attendanceMark.PracticeTime);
     }
 }

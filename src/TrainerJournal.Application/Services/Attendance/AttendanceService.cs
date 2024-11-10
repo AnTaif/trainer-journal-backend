@@ -25,12 +25,12 @@ public class AttendanceService(
         return attendance.ToResponses();
     }
 
-    public async Task<ErrorOr<GetStudentAttendanceResponse>> GetStudentAttendanceAsync(
+    public async Task<ErrorOr<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(
         Guid userId, Guid studentId, DateTime start, DateTime end)
     {
         var attendance = await attendanceRepository.GetByStudentIdAsync(studentId, start, end);
 
-        return attendance.ToResponse();
+        return attendance.Select(a => a.ToDto()).ToList();
     }
 
     public async Task<ErrorOr<AttendanceMarkDto?>> MarkUnmarkAttendanceAsync(Guid userId, Guid studentId, AttendanceMarkRequest request)

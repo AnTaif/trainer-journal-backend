@@ -11,12 +11,11 @@ using TrainerJournal.Application.Services.Attendance.Dtos.Responses;
 namespace TrainerJournal.API.Controllers;
 
 [ApiController]
-[Route("attendance")]
 [Authorize]
 public class AttendanceController(IAttendanceService attendanceService) : ControllerBase
 {
-    [HttpGet("group/{id}")]
-    public async Task<ActionResult<GetStudentAttendanceResponse>> GetGroupAttendanceAsync(
+    [HttpGet("groups/{id}/attendance")]
+    public async Task<ActionResult<List<GetStudentAttendanceResponse>>> GetGroupAttendanceAsync(
         Guid id,
         [FromQuery] DateTime start,
         [FromQuery] DateTime? end = null)
@@ -33,8 +32,8 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpGet("student/{id}")]
-    public async Task<ActionResult<GetStudentAttendanceResponse>> GetStudentAttendanceAsync(
+    [HttpGet("students/{id}/attendance")]
+    public async Task<ActionResult<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(
         Guid id, 
         [FromQuery] DateTime start,
         [FromQuery] DateTime? end = null)
@@ -51,8 +50,8 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpPost("student/{id}/mark-unmark")]
-    public async Task<ActionResult<AttendanceMarkDto>> MarkAttendanceAsync(Guid id, AttendanceMarkRequest request)
+    [HttpPost("students/{id}/attendance/mark-unmark")]
+    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(Guid id, AttendanceMarkRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
