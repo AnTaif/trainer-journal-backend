@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Infrastructure.Common;
 
 namespace TrainerJournal.Infrastructure.Data.Repositories;
 
-public class AttendanceRepository(AppDbContext dbContext) : IAttendanceRepository
+public class AttendanceRepository(AppDbContext context) : BaseRepository(context), IAttendanceRepository
 {
     private DbSet<AttendanceMark> attendanceMarks => dbContext.AttendanceMarks;
 
@@ -40,10 +41,5 @@ public class AttendanceRepository(AppDbContext dbContext) : IAttendanceRepositor
     public void Remove(AttendanceMark attendanceMark)
     {
         attendanceMarks.Remove(attendanceMark);
-    }
-
-    public async Task SaveChangesAsync()
-    {
-        await dbContext.SaveChangesAsync();
     }
 }

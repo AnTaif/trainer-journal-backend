@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using TrainerJournal.Application.Services.Schedules;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Infrastructure.Common;
 
 namespace TrainerJournal.Infrastructure.Data.Repositories;
 
-public class ScheduleRepository(AppDbContext dbContext) : IScheduleRepository
+public class ScheduleRepository(AppDbContext context) : BaseRepository(context), IScheduleRepository
 {
-    private readonly DbSet<Schedule> schedules = dbContext.Schedules;
+    private DbSet<Schedule> schedules => dbContext.Schedules;
     
     public async Task<Schedule?> GetByIdAsync(Guid id)
     {
@@ -54,10 +55,5 @@ public class ScheduleRepository(AppDbContext dbContext) : IScheduleRepository
     public async Task AddAsync(Schedule schedule)
     {
         await schedules.AddAsync(schedule);
-    }
-
-    public async Task SaveChangesAsync()
-    {
-        await dbContext.SaveChangesAsync();
     }
 }

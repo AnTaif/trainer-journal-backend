@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Infrastructure.Common;
 
 namespace TrainerJournal.Infrastructure.Data.Repositories;
 
-public class StudentRepository(AppDbContext dbContext) : IStudentRepository
+public class StudentRepository(AppDbContext context) : BaseRepository(context), IStudentRepository
 {
     private DbSet<Student> students => dbContext.Students;
     private DbSet<Contact> contacts => dbContext.Contacts;

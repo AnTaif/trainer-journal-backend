@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TrainerJournal.Application.Common;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 

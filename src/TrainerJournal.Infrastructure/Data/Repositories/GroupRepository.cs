@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Infrastructure.Common;
 
 namespace TrainerJournal.Infrastructure.Data.Repositories;
 
-public class GroupRepository(AppDbContext dbContext) : IGroupRepository
+public class GroupRepository(AppDbContext context) : BaseRepository(context), IGroupRepository
 {
     private DbSet<Group> groups => dbContext.Groups;
     
@@ -40,6 +41,4 @@ public class GroupRepository(AppDbContext dbContext) : IGroupRepository
     {
         groups.Update(group);
     }
-
-    public async Task SaveChangesAsync() => await dbContext.SaveChangesAsync();
 }

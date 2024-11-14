@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Infrastructure.Common;
 
 namespace TrainerJournal.Infrastructure.Data.Repositories;
 
-public class PracticeRepository(AppDbContext dbContext) : IPracticeRepository
+public class PracticeRepository(AppDbContext context) : BaseRepository(context), IPracticeRepository
 {
-    private readonly DbSet<Practice> practices = dbContext.Practices;
-    private readonly DbSet<SchedulePractice> schedulePractices = dbContext.SchedulePractices;
-    private readonly DbSet<SinglePractice> singlePractices = dbContext.SinglePractices;
+    private DbSet<Practice> practices => dbContext.Practices;
+    private DbSet<SchedulePractice> schedulePractices => dbContext.SchedulePractices;
+    private DbSet<SinglePractice> singlePractices => dbContext.SinglePractices;
     
     public async Task<Practice?> GetByIdAsync(Guid id)
     {
@@ -42,10 +43,5 @@ public class PracticeRepository(AppDbContext dbContext) : IPracticeRepository
     public async Task AddAsync(SinglePractice practice)
     {
         await singlePractices.AddAsync(practice);
-    }
-
-    public async Task SaveChangesAsync()
-    {
-        await dbContext.SaveChangesAsync();
     }
 }
