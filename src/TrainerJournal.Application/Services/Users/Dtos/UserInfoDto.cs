@@ -3,27 +3,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Users.Dtos;
 
-public class UserInfoDto(
-    string fullName, 
-    string username,
-    string? email,
-    string? phone,
-    string gender, 
-    string? telegramUsername)
+public class UserInfoDto
 {
     [Required]
     [DefaultValue("Фамилия Имя Отчество")]
-    public string FullName { get; init; } = fullName;
-    
+    public string FullName { get; init; } = null!;
+
     [Required]
     [DefaultValue("login")]
-    public string Username { get; init; } = username;
-    
+    public string Username { get; init; } = null!;
+
     [Required]
     [DefaultValue("М")]
-    public string Gender { get; init; } = gender;
-    
-    public string? Email { get; init; } = email;
-    public string? Phone { get; init; } = phone;
-    public string? TelegramUsername { get; init; } = telegramUsername;
+    public string Gender { get; init; } = null!;
+
+    public string? TelegramUsername { get; init; }
 }

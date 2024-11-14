@@ -8,7 +8,12 @@ public static class UserExtensions
 {
     public static UserInfoDto ToInfoDto(this User user)
     {
-        return new UserInfoDto(user.FullName.ToString(), user.UserName!, user.Email, user.PhoneNumber,
-            user.Gender.ToGenderString(), user.TelegramUsername);
+        return new UserInfoDto
+        {
+            FullName = user.FullName.ToString(),
+            Username = user.UserName!,
+            Gender = user.Gender.ToGenderString(),
+            TelegramUsername = user.TelegramUsername
+        };
     }
 }

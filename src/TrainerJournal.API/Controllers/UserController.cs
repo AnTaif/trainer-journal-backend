@@ -6,6 +6,7 @@ using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
 using TrainerJournal.Application.Services.Users.Dtos.Responses;
+using TrainerJournal.Domain.Constants;
 
 namespace TrainerJournal.API.Controllers;
 
@@ -40,6 +41,17 @@ public class UserController(IUserService userService) : ControllerBase
         if (userId == null) return Unauthorized();
 
         var result = await userService.GetInfoAsync(id);
+        return this.ToActionResult(result, Ok);
+    }
+
+    [HttpPut("users/{id}/student-info")]
+    [Authorize(Roles = Roles.Trainer)]
+    public async Task<ActionResult<GetUserInfoResponse>> ChangeUserInfoAsync(Guid id, UpdateStudentRequest request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+        
+        var result = await userService.UpdateStudentInfoAsync(id, request);
         return this.ToActionResult(result, Ok);
     }
 }

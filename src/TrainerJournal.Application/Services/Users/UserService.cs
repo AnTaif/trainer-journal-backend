@@ -33,7 +33,13 @@ public class UserService(
         else if (student != null && trainer != null)
             logger.LogError("User with an id {id} has both accounts: trainer and student", id);
 
-        return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
+        return new GetUserInfoResponse
+        {
+            Id = user.Id,
+            UserInfo = user.ToInfoDto(),
+            StudentInfo = student?.ToInfoDto(),
+            TrainerInfo = trainer?.ToInfoDto()
+        };
     }
 
     public async Task<ErrorOr<GetUserInfoResponse>> UpdateAsync(Guid id, UpdateUserRequest request)
@@ -79,7 +85,48 @@ public class UserService(
         }
         
         await userManager.UpdateAsync(user);
-        return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
+        return new GetUserInfoResponse
+        {
+            Id = user.Id,
+            UserInfo = user.ToInfoDto(),
+            StudentInfo = student?.ToInfoDto(),
+            TrainerInfo = trainer?.ToInfoDto()
+        };
+    }
+
+    public async Task<ErrorOr<GetUserInfoResponse>> UpdateStudentInfoAsync(Guid studentId, UpdateStudentRequest request)
+    {
+        var user = await userManager.FindByIdAsync(studentId.ToString());
+        if (user == null) return Error.NotFound("User not found");
+        
+        var student = await studentRepository.GetByUserIdAsync(studentId);
+        if (student == null) return Error.Failure("This user is not a student");
+
+        if (request.UserInfo != null)
+        {
+            var userReq = request.UserInfo;
+            var fullName = userReq.FullName != null ? new PersonName(userReq.FullName) : null;
+            user.Update(fullName, userReq.Gender?.ToGenderEnum(), userReq.TelegramUsername);
+        }
+        
+        if (request.StudentInfo != null)
+        {
+            var studentRequest = request.StudentInfo;
+            student.Update(studentRequest.BirthDate, studentRequest.SchoolGrade, studentRequest.Address, studentRequest.Kyu);
+                
+            var contacts = studentRequest.Contacts?
+                .Select(c => c.ToEntity())
+                .ToList();
+            await studentRepository.UpdateContactsAsync(student, contacts);
+        }
+        
+        await studentRepository.SaveChangesAsync();
+        return new GetUserInfoResponse
+        {
+            Id = user.Id,
+            UserInfo = user.ToInfoDto(),
+            StudentInfo = student.ToInfoDto()
+        };
     }
 
     public async Task<ErrorOr<CreateUserResponse>> CreateAsync(CreateUserRequest request)
