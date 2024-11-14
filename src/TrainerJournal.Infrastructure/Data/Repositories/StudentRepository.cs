@@ -13,7 +13,7 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
     {
         return await students
             .Include(s => s.User)
-            .Include(s => s.Group)
+            .Include(s => s.Groups)
             .Include(s => s.ExtraContacts)
             .FirstOrDefaultAsync(student => student.UserId == userId);
     }
@@ -23,7 +23,7 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
         return await students
             .Include(s => s.User)
             .Include(s => s.ExtraContacts)
-            .Where(s => s.GroupId == groupId)
+            .Where(s => s.Groups.Any(g => g.Id == groupId))
             .ToListAsync();
     }
 
@@ -32,15 +32,15 @@ public class StudentRepository(AppDbContext dbContext) : IStudentRepository
         var includableQuery = students
             .Include(s => s.User)
             .Include(s => s.ExtraContacts)
-            .Include(s => s.Group);
+            .Include(s => s.Groups);
 
         if (withGroup)
             return await includableQuery
-                .Where(s => s.GroupId != null && s.Group!.TrainerId == trainerId)
+                .Where(s => s.Groups.Any(g => g.TrainerId == trainerId))
                 .ToListAsync();
-        
+
         return await includableQuery
-            .Where(s => s.GroupId == null)
+            .Where(s => s.Groups.Count == 0)
             .ToListAsync();
     }
 

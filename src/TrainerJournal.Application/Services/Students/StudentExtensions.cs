@@ -9,7 +9,7 @@ public static class StudentExtensions
     {
         return new StudentInfoDto(student.Balance, student.BirthDate, student.SchoolGrade,
             student.Kyu, student.KyuUpdatedAt, student.TrainingStartDate, student.Address,
-            student.GroupId == null ? [] : [student.GroupId.Value],
+            student.Groups.Select(g => g.Id).ToList(),
            student.ExtraContacts.Select(e => e.ToDto()).ToList());
     }
 
@@ -20,7 +20,7 @@ public static class StudentExtensions
             student.User.FullName.ToString(),
             student.Balance, 
             GetYearsSince(student.BirthDate), student.SchoolGrade, student.Kyu, 
-            student.GroupId == null ? [] : [student.GroupId.Value], 
+            student.Groups.Select(g => g.Id).ToList(), 
             student.ExtraContacts.First().ToDto());
     }
 

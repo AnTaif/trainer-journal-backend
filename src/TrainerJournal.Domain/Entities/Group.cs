@@ -5,8 +5,8 @@ namespace TrainerJournal.Domain.Entities;
 
 public class Group : Entity<Guid>
 {
-    public string Name { get; private set; }
-    public HexColor HexColor { get; private set; }
+    public string Name { get; private set; } = null!;
+    public HexColor HexColor { get; private set; } = null!;
     
     public float Price { get; private set; }
     
@@ -37,7 +37,7 @@ public class Group : Entity<Guid>
         IsDeleted = true;
         foreach (var student in Students)
         {
-            student.ChangeGroup(null);
+            student.ExcludeFromGroup(this);
         }
     }
 

@@ -13,9 +13,8 @@ public class Student
     public Guid UserId { get; private set; }
     [ForeignKey("UserId")]
     public User User { get; private set; } = null!;
-    
-    public Guid? GroupId { get; private set; }
-    public virtual Group? Group { get; private set; }
+
+    public List<Group> Groups { get; private set; } = new();
     
     public float Balance { get; private set; }
     public DateTime BirthDate { get; private set; }
@@ -32,7 +31,7 @@ public class Student
     public Student() { }
     
     public Student(
-        Guid userUserId,
+        Guid userId,
         DateTime birthDate, 
         int schoolGrade, 
         int? kyu,
@@ -43,7 +42,7 @@ public class Student
         SchoolGrade = schoolGrade;
         UpdateKyu(kyu);
         Address = address ?? "";
-        UserId = userUserId;
+        UserId = userId;
         ExtraContacts = extraContacts;
     }
 
@@ -84,8 +83,15 @@ public class Student
         Balance += balanceDiff;
     }
 
-    public void ChangeGroup(Guid? groupId)
+    public void AddToGroup(Group group)
     {
-        GroupId = groupId;
+        if (Groups.Contains(group)) return;
+        Groups.Add(group);
+    }
+
+    public void ExcludeFromGroup(Group group)
+    {
+        if (!Groups.Contains(group)) return;
+        Groups.Remove(group);
     }
 }
