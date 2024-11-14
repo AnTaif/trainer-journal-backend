@@ -109,7 +109,7 @@ public class UserService(
             user.Gender.ToGenderString(), user.TelegramUsername);
     }
 
-    private string GenerateUsername(string fullName)
+    public string GenerateUsername(string fullName)
     {
         var latinSplit = PersonName.SplitFullName(CyrillicTextConverter.ConvertToLatin(fullName));
         var username = latinSplit.MiddleName != null 

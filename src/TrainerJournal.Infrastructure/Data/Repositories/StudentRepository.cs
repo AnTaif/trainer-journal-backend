@@ -15,7 +15,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
         return await students
             .Include(s => s.User)
             .Include(s => s.Groups)
-            .Include(s => s.ExtraContacts)
+            .Include(s => s.Contacts)
             .FirstOrDefaultAsync(student => student.UserId == userId);
     }
 
@@ -23,7 +23,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
     {
         return await students
             .Include(s => s.User)
-            .Include(s => s.ExtraContacts)
+            .Include(s => s.Contacts)
             .Where(s => s.Groups.Any(g => g.Id == groupId))
             .ToListAsync();
     }
@@ -32,7 +32,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
     {
         var includableQuery = students
             .Include(s => s.User)
-            .Include(s => s.ExtraContacts)
+            .Include(s => s.Contacts)
             .Include(s => s.Groups);
 
         if (withGroup)
@@ -54,10 +54,8 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
     {
         if (newContacts == null) return;
         
-        contacts.RemoveRange(student.ExtraContacts);
+        contacts.RemoveRange(student.Contacts);
         student.UpdateContacts(newContacts);
         await contacts.AddRangeAsync(newContacts);
     }
-
-    public Task SaveChangesAsync() => dbContext.SaveChangesAsync();
 }

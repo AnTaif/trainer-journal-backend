@@ -10,6 +10,7 @@ public class StudentItemDto(
     int age,
     int schoolGrade,
     int? kyu,
+    string gender,
     List<Guid> groups,
     ContactDto contact)
 {
@@ -23,6 +24,8 @@ public class StudentItemDto(
     public int Age { get; init; } = age;
     public int SchoolGrade { get; init; } = schoolGrade;
     public int? Kyu { get; init; } = kyu;
+
+    public string Gender { get; init; } = gender;
     
     public List<Guid> Groups { get; init; }= groups;
     

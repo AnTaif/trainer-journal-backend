@@ -26,7 +26,7 @@ public class Student
     public DateTime TrainingStartDate { get; private set; } = DateTime.UtcNow;
     public string Address { get; private set; } = null!;
 
-    public List<Contact> ExtraContacts { get; set; } = null!;
+    public List<Contact> Contacts { get; set; } = null!;
 
     public Student() { }
     
@@ -36,14 +36,14 @@ public class Student
         int schoolGrade, 
         int? kyu,
         string? address, 
-        List<Contact> extraContacts)
+        List<Contact> contacts)
     {
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
         UpdateKyu(kyu);
         Address = address ?? "";
         UserId = userId;
-        ExtraContacts = extraContacts;
+        Contacts = contacts;
     }
 
     public void Update(
@@ -63,10 +63,10 @@ public class Student
     {
         if (contacts == null) return;
         
-        ExtraContacts.Clear();
+        Contacts.Clear();
         foreach (var contact in contacts)
         {
-            ExtraContacts.Add(new Contact(contact.Name, contact.Relation, contact.Phone));
+            Contacts.Add(new Contact(contact.Name, contact.Relation, contact.Phone));
         }
     }
 

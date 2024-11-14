@@ -5,6 +5,7 @@ using Serilog;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.API.Logger;
 using TrainerJournal.Application;
+using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Infrastructure;
 using TrainerJournal.Infrastructure.Data;
@@ -35,20 +36,18 @@ builder.Services
     .AddApplicationLayer()
     .AddInfrastructureLayer();
 
-// builder.Services.AddMediatR(cfg =>
-// {
-//     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-// });
-
 var app = builder.Build();
 
 await using (var serviceScope = app.Services.CreateAsyncScope()) 
 {
     using (var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<User>>())
-    await using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>())
     {
-        await dbContext.Database.MigrateAsync();
-        await DataSeeder.SeedOnMigratingAsync(userManager, dbContext);
+        var userService = serviceScope.ServiceProvider.GetRequiredService<IUserService>();
+        await using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>())
+        {
+            await dbContext.Database.MigrateAsync();
+            await DataSeeder.SeedOnMigratingAsync(userManager, userService, dbContext);
+        }
     }
 }
 

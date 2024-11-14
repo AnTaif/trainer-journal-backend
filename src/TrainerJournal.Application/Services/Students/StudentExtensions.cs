@@ -1,5 +1,6 @@
 using TrainerJournal.Application.Services.Students.Dtos;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Domain.Enums.Gender;
 
 namespace TrainerJournal.Application.Services.Students;
 
@@ -10,7 +11,7 @@ public static class StudentExtensions
         return new StudentInfoDto(student.Balance, student.BirthDate, student.SchoolGrade,
             student.Kyu, student.KyuUpdatedAt, student.TrainingStartDate, student.Address,
             student.Groups.Select(g => g.Id).ToList(),
-           student.ExtraContacts.Select(e => e.ToDto()).ToList());
+           student.Contacts.Select(e => e.ToDto()).ToList());
     }
 
     public static StudentItemDto ToItemDto(this Student student)
@@ -20,8 +21,9 @@ public static class StudentExtensions
             student.User.FullName.ToString(),
             student.Balance, 
             GetYearsSince(student.BirthDate), student.SchoolGrade, student.Kyu, 
+            student.User.Gender.ToGenderString(),
             student.Groups.Select(g => g.Id).ToList(), 
-            student.ExtraContacts.First().ToDto());
+            student.Contacts.First().ToDto());
     }
 
     private static int GetYearsSince(DateTime a)

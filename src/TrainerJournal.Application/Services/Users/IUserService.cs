@@ -11,5 +11,7 @@ public interface IUserService
     
     public Task<ErrorOr<GetUserInfoResponse>> UpdateAsync(Guid id, UpdateUserRequest request);
 
+    public string GenerateUsername(string fullName);
+
     public Task<ErrorOr<CreateUserResponse>> CreateAsync(CreateUserRequest request);
 }

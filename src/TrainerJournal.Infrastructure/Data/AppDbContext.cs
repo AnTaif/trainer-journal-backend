@@ -18,8 +18,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IMediator medi
     
     public DbSet<Group> Groups { get; set; } = null!;
     
-    public DbSet<Hall> Halls { get; set; } = null!;
-    
     public DbSet<Payment> Payments { get; set; } = null!;
 
     public DbSet<Schedule> Schedules { get; set; } = null!;

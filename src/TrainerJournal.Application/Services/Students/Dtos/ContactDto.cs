@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos;
 
-public class ContactDto(string name, string phone, string relation)
+public class ContactDto(string name, string relation, string phone)
 {
     [Required]
     [DefaultValue("Имя Отчество")]
