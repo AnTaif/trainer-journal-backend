@@ -17,8 +17,8 @@ public class AttendanceService(
         Guid userId, Guid groupId, DateTime start, DateTime end)
     {
         var group = await groupRepository.GetByIdAsync(groupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
-        if (group.TrainerId != userId) return Error.Forbidden(description: "You are not a trainer of this group");
+        if (group == null) return Error.NotFound("Group not found");
+        if (group.TrainerId != userId) return Error.Forbidden("You are not a trainer of this group");
         
         var attendance = await attendanceRepository.GetAttendanceByGroupIdAsync(groupId, start, end);
 
@@ -44,8 +44,8 @@ public class AttendanceService(
         
         var practice = await practiceRepository.GetByIdAsync(request.PracticeId);
 
-        if (practice == null) return Error.NotFound(description: "Practice not found");
-        if (practice.TrainerId != userId) return Error.Forbidden(description: "You are not a trainer of this group");
+        if (practice == null) return Error.NotFound("Practice not found");
+        if (practice.TrainerId != userId) return Error.Forbidden("You are not a trainer of this group");
         
         var newMark = new AttendanceMark(studentId, request.PracticeId, request.PracticeTime);
         
@@ -60,20 +60,4 @@ public class AttendanceService(
         attendanceRepository.Remove(attendanceMark);
         await attendanceRepository.SaveChangesAsync();
     }
-
-    // public async Task<ErrorOr<bool>> UnmarkAttendanceAsync(Guid userId, AttendanceMarkRequest request)
-    // {
-    //     var attendanceMark = 
-    //         await attendanceRepository.GetByInfoAsync(request.StudentId, request.PracticeId, request.PracticeTime);
-    //     var practice = await practiceRepository.GetByIdAsync(request.PracticeId);
-    //     if (practice == null) return Error.NotFound(description: "Practice not found");
-    //     
-    //     if (attendanceMark == null) return true;
-    //     if (practice.TrainerId != userId) return Error.Forbidden(description: "You are not a trainer of this group");
-    //     
-    //     attendanceRepository.Remove(attendanceMark);
-    //     await attendanceRepository.SaveChangesAsync();
-    //
-    //     return true;
-    // }
 }

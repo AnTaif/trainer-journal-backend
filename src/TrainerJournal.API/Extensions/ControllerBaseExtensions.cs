@@ -12,9 +12,9 @@ public static class ControllerBaseExtensions
             onValue: onValue,
             onFirstError: error => error.Type switch
             {
-                ErrorType.NotFound => controller.NotFound(error.Description),
+                ErrorType.NotFound => controller.NotFound(error.Code),
                 ErrorType.Forbidden => controller.Forbid(),
-                _ => controller.BadRequest(error.Description)
+                _ => controller.BadRequest(error.Code)
             }
         );
     }

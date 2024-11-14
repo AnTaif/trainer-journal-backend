@@ -37,7 +37,7 @@ public class PracticeController(
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpPatch("{id}/cancel")]
+    [HttpPost("{id}/cancel")]
     public async Task<ActionResult<PracticeDto>> CancelPracticeAsync(Guid id, CancelPracticeRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);

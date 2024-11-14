@@ -60,7 +60,7 @@ public class StudentService(
     public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId)
     {
         var group = await groupRepository.GetByIdAsync(groupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
+        if (group == null) return Error.NotFound("Group not found");
         
         var students = await studentRepository.GetAllByGroupIdAsync(groupId);
         return students.Select(s => s.ToItemDto()).ToList();
@@ -69,10 +69,10 @@ public class StudentService(
     public async Task<ErrorOr<StudentInfoDto>> AddStudentToGroupAsync(Guid groupId, Guid studentId, Guid trainerId)
     {
         var student = await studentRepository.GetByUserIdAsync(studentId);
-        if (student == null) return Error.NotFound(description: "Student not found");
+        if (student == null) return Error.NotFound("Student not found");
 
         var group = await groupRepository.GetByIdAsync(groupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
+        if (group == null) return Error.NotFound("Group not found");
 
         student.AddToGroup(group);
         await studentRepository.SaveChangesAsync();
@@ -83,10 +83,10 @@ public class StudentService(
     public async Task<ErrorOr<StudentInfoDto>> ExcludeStudentFromGroupAsync(Guid groupId, Guid studentId, Guid trainerId)
     {
         var student = await studentRepository.GetByUserIdAsync(studentId);
-        if (student == null) return Error.NotFound(description: "Student not found");
+        if (student == null) return Error.NotFound("Student not found");
 
         var group = await groupRepository.GetByIdAsync(groupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
+        if (group == null) return Error.NotFound("Group not found");
 
         student.ExcludeFromGroup(group);
         await studentRepository.SaveChangesAsync();

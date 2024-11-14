@@ -5,7 +5,7 @@ using TrainerJournal.Application.Services.Schedules;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Events;
 
-namespace TrainerJournal.Application.Events;
+namespace TrainerJournal.Application.Events.Handlers;
 
 public class GroupChangedEventHandler(
     ILogger<GroupChangedEventHandler> logger,

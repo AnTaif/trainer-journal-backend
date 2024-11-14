@@ -1,11 +1,11 @@
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Options;
 
-namespace TrainerJournal.Application.Services.Colors;
+namespace TrainerJournal.Application.Services.Groups.Colors;
 
 public class ColorGenerator : IColorGenerator
 {
-    private static Random rnd = new();
+    private static readonly Random rnd = new();
     
     public HexColor GetRandomGroupColor()
     {

@@ -1,6 +1,6 @@
 using TrainerJournal.Domain.Common;
 
-namespace TrainerJournal.Application.Services.Colors;
+namespace TrainerJournal.Application.Services.Groups.Colors;
 
 public interface IColorGenerator
 {

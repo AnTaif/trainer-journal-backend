@@ -1,5 +1,5 @@
 using ErrorOr;
-using TrainerJournal.Application.Services.Colors;
+using TrainerJournal.Application.Services.Groups.Colors;
 using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Groups.Dtos.Requests;
 using TrainerJournal.Application.Services.Groups.Dtos.Responses;
@@ -21,11 +21,10 @@ public class GroupService(
             groups.Select(g => g.ToItemDto()).ToList());
     }
 
-    //TODO: protect from other trainers/students
     public async Task<ErrorOr<GroupDto>> GetByIdAsync(Guid id)
     {
         var group = await groupRepository.GetByIdAsync(id);
-        if (group == null) return Error.NotFound(description: "Group not found");
+        if (group == null) return Error.NotFound("Group not found");
         
         return group.ToDto();
     }
@@ -47,8 +46,8 @@ public class GroupService(
     public async Task<ErrorOr<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest request, Guid id, Guid trainerId)
     {
         var group = await groupRepository.GetByIdAsync(id);
-        if (group == null) return Error.NotFound(description: "Group not found");
-        if (group.TrainerId != trainerId) return Error.Forbidden(description: "You don't have access to this group");
+        if (group == null) return Error.NotFound("Group not found");
+        if (group.TrainerId != trainerId) return Error.Forbidden("You don't have access to this group");
         
         group.UpdateInfo(request.Name, request.Price, request.HallAddress, request.HexColor);
         await groupRepository.SaveChangesAsync();
@@ -59,8 +58,8 @@ public class GroupService(
     public async Task<ErrorOr<Guid>> DeleteAsync(Guid id, Guid trainerId)
     {
         var group = await groupRepository.GetByIdAsync(id);
-        if (group == null) return Error.NotFound(description: "Group not found");
-        if (group.TrainerId != trainerId) return Error.Forbidden(description: "You don't have access to this group");
+        if (group == null) return Error.NotFound("Group not found");
+        if (group.TrainerId != trainerId) return Error.Forbidden("You don't have access to this group");
 
         group.Delete();
         await groupRepository.SaveChangesAsync();

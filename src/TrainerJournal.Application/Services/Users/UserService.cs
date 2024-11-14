@@ -23,7 +23,7 @@ public class UserService(
     public async Task<ErrorOr<GetUserInfoResponse>> GetInfoAsync(Guid id)
     {
         var user = await userManager.FindByIdAsync(id.ToString());
-        if (user == null) return Error.NotFound(description: "User not found");
+        if (user == null) return Error.NotFound("User not found");
 
         var student = await studentRepository.GetByUserIdAsync(id);
         var trainer = await trainerRepository.GetByUserIdAsync(id);
@@ -39,7 +39,7 @@ public class UserService(
     public async Task<ErrorOr<GetUserInfoResponse>> UpdateAsync(Guid id, UpdateUserRequest request)
     {
         var user = await userManager.FindByIdAsync(id.ToString());
-        if (user == null) return Error.NotFound(description: "User not found");
+        if (user == null) return Error.NotFound("User not found");
 
         var student = await studentRepository.GetByUserIdAsync(id);
         if (student == null && request.StudentInfo != null)
@@ -91,7 +91,7 @@ public class UserService(
         if (existedUser != null)
         {
             logger.LogWarning("User with username {username} already exists", username);
-            return Error.Failure("Student.Create", "User is already exists");
+            return Error.Failure("User is already exists");
         }
 
         var user = new User(username, new PersonName(request.FullName), request.Gender.ToGenderEnum());

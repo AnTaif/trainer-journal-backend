@@ -24,7 +24,7 @@ public class PracticeService(
     public async Task<ErrorOr<PracticeDto>> CreateSinglePracticeAsync(Guid trainerId, CreateSinglePracticeRequest request)
     {
         var group = await groupRepository.GetByIdAsync(request.GroupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
+        if (group == null) return Error.NotFound("Group not found");
 
         var newPractice = new SinglePractice(request.GroupId, request.Price ?? group.Price, request.Start, request.End,
             request.HallAddress ?? group.HallAddress, request.PracticeType.ToPracticeTypeEnum(), trainerId);

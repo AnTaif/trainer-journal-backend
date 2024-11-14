@@ -89,7 +89,7 @@ public class ScheduleService(
     public async Task<ErrorOr<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, CreateScheduleRequest request)
     {
         var group = await groupRepository.GetByIdAsync(request.GroupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
+        if (group == null) return Error.NotFound("Group not found");
 
         var schedule = new Schedule(request.GroupId, request.StartDay.Date, request.Until?.Date);
         await scheduleRepository.AddAsync(schedule);

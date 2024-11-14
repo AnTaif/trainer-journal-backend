@@ -12,7 +12,7 @@ public class PracticeManager(
     public async Task<ErrorOr<Practice>> GetBasePracticeAsync(Guid id, DateTime time)
     {
         var practice = await practiceRepository.GetByIdAsync(id);
-        if (practice == null) return Error.NotFound(description: "Group not found");
+        if (practice == null) return Error.NotFound("Group not found");
 
         if (practice is SinglePractice singlePractice)
         {
@@ -22,11 +22,9 @@ public class PracticeManager(
         if (practice is SchedulePractice schedulePractice)
         {
             if (!IsPracticeDateValid(schedulePractice, time))
-                return Error.Validation(
-                    description: "Original SchedulePractice and the 'practiceDate' must be the same day of the week");
+                return Error.Validation("Original SchedulePractice and the 'practiceDate' must be the same day of the week");
             if (await IsSchedulePracticeOverridenAsync(schedulePractice.Id, time))
-                return Error.NotFound(
-                    description: "This SchedulePractice is overriden by different single practice");
+                return Error.NotFound("This SchedulePractice is overriden by different single practice");
 
             return schedulePractice;
         }
