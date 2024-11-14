@@ -4,7 +4,15 @@ using TrainerJournal.Application.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 
-public class CreateStudentRequest(string fullName, string gender, DateTime birthDate, int schoolGrade, int? kyu, string? address, List<ContactDto> contacts)
+public class CreateStudentRequest(
+    string fullName,
+    string gender,
+    DateTime birthDate,
+    int schoolGrade,
+    int? kyu,
+    string? address,
+    List<Guid> groupIds,
+    List<ContactDto> contacts)
 {
     [MinimumWordsCount(2)]
     [Required]
@@ -28,6 +36,8 @@ public class CreateStudentRequest(string fullName, string gender, DateTime birth
     [Required]
     [DefaultValue("address")]
     public string? Address { get; init; } = address;
+
+    public List<Guid> GroupIds { get; init; } = groupIds;
     
     [Length(1, 2)]
     public List<ContactDto> Contacts { get; init; } = contacts;

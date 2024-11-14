@@ -21,13 +21,17 @@ public class StudentService(
         return students.Select(s => s.ToItemDto()).ToList();
     }
 
-    public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request, Guid? groupId)
+    public async Task<ErrorOr<CreateStudentResponse>> CreateAsync(CreateStudentRequest request)
     {
-        Group? group = null;
-        if (groupId != null)
+        var groups = new List<Group>();
+        if (request.GroupIds.Count > 0)
         {
-            group = await groupRepository.GetByIdAsync(groupId.Value);
-            if (group == null) return Error.NotFound("Group not found");
+            foreach (var groupId in request.GroupIds)
+            {
+                var group = await groupRepository.GetByIdAsync(groupId);
+                if (group == null) return Error.NotFound("Group not found");
+                groups.Add(group);
+            }
         }
         
         var userResult = await userService.CreateAsync(
@@ -46,9 +50,12 @@ public class StudentService(
             request.Address, 
             request.Contacts.Select(c => c.ToEntity()).ToList());
 
-        if (groupId != null)
+        if (request.GroupIds.Count > 0)
         {
-            student.AddToGroup(group!);
+            foreach (var group in groups)
+            {
+                student.AddToGroup(group);
+            }
         }
         
         studentRepository.AddStudent(student);
@@ -66,9 +73,9 @@ public class StudentService(
         return students.Select(s => s.ToItemDto()).ToList();
     }
 
-    public async Task<ErrorOr<StudentInfoDto>> AddStudentToGroupAsync(Guid groupId, Guid studentId, Guid trainerId)
+    public async Task<ErrorOr<StudentInfoDto>> AddStudentToGroupAsync(Guid groupId, AddStudentRequest request, Guid trainerId)
     {
-        var student = await studentRepository.GetByUserIdAsync(studentId);
+        var student = await studentRepository.GetByUserIdAsync(request.StudentId);
         if (student == null) return Error.NotFound("Student not found");
 
         var group = await groupRepository.GetByIdAsync(groupId);
