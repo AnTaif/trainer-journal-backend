@@ -22,8 +22,14 @@ public static class DependencyInjection
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IGroupService, GroupService>();
         services.AddTransient<IScheduleService, ScheduleService>();
+        services.AddTransient<IPracticeManager, PracticeManager>();
         services.AddTransient<IPracticeService, PracticeService>();
         services.AddTransient<IAttendanceService, AttendanceService>();
+        
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+        });
         
         services.AddTransient<IColorGenerator, ColorGenerator>();
 

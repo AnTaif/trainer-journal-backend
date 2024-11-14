@@ -35,10 +35,10 @@ builder.Services
     .AddApplicationLayer()
     .AddInfrastructureLayer();
 
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-});
+// builder.Services.AddMediatR(cfg =>
+// {
+//     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+// });
 
 var app = builder.Build();
 

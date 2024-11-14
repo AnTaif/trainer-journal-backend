@@ -7,6 +7,16 @@ namespace TrainerJournal.Application.Services.Practices;
 
 public static class PracticeExtensions
 {
+    public static PracticeDto ToDto(this Practice practice, DateTime time)
+    {
+        return practice switch
+        {
+            SinglePractice singlePractice => singlePractice.ToDto(),
+            SchedulePractice schedulePractice => schedulePractice.ToDto(time),
+            _ => throw new Exception("Practice type is unrecognized")
+        };
+    }
+    
     public static PracticeDto ToDto(this SinglePractice singlePractice)
     {
         return new PracticeDto(singlePractice.Id, singlePractice.Start, singlePractice.End,

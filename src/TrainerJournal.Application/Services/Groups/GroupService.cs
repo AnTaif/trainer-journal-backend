@@ -22,7 +22,7 @@ public class GroupService(
     }
 
     //TODO: protect from other trainers/students
-    public async Task<ErrorOr<GroupDto>> GetGroupByIdAsync(Guid id)
+    public async Task<ErrorOr<GroupDto>> GetByIdAsync(Guid id)
     {
         var group = await groupRepository.GetByIdAsync(id);
         if (group == null) return Error.NotFound(description: "Group not found");
@@ -30,7 +30,7 @@ public class GroupService(
         return group.ToDto();
     }
     
-    public async Task<ErrorOr<GroupDto>> CreateGroup(CreateGroupRequest request, Guid trainerId)
+    public async Task<ErrorOr<GroupDto>> CreateAsync(CreateGroupRequest request, Guid trainerId)
     {
         var newGroup = new Group(
             request.Name, 
@@ -43,7 +43,19 @@ public class GroupService(
         return newGroup.ToDto();
     }
 
-    public async Task<ErrorOr<GroupDto>> UpdateGroupInfoAsync(UpdateGroupInfoRequest infoRequest, Guid id, Guid trainerId)
+    public async Task<ErrorOr<GroupDto>> SetPriceAsync(Guid trainerId, Guid groupId, float newPrice)
+    {
+        var group = await groupRepository.GetByIdAsync(groupId);
+        if (group == null) return Error.NotFound(description: "Group not found");
+        if (group.TrainerId != trainerId) return Error.Forbidden(description: "You don't have access to this group");
+
+        group.SetPrice(newPrice);
+        await groupRepository.SaveChangesAsync();
+
+        return group.ToDto();
+    }
+
+    public async Task<ErrorOr<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest infoRequest, Guid id, Guid trainerId)
     {
         var group = await groupRepository.GetByIdAsync(id);
         if (group == null) return Error.NotFound(description: "Group not found");
@@ -55,7 +67,7 @@ public class GroupService(
         return group.ToDto();
     }
 
-    public async Task<ErrorOr<Guid>> DeleteGroupAsync(Guid id, Guid trainerId)
+    public async Task<ErrorOr<Guid>> DeleteAsync(Guid id, Guid trainerId)
     {
         var group = await groupRepository.GetByIdAsync(id);
         if (group == null) return Error.NotFound(description: "Group not found");

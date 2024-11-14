@@ -3,7 +3,6 @@ using TrainerJournal.Domain.Enums.PracticeType;
 
 namespace TrainerJournal.Domain.Entities;
 
-//TODO: при изменении цены тренировок необходимо создавать новый SchedulePractice 
 public abstract class Practice(
     Guid groupId,
     float price,
@@ -26,4 +25,10 @@ public abstract class Practice(
     public Trainer Trainer { get; protected set; } = null!;
     
     public PracticeType PracticeType { get; protected set; } = practiceType;
+    
+    public void ChangePrice(float price)
+    {
+        if (Math.Abs(price - Price) > 0.0001) 
+            Price = price;
+    }
 }

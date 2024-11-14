@@ -3,7 +3,7 @@ using TrainerJournal.Application.DataAnnotations;
 namespace TrainerJournal.Application.Services.Practices.Dtos.Requests;
 
 public class ChangePracticeRequest(
-    DateTime currentStart, 
+    DateTime practiceStart, 
     Guid? groupId, 
     DateTime? newStart, 
     DateTime? newEnd, 
@@ -13,7 +13,7 @@ public class ChangePracticeRequest(
     /// <summary>
     /// Время начала практики в текущей неделе
     /// </summary>
-    public DateTime CurrentStart { get; init; } = currentStart;
+    public DateTime PracticeStart { get; init; } = practiceStart;
     
     public Guid? GroupId { get; init; } = groupId;
     public DateTime? NewStart { get; init; } = newStart;

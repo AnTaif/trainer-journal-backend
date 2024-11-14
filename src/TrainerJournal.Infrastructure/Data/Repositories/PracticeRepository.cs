@@ -19,6 +19,12 @@ public class PracticeRepository(AppDbContext dbContext) : IPracticeRepository
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
+    public async Task<bool> HasOverridenSinglePracticeAsync(Guid overridenPracticeId, DateTime originalStart)
+    {
+        return await singlePractices
+            .AnyAsync(s => s.OverridenPracticeId == overridenPracticeId && s.OriginalStart == originalStart);
+    }
+
     public async Task<List<SinglePractice>> GetSinglePracticesByUserIdAsync(Guid userId, DateTime start, DateTime end)
     {
         return await singlePractices

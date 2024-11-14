@@ -2,12 +2,12 @@ namespace TrainerJournal.Domain.Common;
 
 public abstract class Entity<TId>(TId id)
 {
-    private readonly List<IDomainEvent> domainEvents = [];
-    public IReadOnlyCollection<IDomainEvent> DomainEvents => domainEvents.AsReadOnly();
+    private readonly List<DomainEvent> domainEvents = [];
+    public IReadOnlyCollection<DomainEvent> DomainEvents => domainEvents.AsReadOnly();
     
     public TId Id { get; init; } = id;
     
-    protected void AddDomainEvent(IDomainEvent domainEvent)
+    protected void AddDomainEvent(DomainEvent domainEvent)
     {
         domainEvents.Add(domainEvent);
     }

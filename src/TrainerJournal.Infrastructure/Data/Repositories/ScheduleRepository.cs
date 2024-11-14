@@ -17,6 +17,20 @@ public class ScheduleRepository(AppDbContext dbContext) : IScheduleRepository
             .FirstOrDefaultAsync(s => s.Id == id);
     }
 
+    public async Task<List<Schedule>> GetAllByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
+    {
+        return await schedules
+            .Include(s => s.Practices)
+            .Include(s => s.Group)
+            .ThenInclude(g => g.Students)
+            .Where(s => s.GroupId == groupId)
+            .Where(s => 
+                (start >= s.StartDay && start <= (s.Until ?? DateTime.MaxValue)) 
+                || (end >= s.StartDay && end <= (s.Until ?? DateTime.MaxValue)) 
+                || (start <= s.StartDay && end >= (s.Until ?? DateTime.MaxValue)))
+            .ToListAsync();
+    }
+
     public async Task<List<Schedule>> GetAllByUserIdAsync(Guid userId, DateTime start, DateTime end)
     {
         return await schedules

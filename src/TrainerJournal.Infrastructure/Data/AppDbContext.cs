@@ -69,9 +69,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IMediator medi
     
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var domainEvents = new List<IDomainEvent>();
+        var domainEvents = new List<DomainEvent>();
 
-        foreach (var entry in ChangeTracker.Entries<Entity<object>>())
+        foreach (var entry in ChangeTracker.Entries<Entity<Guid>>())
+        {
+            domainEvents.AddRange(entry.Entity.DomainEvents);
+            entry.Entity.ClearDomainEvents();
+        }
+        
+        foreach (var entry in ChangeTracker.Entries<Entity<int>>())
         {
             domainEvents.AddRange(entry.Entity.DomainEvents);
             entry.Entity.ClearDomainEvents();
@@ -79,10 +85,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IMediator medi
 
         foreach (var domainEvent in domainEvents)
         {
-            var notification = (INotification)Activator.CreateInstance(
-                typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), 
-                domainEvent)!;
-            await mediator.Publish(notification, cancellationToken);
+            await mediator.Publish(domainEvent, cancellationToken);
         }
         
         var result = await base.SaveChangesAsync(cancellationToken);

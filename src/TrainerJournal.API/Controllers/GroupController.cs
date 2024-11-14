@@ -17,13 +17,12 @@ namespace TrainerJournal.API.Controllers;
 
 [ApiController]
 [Route("/groups")]
-[Authorize]
+[Authorize(Roles = Roles.Trainer)]
 public class GroupController(
     IGroupService groupService, 
     IStudentService studentService) : ControllerBase
 {
     [HttpGet]
-    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GetGroupsResponse>> GetAllAsync()
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -33,47 +32,56 @@ public class GroupController(
         return this.ToActionResult(result, Ok);
     }
     
+    [HttpGet("{id}")]
+    [Authorize]
+    public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
+    {
+        var result = await groupService.GetByIdAsync(id);
+        return this.ToActionResult(result, Ok);
+    }
+    
     [HttpPost]
-    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GroupDto>> CreateGroupAsync(CreateGroupRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await groupService.CreateGroup(request, Guid.Parse(userId));
+        var result = await groupService.CreateAsync(request, Guid.Parse(userId));
         return this.ToActionResult(result, value => CreatedAtAction("CreateGroup", value));
-    }
-    
-    [HttpGet("{id}")]
-    public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
-    {
-        var result = await groupService.GetGroupByIdAsync(id);
-        return this.ToActionResult(result, Ok);
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GroupDto>> ChangeGroupAsync(UpdateGroupInfoRequest infoRequest, Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await groupService.UpdateGroupInfoAsync(infoRequest, id, Guid.Parse(userId));
+        var result = await groupService.UpdateInfoAsync(infoRequest, id, Guid.Parse(userId));
+        return this.ToActionResult(result, Ok);
+    }
+
+    [HttpPost("{id}/price")]
+    public async Task<ActionResult<GroupDto>> SetGroupPriceAsync(Guid id, float newPrice)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await groupService.SetPriceAsync(Guid.Parse(userId), id, newPrice);
         return this.ToActionResult(result, Ok);
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = Roles.Trainer)]
     public async Task<IActionResult> DeleteGroupAsync(Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await groupService.DeleteGroupAsync(id, Guid.Parse(userId));
+        var result = await groupService.DeleteAsync(id, Guid.Parse(userId));
         return this.ToActionResult(result, _ => NoContent());
     }
 
     [HttpGet("{id}/students")]
+    [Authorize]
     public async Task<ActionResult<List<StudentItemDto>>> GetGroupStudentsAsync(Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);

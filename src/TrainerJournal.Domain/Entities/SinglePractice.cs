@@ -38,7 +38,7 @@ public class SinglePractice(
         Start = start ?? Start;
         End = end ?? End;
         PracticeType = practiceType ?? PracticeType;
-        if (price != null && Math.Abs(price.Value - Price) > 0.0001) ChangePrice(price.Value);
+        if (price != null) ChangePrice(price.Value);
     }
 
     public void Cancel(string comment = "")
@@ -62,11 +62,6 @@ public class SinglePractice(
     public void ChangeTrainer(Guid trainerId)
     {
         TrainerId = trainerId;
-    }
-    
-    public void ChangePrice(float price)
-    {
-        Price = price;
     }
     
     public void ChangePracticeType(PracticeType practiceType)

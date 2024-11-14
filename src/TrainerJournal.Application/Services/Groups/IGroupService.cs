@@ -9,11 +9,13 @@ public interface IGroupService
 {
     public Task<ErrorOr<GetGroupsResponse>> GetGroupsByTrainerIdAsync(Guid userId);
 
-    public Task<ErrorOr<GroupDto>> GetGroupByIdAsync(Guid id);
+    public Task<ErrorOr<GroupDto>> GetByIdAsync(Guid id);
 
-    public Task<ErrorOr<GroupDto>> CreateGroup(CreateGroupRequest request, Guid trainerId);
+    public Task<ErrorOr<GroupDto>> CreateAsync(CreateGroupRequest request, Guid trainerId);
 
-    public Task<ErrorOr<GroupDto>> UpdateGroupInfoAsync(UpdateGroupInfoRequest infoRequest, Guid id, Guid trainerId);
+    public Task<ErrorOr<GroupDto>> SetPriceAsync(Guid trainerId, Guid groupId, float newPrice);
 
-    public Task<ErrorOr<Guid>> DeleteGroupAsync(Guid id, Guid trainerId);
+    public Task<ErrorOr<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest infoRequest, Guid id, Guid trainerId);
+
+    public Task<ErrorOr<Guid>> DeleteAsync(Guid id, Guid trainerId);
 }

@@ -7,11 +7,11 @@ public static class GroupExtensions
 {
     public static GroupDto ToDto(this Group group)
     {
-        return new GroupDto(group.Id, group.Name, group.Students.Count, group.TrainerId, group.HexColor.ToString());
+        return new GroupDto(group.Id, group.Name, group.Students.Count, group.TrainerId, group.HexColor.ToString(), group.Price);
     }
 
     public static GroupItemDto ToItemDto(this Group group)
     {
-        return new GroupItemDto(group.Id, group.Name, group.HexColor.ToString(), group.Students.Count);
+        return new GroupItemDto(group.Id, group.Name, group.HexColor.ToString(), group.Students.Count, group.Price);
     }
 }

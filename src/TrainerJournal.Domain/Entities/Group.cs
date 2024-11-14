@@ -1,4 +1,5 @@
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Events;
 
 namespace TrainerJournal.Domain.Entities;
 
@@ -42,6 +43,9 @@ public class Group : Entity<Guid>
 
     public void SetPrice(float price)
     {
+        if (Math.Abs(price - Price) < 0.0001) return;
+        
+        AddDomainEvent(new GroupPriceChangedEvent(this, Price, price));
         Price = price;
     }
 }

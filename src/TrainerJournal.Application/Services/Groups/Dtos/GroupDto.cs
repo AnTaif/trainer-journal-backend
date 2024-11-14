@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Groups.Dtos;
 
-public class GroupDto(Guid id, string name, int studentsCount, Guid trainerId, string hexColor)
+public class GroupDto(Guid id, string name, int studentsCount, Guid trainerId, string hexColor, float price)
 {
     public Guid Id { get; init; } = id;
     
@@ -16,4 +16,6 @@ public class GroupDto(Guid id, string name, int studentsCount, Guid trainerId, s
     [Required]
     [DefaultValue("#A293FF")]
     public string HexColor { get; init; } = hexColor;
+    
+    public float Price { get; init; } = price;
 }
