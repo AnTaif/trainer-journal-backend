@@ -9,6 +9,6 @@ public static class SchedulePracticeExtensions
     public static ScheduleItemDto ToItemDto(this SchedulePractice practice, Group group)
     {
         return new ScheduleItemDto(practice.Id, practice.Start, practice.End, group.Name,
-            practice.PracticeType.ToPracticeTypeString(), practice.Price, false);
+            practice.HallAddress, practice.PracticeType.ToPracticeTypeString(), practice.Price, false);
     }
 }

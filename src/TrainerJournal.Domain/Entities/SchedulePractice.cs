@@ -11,9 +11,10 @@ public class SchedulePractice(
     float price,
     DateTime start,
     DateTime end,
+    string hallAddress,
     PracticeType practiceType,
     Guid trainerId)
-    : Practice(groupId, price, start, end, practiceType, trainerId)
+    : Practice(groupId, price, start, end, hallAddress, practiceType, trainerId)
 {
     public Guid ScheduleId { get; private set; } = scheduleId;
     public Schedule Schedule { get; private set; } = null!;

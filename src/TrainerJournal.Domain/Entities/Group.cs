@@ -7,6 +7,8 @@ public class Group : Entity<Guid>
 {
     public string Name { get; private set; } = null!;
     public HexColor HexColor { get; private set; } = null!;
+
+    public string HallAddress { get; private set; } = "";
     
     public float Price { get; private set; }
     
@@ -19,16 +21,19 @@ public class Group : Entity<Guid>
     
     public Group() : base(Guid.NewGuid()) { }
     
-    public Group(string name, HexColor hexColor, Guid trainerId) : base(Guid.NewGuid())
+    public Group(string name, string hallAddress, HexColor hexColor, Guid trainerId) : base(Guid.NewGuid())
     {
         Name = name;
+        HallAddress = hallAddress;
         HexColor = hexColor;
         TrainerId = trainerId;
     }
 
-    public void UpdateInfo(string? name, string? hexCode)
+    public void UpdateInfo(string? name, float? price, string? hallAddress, string? hexCode)
     {
         if (name != null) Name = name;
+        if (hallAddress != null && HallAddress != hallAddress) ChangeAddress(hallAddress);
+        if (price != null && Math.Abs(price.Value - Price) > 0.0001) SetPrice(price.Value);
         if (hexCode != null) HexColor = new HexColor(hexCode);
     }
 
@@ -41,11 +46,17 @@ public class Group : Entity<Guid>
         }
     }
 
+    public void ChangeAddress(string hallAddress)
+    {
+        AddDomainEvent(new GroupChangedEvent(this, null, hallAddress));
+        HallAddress = hallAddress;
+    }
+
     public void SetPrice(float price)
     {
         if (Math.Abs(price - Price) < 0.0001) return;
         
-        AddDomainEvent(new GroupPriceChangedEvent(this, Price, price));
+        AddDomainEvent(new GroupChangedEvent(this, price, null));
         Price = price;
     }
 }

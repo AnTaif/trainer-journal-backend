@@ -59,12 +59,12 @@ public static class DataSeeder
     
     private static Task SeedGroupsAsync(AppDbContext dbContext)
     {
-        var group1 = new Group("Группа 1", new HexColor("#A293FF"), adminGuid)
+        var group1 = new Group("Группа 1", "Денисова-Уральского 5а", new HexColor("#A293FF"), adminGuid)
         {
             Id = group1Guid
         };
 
-        var group2 = new Group("Младшая группа", new HexColor("#93FFCB"), trainer1Guid)
+        var group2 = new Group("Младшая группа", "Денисова-Уральского 5а", new HexColor("#93FFCB"), trainer1Guid)
         {
             Id = group2Guid
         };

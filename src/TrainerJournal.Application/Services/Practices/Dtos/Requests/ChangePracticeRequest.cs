@@ -7,6 +7,7 @@ public class ChangePracticeRequest(
     Guid? groupId, 
     DateTime? newStart, 
     DateTime? newEnd, 
+    string? hallAddress,
     string? practiceType, 
     float? price)
 {
@@ -19,6 +20,8 @@ public class ChangePracticeRequest(
     public DateTime? NewStart { get; init; } = newStart;
     public DateTime? NewEnd { get; init; } = newEnd;
     
+    public string? HallAddress { get; } = hallAddress;
+
     [PracticeEnum]
     public string? PracticeType { get; init; } = practiceType;
     

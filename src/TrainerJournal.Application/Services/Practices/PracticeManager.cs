@@ -35,7 +35,7 @@ public class PracticeManager(
     }
 
     public async Task<ErrorOr<Practice>> UpdateSpecificPracticeAsync(Guid practiceId, DateTime practiceStart, Guid? groupId, 
-        DateTime? newStart, DateTime? newEnd, string? practiceType, float? price)
+        DateTime? newStart, DateTime? newEnd, string? hallAddress, string? practiceType, float? price)
     {
         var practiceResult = await GetBasePracticeAsync(practiceId, practiceStart);
         if (practiceResult.IsError) return practiceResult;
@@ -50,7 +50,7 @@ public class PracticeManager(
         if (practice is SchedulePractice schedulePractice)
         {
             return await CreatePracticeFromScheduleAsync(
-            schedulePractice, practiceStart, newStart, newEnd, price, practiceType?.ToPracticeTypeEnum());
+            schedulePractice, practiceStart, newStart, newEnd, price, hallAddress, practiceType?.ToPracticeTypeEnum());
         }
 
         throw new Exception("Practice type is unrecognized");
@@ -85,6 +85,7 @@ public class PracticeManager(
         DateTime? newStart = null, 
         DateTime? newEnd = null, 
         float? price = null,
+        string? hallAddress = null,
         PracticeType? practiceType = null)
     {
         var newPractice = new SinglePractice(
@@ -92,6 +93,7 @@ public class PracticeManager(
             price ?? schedulePractice.Price,
             newStart ?? SchedulePractice.CombineDateAndTime(currentStart, schedulePractice.Start),
             newEnd ?? SchedulePractice.CombineDateAndTime(currentStart, schedulePractice.End),
+            hallAddress ?? schedulePractice.HallAddress,
             practiceType ?? schedulePractice.PracticeType,
             schedulePractice.TrainerId,
             schedulePractice.Id,

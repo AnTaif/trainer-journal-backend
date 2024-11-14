@@ -12,7 +12,7 @@ public interface IPracticeManager
     public Task<ErrorOr<Practice>> GetBasePracticeAsync(Guid id, DateTime time);
 
     public Task<ErrorOr<Practice>> UpdateSpecificPracticeAsync(Guid practiceId, DateTime practiceStart, Guid? groupId, 
-        DateTime? newStart, DateTime? newEnd, string? practiceType, float? price);
+        DateTime? newStart, DateTime? newEnd, string? hallAddress, string? practiceType, float? price);
 
     public Task<ErrorOr<Practice>> CancelSpecificPracticeAsync(Guid practiceId, DateTime practiceStart, string comment);
 }

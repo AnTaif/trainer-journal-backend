@@ -27,7 +27,7 @@ public class PracticeService(
         if (group == null) return Error.NotFound(description: "Group not found");
 
         var newPractice = new SinglePractice(request.GroupId, request.Price ?? group.Price, request.Start, request.End,
-                                             request.PracticeType.ToPracticeTypeEnum(), trainerId);
+            request.HallAddress ?? group.HallAddress, request.PracticeType.ToPracticeTypeEnum(), trainerId);
 
         await practiceRepository.AddAsync(newPractice);
         await practiceRepository.SaveChangesAsync();
@@ -43,6 +43,7 @@ public class PracticeService(
             request.GroupId, 
             request.NewStart, 
             request.NewEnd, 
+            request.HallAddress,
             request.PracticeType, 
             request.Price);
         if (practiceResult.IsError) return practiceResult.FirstError;

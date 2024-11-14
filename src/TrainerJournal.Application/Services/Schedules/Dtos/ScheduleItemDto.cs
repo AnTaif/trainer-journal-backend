@@ -9,6 +9,7 @@ public class ScheduleItemDto(
     DateTime start,
     DateTime end,
     string groupName,
+    string hallAddress,
     string practiceType,
     float price,
     bool isCanceled)
@@ -20,6 +21,8 @@ public class ScheduleItemDto(
     [Required]
     [DefaultValue("Команда 1")]
     public string GroupName { get; init; } = groupName;
+
+    public string HallAddress { get; init; } = hallAddress;
 
     [Required]
     [PracticeEnum]

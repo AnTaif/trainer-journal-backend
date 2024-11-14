@@ -22,7 +22,7 @@ public static class PracticeExtensions
         return new PracticeDto(singlePractice.Id, singlePractice.Start, singlePractice.End,
             new PracticeGroupDto(singlePractice.GroupId, singlePractice.Group.Name),
             new PracticeTrainerDto(singlePractice.TrainerId, singlePractice.Trainer.User.FullName.ToString()),
-            singlePractice.PracticeType.ToPracticeTypeString(), singlePractice.Price, 
+            singlePractice.PracticeType.ToPracticeTypeString(), singlePractice.HallAddress, singlePractice.Price, 
             singlePractice.IsCanceled, singlePractice.CancelComment);
     }
 
@@ -34,7 +34,7 @@ public static class PracticeExtensions
         return new PracticeDto(schedulePractice.Id, start, end,
             new PracticeGroupDto(schedulePractice.GroupId, schedulePractice.Group.Name),
             new PracticeTrainerDto(schedulePractice.TrainerId, schedulePractice.Trainer.User.FullName.ToString()),
-            schedulePractice.PracticeType.ToPracticeTypeString(), schedulePractice.Price, 
+            schedulePractice.PracticeType.ToPracticeTypeString(), schedulePractice.HallAddress, schedulePractice.Price, 
             false, null);
     }
 }

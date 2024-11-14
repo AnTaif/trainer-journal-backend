@@ -7,19 +7,19 @@ using TrainerJournal.Domain.Events;
 
 namespace TrainerJournal.Application.Events;
 
-public class GroupPriceChangedEventHandler(
-    ILogger<GroupPriceChangedEventHandler> logger,
+public class GroupChangedEventHandler(
+    ILogger<GroupChangedEventHandler> logger,
     IPracticeRepository practiceRepository,
-    IScheduleRepository scheduleRepository) : INotificationHandler<GroupPriceChangedEvent>
+    IScheduleRepository scheduleRepository) : INotificationHandler<GroupChangedEvent>
 {
     public async Task Handle(
-        GroupPriceChangedEvent domainEvent, CancellationToken cancellationToken)
+        GroupChangedEvent domainEvent, CancellationToken cancellationToken)
     {
         logger.LogInformation("Event GroupPriceChangedEvent handled");
-        await HandleScheduleChangeWithNewPriceAsync(domainEvent);
+        await HandleScheduleChangeAsync(domainEvent);
     }
 
-    private async Task HandleScheduleChangeWithNewPriceAsync(GroupPriceChangedEvent domainEvent)
+    private async Task HandleScheduleChangeAsync(GroupChangedEvent domainEvent)
     {
         var date = DateTime.UtcNow;
         
@@ -38,9 +38,10 @@ public class GroupPriceChangedEventHandler(
                         new SchedulePractice(
                             newSchedule.Id, 
                             p.GroupId, 
-                            domainEvent.NewPrice, 
+                            domainEvent.NewPrice ?? p.Price, 
                             CalculateDateInSchedule(p.Start, newSchedule.StartDay), 
                             CalculateDateInSchedule(p.End, newSchedule.StartDay), 
+                            domainEvent.NewHallAddress ?? "",
                             p.PracticeType, 
                             p.TrainerId))
                     .ToList();
@@ -53,7 +54,8 @@ public class GroupPriceChangedEventHandler(
                 var practices = schedule.Practices;
                 foreach (var practice in practices)
                 {
-                    practice.ChangePrice(domainEvent.NewPrice);
+                    if (domainEvent.NewPrice != null) practice.ChangePrice(domainEvent.NewPrice.Value);
+                    if (domainEvent.NewHallAddress != null) practice.ChangeHallAddress(domainEvent.NewHallAddress);
                 }
             }
         }

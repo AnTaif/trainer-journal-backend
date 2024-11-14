@@ -46,6 +46,7 @@ public class ScheduleService(
                 practice.Start,
                 practice.End,
                 practice.Group.Name,
+                practice.HallAddress,
                 practice.PracticeType.ToPracticeTypeString(),
                 practice.Price,
                 practice.IsCanceled));
@@ -79,7 +80,7 @@ public class ScheduleService(
                     if (overridenStarts.Contains(currentStart)) continue;
 
                     responseList.Add(new ScheduleItemDto(practice.Id, currentStart, currentEnd, schedule.Group.Name,
-                        PracticeType.Regular.ToPracticeTypeString(), practice.Price, false));
+                        practice.HallAddress, PracticeType.Regular.ToPracticeTypeString(), practice.Price, false));
                 }
             }
         }
@@ -101,6 +102,7 @@ public class ScheduleService(
                     group.Price, 
                     practiceRequest.Start, 
                     practiceRequest.End, 
+                    group.HallAddress,
                     PracticeType.Regular, 
                     trainerId))
             .ToList();

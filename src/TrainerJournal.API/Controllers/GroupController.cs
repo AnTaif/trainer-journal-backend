@@ -60,16 +60,6 @@ public class GroupController(
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpPost("{id}/price")]
-    public async Task<ActionResult<GroupDto>> SetGroupPriceAsync(Guid id, float newPrice)
-    {
-        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
-        if (userId == null) return Unauthorized();
-
-        var result = await groupService.SetPriceAsync(Guid.Parse(userId), id, newPrice);
-        return this.ToActionResult(result, Ok);
-    }
-
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteGroupAsync(Guid id)
     {

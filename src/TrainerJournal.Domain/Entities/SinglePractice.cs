@@ -14,11 +14,12 @@ public class SinglePractice(
     float price,
     DateTime start,
     DateTime end,
+    string hallAddress,
     PracticeType practiceType,
     Guid trainerId,
     Guid? overridenPracticeId = null,
     DateTime? originalStart = null)
-    : Practice(groupId, price, start, end, practiceType, trainerId)
+    : Practice(groupId, price, start, end, hallAddress, practiceType, trainerId)
 {
     public bool IsCanceled { get; private set; }
 

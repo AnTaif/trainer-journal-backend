@@ -13,9 +13,7 @@ public interface IGroupService
 
     public Task<ErrorOr<GroupDto>> CreateAsync(CreateGroupRequest request, Guid trainerId);
 
-    public Task<ErrorOr<GroupDto>> SetPriceAsync(Guid trainerId, Guid groupId, float newPrice);
-
-    public Task<ErrorOr<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest infoRequest, Guid id, Guid trainerId);
+    public Task<ErrorOr<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest request, Guid id, Guid trainerId);
 
     public Task<ErrorOr<Guid>> DeleteAsync(Guid id, Guid trainerId);
 }

@@ -4,7 +4,7 @@ using TrainerJournal.Application.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Practices.Dtos.Requests;
 
-public class CreateSinglePracticeRequest(Guid groupId, DateTime start, DateTime end, string practiceType, float? price)
+public class CreateSinglePracticeRequest(Guid groupId, DateTime start, DateTime end, string practiceType, string? hallAddress, float? price)
 {
     public Guid GroupId { get; init; } = groupId;
     public DateTime Start { get; init; } = start;
@@ -14,6 +14,8 @@ public class CreateSinglePracticeRequest(Guid groupId, DateTime start, DateTime 
     [PracticeEnum]
     [DefaultValue("Семинар")]
     public string PracticeType { get; init; } = practiceType;
+    
+    public string? HallAddress { get; init; } = hallAddress;
     
     [Range(0.0, float.MaxValue)]
     public float? Price { get; init; } = price;

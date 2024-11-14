@@ -8,6 +8,7 @@ public abstract class Practice(
     float price,
     DateTime start,
     DateTime end,
+    string hallAddress,
     PracticeType practiceType,
     Guid trainerId)
     : Entity<Guid>(Guid.NewGuid())
@@ -23,8 +24,15 @@ public abstract class Practice(
     
     public Guid TrainerId { get; protected set; } = trainerId;
     public Trainer Trainer { get; protected set; } = null!;
+
+    public string HallAddress { get; protected set; } = hallAddress;
     
     public PracticeType PracticeType { get; protected set; } = practiceType;
+
+    public void ChangeHallAddress(string hallAddress)
+    {
+        HallAddress = hallAddress;
+    }
     
     public void ChangePrice(float price)
     {

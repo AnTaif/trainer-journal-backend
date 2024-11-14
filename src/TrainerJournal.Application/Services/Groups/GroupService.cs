@@ -34,6 +34,7 @@ public class GroupService(
     {
         var newGroup = new Group(
             request.Name, 
+            request.HallAddress,
             request.HexColor == null ? colorGenerator.GetRandomGroupColor() : new HexColor(request.HexColor), 
             trainerId);
 
@@ -43,25 +44,13 @@ public class GroupService(
         return newGroup.ToDto();
     }
 
-    public async Task<ErrorOr<GroupDto>> SetPriceAsync(Guid trainerId, Guid groupId, float newPrice)
-    {
-        var group = await groupRepository.GetByIdAsync(groupId);
-        if (group == null) return Error.NotFound(description: "Group not found");
-        if (group.TrainerId != trainerId) return Error.Forbidden(description: "You don't have access to this group");
-
-        group.SetPrice(newPrice);
-        await groupRepository.SaveChangesAsync();
-
-        return group.ToDto();
-    }
-
-    public async Task<ErrorOr<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest infoRequest, Guid id, Guid trainerId)
+    public async Task<ErrorOr<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest request, Guid id, Guid trainerId)
     {
         var group = await groupRepository.GetByIdAsync(id);
         if (group == null) return Error.NotFound(description: "Group not found");
         if (group.TrainerId != trainerId) return Error.Forbidden(description: "You don't have access to this group");
         
-        group.UpdateInfo(infoRequest.Name, infoRequest.HexColor);
+        group.UpdateInfo(request.Name, request.Price, request.HallAddress, request.HexColor);
         await groupRepository.SaveChangesAsync();
 
         return group.ToDto();

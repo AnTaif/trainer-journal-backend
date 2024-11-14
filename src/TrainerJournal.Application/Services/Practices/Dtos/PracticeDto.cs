@@ -12,6 +12,7 @@ public class PracticeDto(
     PracticeGroupDto group,
     PracticeTrainerDto trainer,
     string practiceType,
+    string hallAddress,
     float price,
     bool isCanceled,
     string? cancelComment)
@@ -26,6 +27,10 @@ public class PracticeDto(
     [PracticeEnum]
     [DefaultValue("Тренировка")]
     public string PracticeType { get; init; } = practiceType;
+
+    [Required]
+    [DefaultValue("Улица д.101")]
+    public string HallAddress { get; init; } = hallAddress;
     
     public float Price { get; init; } = price;
     public bool IsCanceled { get; } = isCanceled;
