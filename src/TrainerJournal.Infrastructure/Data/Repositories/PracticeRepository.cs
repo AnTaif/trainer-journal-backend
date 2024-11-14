@@ -35,6 +35,15 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
             .ToListAsync();
     }
 
+    public async Task<List<SinglePractice>> GetSinglePracticesByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
+    {
+        return await singlePractices
+            .Include(p => p.Group)
+                .ThenInclude(g => g.Students)
+            .Where(p => p.GroupId == groupId)
+            .ToListAsync();
+    }
+
     public async Task AddRangeAsync(List<SchedulePractice> newPractices)
     {
         await schedulePractices.AddRangeAsync(newPractices);

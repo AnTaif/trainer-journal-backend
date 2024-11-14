@@ -12,11 +12,11 @@ using TrainerJournal.Domain.Enums.ViewSchedule;
 namespace TrainerJournal.API.Controllers;
 
 [ApiController]
-[Route("schedule")]
+[Authorize]
 public class ScheduleController(
     IScheduleService scheduleService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("me/schedule")]
     public async Task<ActionResult<List<ScheduleItemDto>>> GetSchedule(
         [FromQuery] DateTime date, [FromQuery] ViewSchedule view = ViewSchedule.Week)
     {
@@ -27,14 +27,25 @@ public class ScheduleController(
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpPost]
-    [Authorize(Roles = Roles.Trainer)]
-    public async Task<ActionResult<List<ScheduleItemDto>>> CreateSchedule(CreateScheduleRequest request)
+    [HttpGet("groups/{id}/schedule")]
+    public async Task<ActionResult<List<ScheduleItemDto>>> GetGroupSchedule(
+        Guid id, [FromQuery] DateTime date, [FromQuery] ViewSchedule view = ViewSchedule.Week)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await scheduleService.CreateScheduleAsync(Guid.Parse(userId), request);
+        var result = await scheduleService.GetScheduleAsync(Guid.Parse(userId), date.ToUniversalTime(), view);
+        return this.ToActionResult(result, Ok);
+    }
+    
+    [HttpPost("groups/{id}/schedule")]
+    [Authorize(Roles = Roles.Trainer)]
+    public async Task<ActionResult<List<ScheduleItemDto>>> CreateSchedule(Guid id, CreateScheduleRequest request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await scheduleService.CreateScheduleAsync(Guid.Parse(userId), id, request);
         return this.ToActionResult(result, value => CreatedAtAction("CreateSchedule", value));
     }
 }

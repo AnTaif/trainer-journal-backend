@@ -10,6 +10,8 @@ public interface IPracticeRepository
 
     public Task<List<SinglePractice>> GetSinglePracticesByUserIdAsync(Guid userId, DateTime start, DateTime end);
 
+    public Task<List<SinglePractice>> GetSinglePracticesByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
+
     public Task AddRangeAsync(List<SchedulePractice> newPractices);
     
     public Task AddAsync(SinglePractice practice);

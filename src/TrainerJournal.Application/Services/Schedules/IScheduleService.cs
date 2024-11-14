@@ -8,6 +8,8 @@ namespace TrainerJournal.Application.Services.Schedules;
 public interface IScheduleService
 {
     public Task<ErrorOr<List<ScheduleItemDto>>> GetScheduleAsync(Guid userId, DateTime Date, ViewSchedule View);
+
+    public Task<ErrorOr<List<ScheduleItemDto>>> GetGroupScheduleAsync( Guid groupId, DateTime Date, ViewSchedule View);
     
-    public Task<ErrorOr<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, CreateScheduleRequest request);
+    public Task<ErrorOr<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, Guid groupId, CreateScheduleRequest request);
 }

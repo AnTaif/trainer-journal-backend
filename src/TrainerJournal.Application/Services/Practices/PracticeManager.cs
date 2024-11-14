@@ -107,7 +107,6 @@ public class PracticeManager(
 
     private async Task<bool> IsSchedulePracticeOverridenAsync(Guid practiceId, DateTime practiceStart)
     {
-        logger.LogInformation("SchedulePractice is overriden");
         return await practiceRepository.HasOverridenSinglePracticeAsync(practiceId, practiceStart);
     }
 }
