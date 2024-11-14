@@ -29,9 +29,9 @@ public class UserService(
         var trainer = await trainerRepository.GetByUserIdAsync(id);
 
         if (student == null && trainer == null)
-            logger.LogWarning("User with an id {id} has neither a trainer nor a student account", id);
+            logger.LogError("User with an id {id} has neither a trainer nor a student account", id);
         else if (student != null && trainer != null)
-            logger.LogWarning("User with an id {id} has both accounts: trainer and student", id);
+            logger.LogError("User with an id {id} has both accounts: trainer and student", id);
 
         return new GetUserInfoResponse(user.Id, user.ToInfoDto(), student?.ToInfoDto(), trainer?.ToInfoDto());
     }

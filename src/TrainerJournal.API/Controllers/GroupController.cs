@@ -7,6 +7,9 @@ using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Groups.Dtos.Requests;
 using TrainerJournal.Application.Services.Groups.Dtos.Responses;
+using TrainerJournal.Application.Services.Students;
+using TrainerJournal.Application.Services.Students.Dtos;
+using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Domain.Constants;
 
 namespace TrainerJournal.API.Controllers;
@@ -15,6 +18,7 @@ namespace TrainerJournal.API.Controllers;
 [Route("/groups")]
 [Authorize(Roles = Roles.Trainer)]
 public class GroupController(
+    IStudentService studentService,
     IGroupService groupService) : ControllerBase
 {
     [HttpGet]
@@ -63,5 +67,43 @@ public class GroupController(
 
         var result = await groupService.DeleteAsync(id, Guid.Parse(userId));
         return this.ToActionResult(result, _ => NoContent());
+    }
+    
+    [HttpGet("{id}/students")]
+    [Authorize]
+    public async Task<ActionResult<List<StudentItemDto>>> GetGroupStudentsAsync(Guid id)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await studentService.GetStudentsByGroupAsync(id, Guid.Parse(userId));
+        return this.ToActionResult(result, Ok);
+    }
+    
+    /// <summary>
+    /// Adds existed Student to the Group
+    /// </summary>
+    [HttpPost("{id}/students")]
+    [Authorize(Roles = Roles.Trainer)]
+    public async Task<ActionResult<StudentInfoDto>> AddStudentToGroupAsync(Guid id, AddStudentRequest request)
+    {
+        var trainerId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (trainerId == null) return Unauthorized();
+
+        var result = 
+            await studentService.AddStudentToGroupAsync(id, request, Guid.Parse(trainerId));
+        return this.ToActionResult(result, Ok);
+    }
+    
+    [HttpDelete("{groupId}/students/{studentId}")]
+    [Authorize(Roles = Roles.Trainer)]
+    public async Task<ActionResult<StudentInfoDto>> ExcludeStudentFromGroupAsync(Guid groupId, Guid studentId)
+    {
+        var trainerId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (trainerId == null) return Unauthorized();
+
+        var result = 
+            await studentService.ExcludeStudentFromGroupAsync(groupId, studentId, Guid.Parse(trainerId));
+        return this.ToActionResult(result, Ok);
     }
 }

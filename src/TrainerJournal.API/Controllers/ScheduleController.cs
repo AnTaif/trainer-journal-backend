@@ -34,7 +34,7 @@ public class ScheduleController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await scheduleService.GetScheduleAsync(Guid.Parse(userId), date.ToUniversalTime(), view);
+        var result = await scheduleService.GetGroupScheduleAsync(id, date.ToUniversalTime(), view);
         return this.ToActionResult(result, Ok);
     }
     

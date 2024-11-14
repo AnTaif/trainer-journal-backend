@@ -10,11 +10,10 @@ using TrainerJournal.Application.Services.Users.Dtos.Responses;
 namespace TrainerJournal.API.Controllers;
 
 [ApiController]
-[Route("me")]
 [Authorize]
 public class UserController(IUserService userService) : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("me")]
     public async Task<ActionResult<GetUserInfoResponse>> GetInfoAsync()
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -24,13 +23,23 @@ public class UserController(IUserService userService) : ControllerBase
         return this.ToActionResult(result, Ok);
     }
     
-    [HttpPut]
+    [HttpPut("me")]
     public async Task<ActionResult<GetUserInfoResponse>> UpdateAsync([FromBody] UpdateUserRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
         var result = await userService.UpdateAsync(Guid.Parse(userId), request);
+        return this.ToActionResult(result, Ok);
+    }
+
+    [HttpGet("users/{id}")]
+    public async Task<ActionResult<GetUserInfoResponse>> GetInfoByIdAsync(Guid id)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await userService.GetInfoAsync(id);
         return this.ToActionResult(result, Ok);
     }
 }

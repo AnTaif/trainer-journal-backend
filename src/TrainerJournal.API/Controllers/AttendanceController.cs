@@ -50,8 +50,8 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpPost("students/{id}/attendance/mark-unmark")]
-    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(Guid id, AttendanceMarkRequest request)
+    [HttpPost("students/{id}/attendance")]
+    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(Guid id, MarkUnmarkAttendanceRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();

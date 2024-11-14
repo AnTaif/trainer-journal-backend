@@ -33,14 +33,16 @@ public class AttendanceService(
         return attendance.Select(a => a.ToDto()).ToList();
     }
 
-    public async Task<ErrorOr<AttendanceMarkDto?>> MarkUnmarkAttendanceAsync(Guid userId, Guid studentId, AttendanceMarkRequest request)
+    public async Task<ErrorOr<AttendanceMarkDto?>> MarkUnmarkAttendanceAsync(Guid userId, Guid studentId, MarkUnmarkAttendanceRequest request)
     {
         var mark = await attendanceRepository.GetByInfoAsync(studentId, request.PracticeId, request.PracticeTime);
-        if (mark != null)
+        if (mark != null && !request.IsMarked)
         {
             await UnmarkAttendanceAsync(mark);
             return new ErrorOr<AttendanceMarkDto?>().Value;
         }
+        
+        if (mark != null && request.IsMarked) return mark.ToDto();
         
         var practice = await practiceRepository.GetByIdAsync(request.PracticeId);
 
