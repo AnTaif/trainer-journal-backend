@@ -3,18 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos;
 
-public class ContactDto(string name, string relation, string phone)
+public class ContactDto
 {
     [Required]
     [DefaultValue("Имя Отчество")]
-    public string Name { get; init; } = name;
+    public string Name { get; init; }
     
     [Required]
     [DefaultValue("Папа")]
-    public string Relation { get; init; } = relation;
+    public string Relation { get; init; }
 
     [Required]
     [Phone]
     [DefaultValue("+79995005050")]
-    public string Phone { get; init; } = phone;
+    public string Phone { get; init; }
 }

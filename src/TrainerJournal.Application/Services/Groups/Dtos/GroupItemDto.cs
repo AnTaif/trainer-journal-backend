@@ -3,23 +3,23 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Groups.Dtos;
 
-public class GroupItemDto(Guid id, string name, string hallAddress, string hexColor, int studentsCount, float price)
+public class GroupItemDto
 {
-    public Guid Id { get; init; } = id;
+    public Guid Id { get; init; }
     
     [Required]
     [DefaultValue("Группа")]
-    public string Name { get; init; } = name;
+    public string Name { get; init; }
 
     [Required]
     [DefaultValue("address")]
-    public string HallAddress { get; init; } = hallAddress;
+    public string HallAddress { get; init; }
     
     [Required]
     [DefaultValue("#A293FF")]
-    public string HexColor { get; init; } = hexColor;
+    public string HexColor { get; init; }
     
-    public int StudentsCount { get; init; } = studentsCount;
+    public int StudentsCount { get; init; }
     
-    public float Price { get; init; } = price;
+    public float Price { get; init; }
 }

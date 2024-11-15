@@ -65,16 +65,7 @@ public class ScheduleService(
         foreach (var practice in singlePractices)
         {
             if (practice.OriginalStart != null) overridenStarts.Add(practice.OriginalStart.Value);
-
-            responseList.Add(new ScheduleItemDto(
-                practice.Id,
-                practice.Start,
-                practice.End,
-                practice.Group.Name,
-                practice.HallAddress,
-                practice.PracticeType.ToPracticeTypeString(),
-                practice.Price,
-                practice.IsCanceled));
+            responseList.Add(practice.ToItemDto());
         }
     }
 
@@ -102,8 +93,17 @@ public class ScheduleService(
 
                     if (overridenStarts.Contains(currentStart)) continue;
 
-                    responseList.Add(new ScheduleItemDto(practice.Id, currentStart, currentEnd, schedule.Group.Name,
-                        practice.HallAddress, PracticeType.Regular.ToPracticeTypeString(), practice.Price, false));
+                    responseList.Add(new ScheduleItemDto
+                    {
+                        Id = practice.Id,
+                        Start = currentStart,
+                        End = currentEnd,
+                        GroupName = schedule.Group.Name,
+                        HallAddress = practice.HallAddress,
+                        PracticeType = PracticeType.Regular.ToPracticeTypeString(),
+                        Price = practice.Price,
+                        IsCanceled = false
+                    });
                 }
             }
         }

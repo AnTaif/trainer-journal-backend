@@ -1,8 +1,8 @@
 namespace TrainerJournal.Application.Services.Attendance.Dtos.Responses;
 
-public class GetStudentAttendanceResponse(Guid studentId, List<AttendanceMarkDto> attendance)
+public class GetStudentAttendanceResponse
 {
-    public Guid StudentId { get; init; } = studentId;
+    public Guid StudentId { get; init; }
 
-    public List<AttendanceMarkDto> Attendance { get; init; } = attendance;
+    public List<AttendanceMarkDto> Attendance { get; init; }
 }

@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Practices.Dtos;
 
-public class PracticeGroupDto(Guid id, string name)
+public class PracticeGroupDto
 {
-    public Guid Id { get; init; } = id;
+    public Guid Id { get; init; }
     
     [Required]
     [DefaultValue("Команда 1")]
-    public string Name { get; init; } = name;
+    public string Name { get; init; }
 }

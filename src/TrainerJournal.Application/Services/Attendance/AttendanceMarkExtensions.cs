@@ -10,17 +10,19 @@ public static class AttendanceMarkExtensions
     {
         return attendanceMarks
             .GroupBy(a => a.StudentId)
-            .Select(g => new GetStudentAttendanceResponse(
-                g.Key,
-                g.Select(a => new AttendanceMarkDto(
-                    a.PracticeId, 
-                    a.PracticeTime
-                )).ToList()
-            )).ToList();
+            .Select(g => new GetStudentAttendanceResponse
+        {
+            StudentId = g.Key,
+            Attendance = g.Select(a => a.ToDto()).ToList()
+        }).ToList();
     }
     
     public static AttendanceMarkDto ToDto(this AttendanceMark attendanceMark)
     {
-        return new AttendanceMarkDto(attendanceMark.PracticeId, attendanceMark.PracticeTime);
+        return new AttendanceMarkDto
+        {
+            PracticeId = attendanceMark.PracticeId,
+            PracticeTime = attendanceMark.PracticeTime
+        };
     }
 }

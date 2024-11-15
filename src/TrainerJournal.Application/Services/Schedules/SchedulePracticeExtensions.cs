@@ -8,7 +8,31 @@ public static class SchedulePracticeExtensions
 {
     public static ScheduleItemDto ToItemDto(this SchedulePractice practice, Group group)
     {
-        return new ScheduleItemDto(practice.Id, practice.Start, practice.End, group.Name,
-            practice.HallAddress, practice.PracticeType.ToPracticeTypeString(), practice.Price, false);
+        return new ScheduleItemDto
+        {
+            Id = practice.Id,
+            Start = practice.Start,
+            End = practice.End,
+            GroupName = group.Name,
+            HallAddress = practice.HallAddress,
+            PracticeType = practice.PracticeType.ToPracticeTypeString(),
+            Price = practice.Price,
+            IsCanceled = false
+        };
+    }
+
+    public static ScheduleItemDto ToItemDto(this SinglePractice practice)
+    {
+        return new ScheduleItemDto
+        {
+            Id = practice.Id,
+            Start = practice.Start,
+            End = practice.End,
+            GroupName = practice.Group.Name,
+            HallAddress = practice.HallAddress,
+            PracticeType = practice.PracticeType.ToPracticeTypeString(),
+            Price = practice.Price,
+            IsCanceled = practice.IsCanceled
+        };
     }
 }

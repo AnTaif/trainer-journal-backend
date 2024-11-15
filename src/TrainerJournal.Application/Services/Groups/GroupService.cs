@@ -16,9 +16,11 @@ public class GroupService(
     {
         var groups = await groupRepository.GetAllByUserIdAsync(userId);
 
-        return new GetGroupsResponse(
-            groups.Sum(g => g.Students.Count), 
-            groups.Select(g => g.ToItemDto()).ToList());
+        return new GetGroupsResponse
+        {
+            StudentsCount = groups.Sum(g => g.Students.Count),
+            Groups = groups.Select(g => g.ToItemDto()).ToList()
+        };
     }
 
     public async Task<ErrorOr<List<GroupDto>>> GetGroupsByStudentUsernameAsync(string username)
@@ -40,7 +42,7 @@ public class GroupService(
     {
         var newGroup = new Group(
             request.Name, 
-            request.HallAddress,
+            request.HallAddress ?? "",
             request.HexColor == null ? colorGenerator.GetRandomGroupColor() : new HexColor(request.HexColor), 
             trainerId);
 

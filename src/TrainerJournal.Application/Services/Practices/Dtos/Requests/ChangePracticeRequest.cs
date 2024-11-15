@@ -2,28 +2,21 @@ using TrainerJournal.Application.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Practices.Dtos.Requests;
 
-public class ChangePracticeRequest(
-    DateTime practiceStart, 
-    Guid? groupId, 
-    DateTime? newStart, 
-    DateTime? newEnd, 
-    string? hallAddress,
-    string? practiceType, 
-    float? price)
+public class ChangePracticeRequest
 {
     /// <summary>
     /// Время начала практики в текущей неделе
     /// </summary>
-    public DateTime PracticeStart { get; init; } = practiceStart;
+    public DateTime PracticeStart { get; init; }
     
-    public Guid? GroupId { get; init; } = groupId;
-    public DateTime? NewStart { get; init; } = newStart;
-    public DateTime? NewEnd { get; init; } = newEnd;
-    
-    public string? HallAddress { get; } = hallAddress;
+    public Guid? GroupId { get; init; }
+    public DateTime? NewStart { get; init; }
+    public DateTime? NewEnd { get; init; }
+
+    public string? HallAddress { get; } = null!;
 
     [PracticeEnum]
-    public string? PracticeType { get; init; } = practiceType;
+    public string? PracticeType { get; init; }
     
-    public float? Price { get; init; } = price;
+    public float? Price { get; init; }
 }

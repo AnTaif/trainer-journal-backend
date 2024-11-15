@@ -4,31 +4,26 @@ using TrainerJournal.Application.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Schedules.Dtos;
 
-public class ScheduleItemDto(
-    Guid id,
-    DateTime start,
-    DateTime end,
-    string groupName,
-    string hallAddress,
-    string practiceType,
-    float price,
-    bool isCanceled)
+public class ScheduleItemDto
 {
-    public Guid Id { get; init; } = id;
-    public DateTime Start { get; init; } = start;
-    public DateTime End { get; init; } = end;
+    public Guid Id { get; init; }
+    
+    public DateTime Start { get; init; }
+    
+    public DateTime End { get; init; }
     
     [Required]
     [DefaultValue("Команда 1")]
-    public string GroupName { get; init; } = groupName;
+    public string GroupName { get; init; }
 
-    public string HallAddress { get; init; } = hallAddress;
+    public string HallAddress { get; init; }
 
     [Required]
     [PracticeEnum]
     [DefaultValue("Тренировка")]
-    public string PracticeType { get; init; } = practiceType;
+    public string PracticeType { get; init; }
     
-    public float Price { get; init; } = price;
-    public bool IsCanceled { get; } = isCanceled;
+    public float Price { get; init; }
+    
+    public bool IsCanceled { get; init; }
 }

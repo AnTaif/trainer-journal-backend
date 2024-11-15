@@ -19,11 +19,27 @@ public static class PracticeExtensions
     
     public static PracticeDto ToDto(this SinglePractice singlePractice)
     {
-        return new PracticeDto(singlePractice.Id, singlePractice.Start, singlePractice.End,
-            new PracticeGroupDto(singlePractice.GroupId, singlePractice.Group.Name),
-            new PracticeTrainerDto(singlePractice.TrainerId, singlePractice.Trainer.User.FullName.ToString()),
-            singlePractice.PracticeType.ToPracticeTypeString(), singlePractice.HallAddress, singlePractice.Price, 
-            singlePractice.IsCanceled, singlePractice.CancelComment);
+        return new PracticeDto
+        {
+            Id = singlePractice.Id,
+            Start = singlePractice.Start,
+            End = singlePractice.End,
+            Group = new PracticeGroupDto
+            {
+                Id = singlePractice.GroupId,
+                Name = singlePractice.Group.Name
+            },
+            Trainer = new PracticeTrainerDto
+            {
+                Id = singlePractice.TrainerId,
+                FullName = singlePractice.Trainer.User.FullName.ToString()
+            },
+            PracticeType = singlePractice.PracticeType.ToPracticeTypeString(),
+            HallAddress = singlePractice.HallAddress,
+            Price = singlePractice.Price,
+            IsCanceled = singlePractice.IsCanceled,
+            CancelComment = singlePractice.CancelComment
+        };
     }
 
     public static PracticeDto ToDto(this SchedulePractice schedulePractice, DateTime date)
@@ -31,10 +47,26 @@ public static class PracticeExtensions
         var start = SchedulePractice.CombineDateAndTime(date, schedulePractice.Start);
         var end = SchedulePractice.CombineDateAndTime(date, schedulePractice.End);
         
-        return new PracticeDto(schedulePractice.Id, start, end,
-            new PracticeGroupDto(schedulePractice.GroupId, schedulePractice.Group.Name),
-            new PracticeTrainerDto(schedulePractice.TrainerId, schedulePractice.Trainer.User.FullName.ToString()),
-            schedulePractice.PracticeType.ToPracticeTypeString(), schedulePractice.HallAddress, schedulePractice.Price, 
-            false, null);
+        return new PracticeDto
+        {
+            Id = schedulePractice.Id,
+            Start = start,
+            End = end,
+            Group = new PracticeGroupDto
+            {
+                Id = schedulePractice.GroupId,
+                Name = schedulePractice.Group.Name
+            },
+            Trainer = new PracticeTrainerDto
+            {
+                Id = schedulePractice.TrainerId,
+                FullName = schedulePractice.Trainer.User.FullName.ToString()
+            },
+            PracticeType = schedulePractice.PracticeType.ToPracticeTypeString(),
+            HallAddress = schedulePractice.HallAddress,
+            Price = schedulePractice.Price,
+            IsCanceled = false,
+            CancelComment = null
+        };
     }
 }

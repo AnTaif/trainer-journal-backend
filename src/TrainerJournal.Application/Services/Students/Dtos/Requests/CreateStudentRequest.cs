@@ -4,41 +4,33 @@ using TrainerJournal.Application.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 
-public class CreateStudentRequest(
-    string fullName,
-    string gender,
-    DateTime birthDate,
-    int schoolGrade,
-    int? kyu,
-    string? address,
-    List<Guid> groupIds,
-    List<ContactDto> contacts)
+public class CreateStudentRequest
 {
     [MinimumWordsCount(2)]
     [Required]
     [DefaultValue("Фамилия Имя Отчество")]
-    public string FullName { get; init; } = fullName;
-    
+    public string FullName { get; init; } = null!;
+
     [Required]
     [DefaultValue("М")]
     [GenderEnum]
-    public string Gender { get; init; } = gender;
+    public string Gender { get; init; } = null!;
     
-    public DateTime BirthDate { get; init; } = birthDate;
+    public DateTime BirthDate { get; init; }
     
     [Range(0, 11)]
     [DefaultValue(0)]
-    public int SchoolGrade { get; init; } = schoolGrade;
+    public int SchoolGrade { get; init; }
     
     [Range(1, 10)]
-    public int? Kyu { get; init; } = kyu;
+    public int? Kyu { get; init; }
     
     [Required]
     [DefaultValue("address")]
-    public string? Address { get; init; } = address;
+    public string? Address { get; init; }
 
-    public List<Guid> GroupIds { get; init; } = groupIds;
-    
-    [Length(1, 2)]
-    public List<ContactDto> Contacts { get; init; } = contacts;
+    public List<Guid> GroupIds { get; init; } = null!;
+
+    [Length(1, 2)] 
+    public List<ContactDto> Contacts { get; init; } = null!;
 }

@@ -7,7 +7,12 @@ public static class ContactExtensions
 {
     public static ContactDto ToDto(this Contact info)
     {
-        return new ContactDto(info.Name, info.Relation, info.Phone);
+        return new ContactDto
+        {
+            Name = info.Name,
+            Relation = info.Relation,
+            Phone = info.Phone
+        };
     }
 
     public static Contact ToEntity(this ContactDto dto)

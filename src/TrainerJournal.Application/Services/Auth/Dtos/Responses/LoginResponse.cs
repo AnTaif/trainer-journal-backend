@@ -5,11 +5,11 @@ namespace TrainerJournal.Application.Services.Auth.Dtos.Responses;
 
 public class LoginResponse
 {
-    [Required]
-    [DefaultValue("login")]
-    public string UserName { get; init; }
-    
-    [Required]
-    [DefaultValue("jwt-token")]
-    public string Token { get; init; }
+    [Required] 
+    [DefaultValue("login")] 
+    public string UserName { get; init; } = null!;
+
+    [Required] 
+    [DefaultValue("jwt-token")] 
+    public string Token { get; init; } = null!;
 }

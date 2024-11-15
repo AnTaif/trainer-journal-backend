@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Schedules.Dtos;
 
-public class PracticeTrainerDto(Guid id, string fullName)
+public class PracticeTrainerDto
 {
-    public Guid Id { get; } = id;
+    public Guid Id { get; init; }
     
     [Required]
     [DefaultValue("Фамилия Имя Отчество")]
-    public string FullName { get; } = fullName;
+    public string FullName { get; init; }
 }

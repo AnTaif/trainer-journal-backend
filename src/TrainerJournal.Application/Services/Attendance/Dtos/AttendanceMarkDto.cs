@@ -1,8 +1,8 @@
 namespace TrainerJournal.Application.Services.Attendance.Dtos;
 
-public class AttendanceMarkDto(Guid practiceId, DateTime practiceTime)
+public class AttendanceMarkDto
 {
-    public Guid PracticeId { get; init; } = practiceId;
+    public Guid PracticeId { get; init; }
 
-    public DateTime PracticeTime { get; init; } = practiceTime;
+    public DateTime PracticeTime { get; init; }
 }

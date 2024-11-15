@@ -7,11 +7,28 @@ public static class GroupExtensions
 {
     public static GroupDto ToDto(this Group group)
     {
-        return new GroupDto(group.Id, group.Name, group.Students.Count, group.TrainerId, group.HallAddress, group.HexColor.ToString(), group.Price);
+        return new GroupDto
+        {
+            Id = group.Id,
+            Name = group.Name,
+            StudentsCount = group.Students.Count,
+            TrainerId = group.TrainerId,
+            HallAddress = group.HallAddress,
+            HexColor = group.HexColor.ToString(),
+            Price = group.Price
+        };
     }
-
+    
     public static GroupItemDto ToItemDto(this Group group)
     {
-        return new GroupItemDto(group.Id, group.Name, group.HallAddress, group.HexColor.ToString(), group.Students.Count, group.Price);
+        return new GroupItemDto
+        {
+            Id = group.Id,
+            Name = group.Name,
+            HallAddress = group.HallAddress,
+            HexColor = group.HexColor.ToString(),
+            StudentsCount = group.Students.Count,
+            Price = group.Price
+        };
     }
 }

@@ -5,34 +5,30 @@ using TrainerJournal.Application.Services.Schedules.Dtos;
 
 namespace TrainerJournal.Application.Services.Practices.Dtos;
 
-public class PracticeDto(
-    Guid id,
-    DateTime start,
-    DateTime end,
-    PracticeGroupDto group,
-    PracticeTrainerDto trainer,
-    string practiceType,
-    string hallAddress,
-    float price,
-    bool isCanceled,
-    string? cancelComment)
+public class PracticeDto
 {
-    public Guid Id { get; init; } = id;
-    public DateTime Start { get; init; } = start;
-    public DateTime End { get; init; } = end;
-    public PracticeGroupDto Group { get; init; } = group;
-    public PracticeTrainerDto Trainer { get; init; } = trainer;
+    public Guid Id { get; init; }
+    
+    public DateTime Start { get; init; }
+    
+    public DateTime End { get; init; }
+    
+    public PracticeGroupDto Group { get; init; }
+    
+    public PracticeTrainerDto Trainer { get; init; }
 
     [Required]
     [PracticeEnum]
     [DefaultValue("Тренировка")]
-    public string PracticeType { get; init; } = practiceType;
+    public string PracticeType { get; init; }
 
     [Required]
     [DefaultValue("Улица д.101")]
-    public string HallAddress { get; init; } = hallAddress;
+    public string HallAddress { get; init; }
+
+    public float Price { get; init; }
     
-    public float Price { get; init; } = price;
-    public bool IsCanceled { get; } = isCanceled;
-    public string? CancelComment { get; } = cancelComment;
+    public bool IsCanceled { get; init; }
+    
+    public string? CancelComment { get; init; }
 }
