@@ -26,13 +26,16 @@ public class AuthService(
         if (!isPasswordValid)
         {
             logger.LogWarning("Invalid password for user: {username}", request.Username);
-            return Error.Failure("Auth.Login", "Bad credentials");
+            return Error.Failure("Bad credentials");
         }
         
         var roles = await userManager.GetRolesAsync(user);
-
         var token = tokenGenerator.GenerateToken(user, roles);
 
-        return new LoginResponse(user.Id, user.UserName!, token);
+        return new LoginResponse
+        {
+            UserName = user.UserName!,
+            Token = token
+        };
     }
 }

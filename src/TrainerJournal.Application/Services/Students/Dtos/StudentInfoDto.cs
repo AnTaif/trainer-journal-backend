@@ -3,29 +3,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos;
 
-public class StudentInfoDto(
-    float balance,
-    DateTime birthDate,
-    int schoolGrade,
-    int? kyu,
-    DateTime? kyuUpdatedAt,
-    DateTime trainingStartDate,
-    string address,
-    List<Guid> groups,
-    List<ContactDto> contacts)
+public class StudentInfoDto
 {
-    public float Balance { get; init; } = balance;
-    public DateTime BirthDate { get; init; } = birthDate;
-    public int SchoolGrade { get; init; } = schoolGrade;
-    public int? Kyu { get; init; } = kyu;
-    public DateTime? KyuUpdatedAt { get; init; } = kyuUpdatedAt;
-    public DateTime TrainingStartDate { get; init; } = trainingStartDate;
+    public DateTime BirthDate { get; set; }
+    
+    public int Age { get; set; }
+    
+    public int SchoolGrade { get; init; }
+    
+    public int? Kyu { get; init; }
+    
+    public DateTime? KyuUpdatedAt { get; init; }
+    
+    public DateTime TrainingStartDate { get; init; }
     
     [Required]
     [DefaultValue("address")]
-    public string Address { get; init; } = address;
+    public string Address { get; init; }
     
-    public List<Guid> Groups { get; init; } = groups;
+    public float Balance { get; init; }
     
-    public List<ContactDto> Contacts { get; init; } = contacts;
+    public List<ContactDto> Contacts { get; init; }
 }

@@ -1,3 +1,8 @@
 namespace TrainerJournal.Application.Services.Trainers.Dtos;
 
-public record TrainerInfoDto();
+public class TrainerInfoDto
+{
+    public string? Phone { get; init; }
+    
+    public string? Email { get; init; }
+}

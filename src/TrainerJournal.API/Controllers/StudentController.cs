@@ -12,11 +12,12 @@ using TrainerJournal.Domain.Constants;
 namespace TrainerJournal.API.Controllers;
 
 [ApiController]
+[Route("students")]
 [Authorize]
 public class StudentController(
     IStudentService studentService) : ControllerBase
 {
-    [HttpGet("students")]
+    [HttpGet]
     public async Task<ActionResult<List<StudentItemDto>>> GetStudents([FromQuery] bool withGroup = true)
     {
         var trainerId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -26,7 +27,7 @@ public class StudentController(
         return this.ToActionResult(result, Ok);
     }
     
-    [HttpPost("students")]
+    [HttpPost]
     public async Task<ActionResult<CreateStudentResponse>> CreateGroupStudentAsync(CreateStudentRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);

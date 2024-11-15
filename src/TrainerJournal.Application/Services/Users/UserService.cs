@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Application.Services.Trainers;
+using TrainerJournal.Application.Services.Users.Dtos;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
-using TrainerJournal.Application.Services.Users.Dtos.Responses;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Constants;
 using TrainerJournal.Domain.Entities;
@@ -20,7 +20,7 @@ public class UserService(
     ITrainerRepository trainerRepository,
     ILogger<UserService> logger) : IUserService
 {
-    public async Task<ErrorOr<GetUserInfoResponse>> GetInfoAsync(Guid id)
+    public async Task<ErrorOr<FullInfoDto>> GetMyInfoAsync(Guid id)
     {
         var user = await userManager.FindByIdAsync(id.ToString());
         if (user == null) return Error.NotFound("User not found");
@@ -33,33 +33,64 @@ public class UserService(
         else if (student != null && trainer != null)
             logger.LogError("User with an id {id} has both accounts: trainer and student", id);
 
-        return new GetUserInfoResponse
+        return new FullInfoDto
         {
-            Id = user.Id,
+            Username = user.UserName!,
             UserInfo = user.ToInfoDto(),
+            Credentials = user.ToCredentialsDto(),
             StudentInfo = student?.ToInfoDto(),
             TrainerInfo = trainer?.ToInfoDto()
         };
     }
 
-    public async Task<ErrorOr<GetUserInfoResponse>> UpdateAsync(Guid id, UpdateUserRequest request)
+    public async Task<ErrorOr<FullInfoDto>> GetInfoByUsernameAsync(Guid requestedUserId, string username)
+    {
+        var user = await userManager.FindByNameAsync(username);
+        if (user == null) return Error.NotFound("User not found");
+
+        var student = await studentRepository.GetByUserIdAsync(user.Id);
+        var trainer = await trainerRepository.GetByUserIdAsync(user.Id);
+
+        if (student == null && trainer == null)
+            logger.LogError("User with an id {id} has neither a trainer nor a student account", user.Id);
+        else if (student != null && trainer != null)
+            logger.LogError("User with an id {id} has both accounts: trainer and student", user.Id);
+
+        return new FullInfoDto
+        {
+            Username = user.UserName!,
+            UserInfo = user.ToInfoDto(),
+            Credentials = await CanViewCredentials(requestedUserId, user) ? user.ToCredentialsDto() : null,
+            StudentInfo = student?.ToInfoDto(),
+            TrainerInfo = trainer?.ToInfoDto()
+        };
+    }
+
+    private async Task<bool> CanViewCredentials(Guid requestedUserId, User user)
+    {
+        var requestedUser = await userManager.FindByIdAsync(requestedUserId.ToString());
+        if (requestedUser == null) throw new Exception("Cannot find logged in user");
+        
+        var requestedUserRoles = await userManager.GetRolesAsync(requestedUser);
+        if (requestedUserRoles.Contains(Roles.Trainer) || requestedUserRoles.Contains(Roles.Admin)) return true;
+
+        if (user.Id == requestedUserId) return true;
+        
+        return false;
+    }
+
+    public async Task<ErrorOr<FullInfoWithoutCredentialsDto>> UpdateMyInfoAsync(Guid id, UpdateFullInfoRequest request)
     {
         var user = await userManager.FindByIdAsync(id.ToString());
         if (user == null) return Error.NotFound("User not found");
 
         var student = await studentRepository.GetByUserIdAsync(id);
         if (student == null && request.StudentInfo != null)
-            return Error.Validation(metadata: new Dictionary<string, object>
-            {
-                {"StudentInfo", "This user is not a student"}
-            });
+            return Error.Failure("This user is not a student");
         
         var trainer = await trainerRepository.GetByUserIdAsync(id);
         if (trainer == null && request.TrainerInfo != null)
-            return Error.Validation(metadata: new Dictionary<string, object>
-            {
-                {"TrainerInfo", "This user is not a trainer"}
-            });
+            return Error.Failure("This user is not a trainer");
         
         if (request.UserInfo != null)
         {
@@ -81,25 +112,27 @@ public class UserService(
 
         if (request.TrainerInfo != null)
         {
-            //TODO: add trainer update
+            var trainerReq = request.TrainerInfo;
+            trainer!.Update(trainerReq.Phone, trainerReq.Email);
         }
         
         await userManager.UpdateAsync(user);
-        return new GetUserInfoResponse
+        return new FullInfoWithoutCredentialsDto
         {
-            Id = user.Id,
+            Username = user.UserName!,
             UserInfo = user.ToInfoDto(),
             StudentInfo = student?.ToInfoDto(),
             TrainerInfo = trainer?.ToInfoDto()
         };
     }
 
-    public async Task<ErrorOr<GetUserInfoResponse>> UpdateStudentInfoAsync(Guid studentId, UpdateStudentRequest request)
+    public async Task<ErrorOr<FullInfoWithoutCredentialsDto>> UpdateStudentInfoAsync(
+        Guid userId, string username, UpdateUserStudentInfoRequest request)
     {
-        var user = await userManager.FindByIdAsync(studentId.ToString());
+        var user = await userManager.FindByNameAsync(username);
         if (user == null) return Error.NotFound("User not found");
         
-        var student = await studentRepository.GetByUserIdAsync(studentId);
+        var student = await studentRepository.GetByUserIdAsync(user.Id);
         if (student == null) return Error.Failure("This user is not a student");
 
         if (request.UserInfo != null)
@@ -121,17 +154,17 @@ public class UserService(
         }
         
         await studentRepository.SaveChangesAsync();
-        return new GetUserInfoResponse
+        return new FullInfoWithoutCredentialsDto
         {
-            Id = user.Id,
+            Username = user.UserName!,
             UserInfo = user.ToInfoDto(),
             StudentInfo = student.ToInfoDto()
         };
     }
 
-    public async Task<ErrorOr<CreateUserResponse>> CreateAsync(CreateUserRequest request)
+    public async Task<ErrorOr<User>> CreateAsync(string fullName, Gender gender)
     {
-        var username = GenerateUsername(request.FullName);
+        var username = GenerateUsername(fullName);
         var password = GeneratePassword();
         
         var existedUser = await userManager.FindByNameAsync(username);
@@ -141,7 +174,7 @@ public class UserService(
             return Error.Failure("User is already exists");
         }
 
-        var user = new User(username, new PersonName(request.FullName), request.Gender.ToGenderEnum());
+        var user = new User(username, password, new PersonName(fullName), gender);
 
         var result = await userManager.CreateAsync(user, password);
         if (!result.Succeeded)
@@ -152,8 +185,7 @@ public class UserService(
 
         await userManager.AddToRoleAsync(user, Roles.User);
 
-        return new CreateUserResponse(user.Id, password, user.FullName.ToString(), user.UserName!, user.Email, user.PhoneNumber,
-            user.Gender.ToGenderString(), user.TelegramUsername);
+        return user;
     }
 
     public string GenerateUsername(string fullName)

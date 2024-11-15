@@ -3,16 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Auth.Dtos.Responses;
 
-public class LoginResponse(Guid id, string userName, string token)
+public class LoginResponse
 {
     [Required]
-    public Guid Id { get; init; } = id;
-    
-    [Required]
     [DefaultValue("login")]
-    public string UserName { get; init; } = userName;
+    public string UserName { get; init; }
     
     [Required]
     [DefaultValue("jwt-token")]
-    public string Token { get; init; } = token;
+    public string Token { get; init; }
 }

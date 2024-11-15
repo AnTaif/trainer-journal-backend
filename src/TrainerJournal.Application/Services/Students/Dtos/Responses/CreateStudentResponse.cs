@@ -3,19 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos.Responses;
 
-public class CreateStudentResponse(Guid id, string username, string password, string fullName)
+public class CreateStudentResponse
 {
-    public Guid Id { get; init; } = id;
-    
     [Required]
     [DefaultValue("login")]
-    public string Username { get; init; } = username;
-    
+    public string Username { get; init; } = null!;
+
     [Required]
     [DefaultValue("password")]
-    public string Password { get; init; } = password;
-    
+    public string Password { get; init; } = null!;
+
     [Required]
     [DefaultValue("Фамилия Имя Отчество")]
-    public string FullName { get; init; } = fullName;
+    public string FullName { get; init; } = null!;
 }

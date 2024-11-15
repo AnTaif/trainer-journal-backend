@@ -9,7 +9,7 @@ public interface IAttendanceService
 {
     public Task<ErrorOr<List<GetStudentAttendanceResponse>>> GetGroupAttendanceAsync(Guid userId, Guid groupId, DateTime start, DateTime end);
     
-    public Task<ErrorOr<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(Guid userId, Guid studentId, DateTime start, DateTime end);
+    public Task<ErrorOr<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(Guid userId, string studentName, DateTime start, DateTime end);
     
-    public Task<ErrorOr<AttendanceMarkDto?>> MarkUnmarkAttendanceAsync(Guid userId, Guid studentId, MarkUnmarkAttendanceRequest request);
+    public Task<ErrorOr<AttendanceMarkDto?>> MarkUnmarkAttendanceAsync(Guid userId, string studentUsername, MarkUnmarkAttendanceRequest request);
 }

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.Users;
+using TrainerJournal.Application.Services.Users.Dtos;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
-using TrainerJournal.Application.Services.Users.Dtos.Responses;
 using TrainerJournal.Domain.Constants;
 
 namespace TrainerJournal.API.Controllers;
@@ -15,43 +15,43 @@ namespace TrainerJournal.API.Controllers;
 public class UserController(IUserService userService) : ControllerBase
 {
     [HttpGet("me")]
-    public async Task<ActionResult<GetUserInfoResponse>> GetInfoAsync()
+    public async Task<ActionResult<FullInfoDto>> GetInfoAsync()
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await userService.GetInfoAsync(Guid.Parse(userId));
-        return this.ToActionResult(result, Ok);
+        var errorOr = await userService.GetMyInfoAsync(Guid.Parse(userId));
+        return this.ToActionResult(errorOr, Ok);
     }
     
     [HttpPut("me")]
-    public async Task<ActionResult<GetUserInfoResponse>> UpdateAsync([FromBody] UpdateUserRequest request)
+    public async Task<ActionResult<FullInfoWithoutCredentialsDto>> UpdateAsync([FromBody] UpdateFullInfoRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await userService.UpdateAsync(Guid.Parse(userId), request);
-        return this.ToActionResult(result, Ok);
+        var errorOr = await userService.UpdateMyInfoAsync(Guid.Parse(userId), request);
+        return this.ToActionResult(errorOr, Ok);
     }
 
-    [HttpGet("users/{id}")]
-    public async Task<ActionResult<GetUserInfoResponse>> GetInfoByIdAsync(Guid id)
+    [HttpGet("users/{username}")]
+    public async Task<ActionResult<FullInfoDto>> GetInfoByUsernameAsync(string username)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await userService.GetInfoAsync(id);
-        return this.ToActionResult(result, Ok);
+        var errorOr = await userService.GetInfoByUsernameAsync(Guid.Parse(userId), username);
+        return this.ToActionResult(errorOr, Ok);
     }
 
-    [HttpPut("users/{id}/student-info")]
+    [HttpPut("users/{username}")]
     [Authorize(Roles = Roles.Trainer)]
-    public async Task<ActionResult<GetUserInfoResponse>> ChangeUserInfoAsync(Guid id, UpdateStudentRequest request)
+    public async Task<ActionResult<FullInfoWithoutCredentialsDto>> ChangeUserInfoAsync(string username, UpdateUserStudentInfoRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
-        
-        var result = await userService.UpdateStudentInfoAsync(id, request);
-        return this.ToActionResult(result, Ok);
+
+        var errorOr = await userService.UpdateStudentInfoAsync(Guid.Parse(userId), username, request);
+        return this.ToActionResult(errorOr, Ok);
     }
 }

@@ -15,5 +15,5 @@ public interface IStudentService
 
     public Task<ErrorOr<StudentInfoDto>> AddStudentToGroupAsync(Guid groupId, AddStudentRequest request, Guid trainerId);
 
-    public Task<ErrorOr<StudentInfoDto>> ExcludeStudentFromGroupAsync(Guid groupId, Guid studentId, Guid trainerId);
+    public Task<ErrorOr<StudentInfoDto>> ExcludeStudentFromGroupAsync(Guid groupId, string studentUsername, Guid trainerId);
 }

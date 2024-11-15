@@ -33,41 +33,41 @@ public static class DataSeeder
     {
         // SEED USERS
         
-        var adminUser = new User("admin", new PersonName("admin user"), Gender.Male)
+        var adminUser = new User("admin", password, new PersonName("admin user"), Gender.Male)
         {
             Id = adminGuid
         };
         await AddUserAsync(userManager, adminUser, Roles.Admin, Roles.Trainer);
 
-        var trainerUser = new User("D.S.Smirnov", new PersonName("Смирнов Денис Сергеевич"), Gender.Male)
+        var trainerUser = new User("D.S.Smirnov", password, new PersonName("Смирнов Денис Сергеевич"), Gender.Male)
         {
             Id = trainer1Guid
         };
         await AddUserAsync(userManager, trainerUser, Roles.Admin, Roles.Trainer);
 
         const string student1Fullname = "Юдин Андрей Никитич";
-        var student1User = new User(userService.GenerateUsername(student1Fullname), new PersonName(student1Fullname), Gender.Male)
+        var student1User = new User(userService.GenerateUsername(student1Fullname), password, new PersonName(student1Fullname), Gender.Male)
         {
             Id = student1Guid
         };
         await AddUserAsync(userManager, student1User, Roles.User);
 
         const string student2Fullname = "Масленникова Виктория Дмитриевна";
-        var student2User = new User(userService.GenerateUsername(student2Fullname), new PersonName(student2Fullname), Gender.Female)
+        var student2User = new User(userService.GenerateUsername(student2Fullname), password, new PersonName(student2Fullname), Gender.Female)
         {
             Id = student2Guid
         };
         await AddUserAsync(userManager, student2User, Roles.User);
         
         const string student3Fullname = "Смирнов Никита Давидович";
-        var student3User = new User(userService.GenerateUsername(student3Fullname), new PersonName(student3Fullname), Gender.Male)
+        var student3User = new User(userService.GenerateUsername(student3Fullname), password, new PersonName(student3Fullname), Gender.Male)
         {
             Id = student3Guid
         };
         await AddUserAsync(userManager, student3User, Roles.User);
         
         const string student4Fullname = "Чернышева София Романовна";
-        var student4User = new User(userService.GenerateUsername(student4Fullname), new PersonName(student4Fullname), Gender.Female)
+        var student4User = new User(userService.GenerateUsername(student4Fullname), password, new PersonName(student4Fullname), Gender.Female)
         {
             Id = student4Guid
         };

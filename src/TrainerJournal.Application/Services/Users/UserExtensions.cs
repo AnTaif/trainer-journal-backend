@@ -11,9 +11,17 @@ public static class UserExtensions
         return new UserInfoDto
         {
             FullName = user.FullName.ToString(),
-            Username = user.UserName!,
             Gender = user.Gender.ToGenderString(),
             TelegramUsername = user.TelegramUsername
+        };
+    }
+
+    public static CredentialsDto ToCredentialsDto(this User user)
+    {
+        return new CredentialsDto
+        {
+            Login = user.UserName!,
+            Password = user.Password
         };
     }
 }

@@ -4,8 +4,8 @@ using TrainerJournal.Application.Services.Students.Dtos;
 using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Students.Dtos.Responses;
 using TrainerJournal.Application.Services.Users;
-using TrainerJournal.Application.Services.Users.Dtos.Requests;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Domain.Enums.Gender;
 
 namespace TrainerJournal.Application.Services.Students;
 
@@ -34,8 +34,8 @@ public class StudentService(
             }
         }
         
-        var userResult = await userService.CreateAsync(
-            new CreateUserRequest(request.FullName, request.Gender));
+        var userResult = 
+            await userService.CreateAsync(request.FullName, request.Gender.ToGenderEnum());
 
         if (userResult.IsError)
             return userResult.FirstError;
@@ -61,7 +61,12 @@ public class StudentService(
         studentRepository.AddStudent(student);
         await studentRepository.SaveChangesAsync();
 
-        return new CreateStudentResponse(student.UserId, user.Username, user.Password, student.User.FullName.ToString());
+        return new CreateStudentResponse
+        {
+            Username = user.UserName!,
+            Password = user.Password,
+            FullName = user.FullName.ToString()
+        };
     }
 
     public async Task<ErrorOr<List<StudentItemDto>>> GetStudentsByGroupAsync(Guid groupId, Guid userId)
@@ -75,7 +80,7 @@ public class StudentService(
 
     public async Task<ErrorOr<StudentInfoDto>> AddStudentToGroupAsync(Guid groupId, AddStudentRequest request, Guid trainerId)
     {
-        var student = await studentRepository.GetByUserIdAsync(request.StudentId);
+        var student = await studentRepository.GetByUsernameAsync(request.StudentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
         var group = await groupRepository.GetByIdAsync(groupId);
@@ -87,9 +92,10 @@ public class StudentService(
         return student.ToInfoDto();
     }
 
-    public async Task<ErrorOr<StudentInfoDto>> ExcludeStudentFromGroupAsync(Guid groupId, Guid studentId, Guid trainerId)
+    public async Task<ErrorOr<StudentInfoDto>> ExcludeStudentFromGroupAsync(
+        Guid groupId, string studentUsername, Guid trainerId)
     {
-        var student = await studentRepository.GetByUserIdAsync(studentId);
+        var student = await studentRepository.GetByUsernameAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
         var group = await groupRepository.GetByIdAsync(groupId);

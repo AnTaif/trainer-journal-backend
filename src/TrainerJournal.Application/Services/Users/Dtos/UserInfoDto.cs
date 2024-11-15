@@ -10,10 +10,6 @@ public class UserInfoDto
     public string FullName { get; init; } = null!;
 
     [Required]
-    [DefaultValue("login")]
-    public string Username { get; init; } = null!;
-
-    [Required]
     [DefaultValue("М")]
     public string Gender { get; init; } = null!;
 

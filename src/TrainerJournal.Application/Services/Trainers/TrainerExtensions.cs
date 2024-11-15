@@ -7,6 +7,10 @@ public static class TrainerExtensions
 {
     public static TrainerInfoDto ToInfoDto(this Trainer trainer)
     {
-        return new TrainerInfoDto();
+        return new TrainerInfoDto
+        {
+            Phone = trainer.Phone,
+            Email = trainer.Email
+        };
     }
 }

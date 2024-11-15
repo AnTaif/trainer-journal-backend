@@ -1,6 +1,11 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
 namespace TrainerJournal.Application.Services.Students.Dtos.Requests;
 
 public class AddStudentRequest
 {
-    public Guid StudentId { get; set; }
+    [Required] 
+    [DefaultValue("login")] 
+    public string StudentUsername { get; set; } = null!;
 }

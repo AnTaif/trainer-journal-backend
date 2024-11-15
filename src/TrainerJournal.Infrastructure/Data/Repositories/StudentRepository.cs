@@ -19,6 +19,15 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .FirstOrDefaultAsync(student => student.UserId == userId);
     }
 
+    public async Task<Student?> GetByUsernameAsync(string username)
+    {
+        return await students
+            .Include(s => s.User)
+            .Include(s => s.Groups)
+            .Include(s => s.Contacts)
+            .FirstOrDefaultAsync(student => student.User.UserName == username);
+    }
+
     public async Task<List<Student>> GetAllByGroupIdAsync(Guid groupId)
     {
         return await students

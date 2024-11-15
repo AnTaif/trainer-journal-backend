@@ -16,7 +16,7 @@ namespace TrainerJournal.API.Controllers;
 public class ScheduleController(
     IScheduleService scheduleService) : ControllerBase
 {
-    [HttpGet("me/schedule")]
+    [HttpGet("schedule")]
     public async Task<ActionResult<List<ScheduleItemDto>>> GetSchedule(
         [FromQuery] DateTime date, [FromQuery] ViewSchedule view = ViewSchedule.Week)
     {

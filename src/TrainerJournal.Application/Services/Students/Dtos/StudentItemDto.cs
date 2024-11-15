@@ -3,31 +3,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TrainerJournal.Application.Services.Students.Dtos;
 
-public class StudentItemDto(
-    Guid id,
-    string fullName,
-    float balance,
-    int age,
-    int schoolGrade,
-    int? kyu,
-    string gender,
-    List<Guid> groups,
-    ContactDto contact)
+public class StudentItemDto
 {
-    public Guid Id { get; init; } = id;
+    public string Username { get; init; }
     
     [Required]
     [DefaultValue("Фамилия Имя Отчество")]
-    public string FullName { get; init; } = fullName;
+    public string FullName { get; init; }
     
-    public float Balance { get; init; } = balance;
-    public int Age { get; init; } = age;
-    public int SchoolGrade { get; init; } = schoolGrade;
-    public int? Kyu { get; init; } = kyu;
+    public float Balance { get; init; }
+    
+    public int Age { get; init; }
+    
+    public int SchoolGrade { get; init; }
+    
+    public int? Kyu { get; init; }
 
-    public string Gender { get; init; } = gender;
+    public string Gender { get; init; }
     
-    public List<Guid> Groups { get; init; }= groups;
+    public List<Guid> GroupIds { get; init; }
     
-    public ContactDto Contact { get; } = contact;
+    public ContactDto Contact { get; init; }
 }

@@ -32,9 +32,9 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpGet("students/{id}/attendance")]
+    [HttpGet("students/{username}/attendance")]
     public async Task<ActionResult<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(
-        Guid id, 
+        string username, 
         [FromQuery] DateTime start,
         [FromQuery] DateTime? end = null)
     {
@@ -43,20 +43,20 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
 
         var result = await attendanceService.GetStudentAttendanceAsync(
             Guid.Parse(userId), 
-            id, 
+            username, 
             start, 
             end ?? start + TimeSpan.FromDays(30));
 
         return this.ToActionResult(result, Ok);
     }
 
-    [HttpPost("students/{id}/attendance")]
-    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(Guid id, MarkUnmarkAttendanceRequest request)
+    [HttpPost("students/{username}/attendance")]
+    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(string username, MarkUnmarkAttendanceRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await attendanceService.MarkUnmarkAttendanceAsync(Guid.Parse(userId), id, request);
+        var result = await attendanceService.MarkUnmarkAttendanceAsync(Guid.Parse(userId), username, request);
 
         return this.ToActionResult(result, Ok);
     }

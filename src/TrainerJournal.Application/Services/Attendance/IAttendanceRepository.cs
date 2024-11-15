@@ -4,9 +4,11 @@ namespace TrainerJournal.Application.Services.Attendance;
 
 public interface IAttendanceRepository
 {
-    public Task<AttendanceMark?> GetByInfoAsync(Guid studentId, Guid practiceId, DateTime practiceTime);
+    public Task<AttendanceMark?> GetByInfoAsync(string studentUsername, Guid practiceId, DateTime practiceTime);
     
     public Task<List<AttendanceMark>> GetByStudentIdAsync(Guid studentId, DateTime start, DateTime end);
+    
+    public Task<List<AttendanceMark>> GetByStudentUsernameAsync(string studentUsername, DateTime start, DateTime end);
 
     public Task<List<AttendanceMark>> GetAttendanceByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
 
