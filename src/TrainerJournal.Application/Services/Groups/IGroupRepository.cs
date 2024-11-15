@@ -6,6 +6,8 @@ public interface IGroupRepository
 {
     public Task<List<Group>> GetAllByUserIdAsync(Guid userId);
 
+    public Task<List<Group>> GetAllByStudentUsernameAsync(string username);
+
     public Task<Group?> GetByIdAsync(Guid id);
 
     public void Add(Group group);

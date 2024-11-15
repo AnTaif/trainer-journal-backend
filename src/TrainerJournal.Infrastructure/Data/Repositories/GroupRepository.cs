@@ -19,6 +19,16 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
             .ToListAsync();
     }
 
+    public async Task<List<Group>> GetAllByStudentUsernameAsync(string username)
+    {
+        return await groups
+            .Include(g => g.Students)
+                .ThenInclude(s => s.User)
+            .Include(g => g.Trainer)
+            .Where(g => !g.IsDeleted && g.Students.Any(s => s.User.UserName == username))
+            .ToListAsync();
+    }
+
     public async Task<Group?> GetByIdAsync(Guid id)
     {
         return await groups

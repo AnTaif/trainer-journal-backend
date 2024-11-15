@@ -21,6 +21,13 @@ public class GroupService(
             groups.Select(g => g.ToItemDto()).ToList());
     }
 
+    public async Task<ErrorOr<List<GroupDto>>> GetGroupsByStudentUsernameAsync(string username)
+    {
+        var groups = await groupRepository.GetAllByStudentUsernameAsync(username);
+
+        return groups.Select(g => g.ToDto()).ToList();
+    }
+
     public async Task<ErrorOr<GroupDto>> GetByIdAsync(Guid id)
     {
         var group = await groupRepository.GetByIdAsync(id);

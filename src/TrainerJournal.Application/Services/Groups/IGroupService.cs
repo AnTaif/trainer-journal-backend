@@ -9,6 +9,8 @@ public interface IGroupService
 {
     public Task<ErrorOr<GetGroupsResponse>> GetGroupsByTrainerIdAsync(Guid userId);
 
+    public Task<ErrorOr<List<GroupDto>>> GetGroupsByStudentUsernameAsync(string username);
+
     public Task<ErrorOr<GroupDto>> GetByIdAsync(Guid id);
 
     public Task<ErrorOr<GroupDto>> CreateAsync(CreateGroupRequest request, Guid trainerId);
