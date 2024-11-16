@@ -18,6 +18,7 @@ services:
       DB_CONTAINER: "trainer-journal.db"
     depends_on:
       - trainer-journal.db
+      - minio
       
   trainer-journal.db:
     container_name: trainer-journal.db
@@ -30,6 +31,24 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+        
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000" # API
+      - "9001:9001" # Web
+    environment:
+      - MINIO_ROOT_USER=${STORAGE_USER}
+      - MINIO_ROOT_PASSWORD=${STORAGE_PASSWORD}
+    volumes:
+      - minio-data:/data
+      - minio-config:/root/.minio
+    command: server /data --console-address ":9001"
 
 volumes:
   postgres-data:
+  minio-data:
+    driver: local
+  minio-config:
+    driver: local
