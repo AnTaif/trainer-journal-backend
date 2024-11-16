@@ -1,13 +1,21 @@
+using Amazon;
+using Amazon.Extensions.NETCore.Setup;
+using Amazon.Runtime;
+using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TrainerJournal.Application.Services;
 using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Schedules;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Application.Services.Trainers;
+using TrainerJournal.Domain.Options;
 using TrainerJournal.Infrastructure.Data;
 using TrainerJournal.Infrastructure.Data.Repositories;
+using TrainerJournal.Infrastructure.Services;
 
 namespace TrainerJournal.Infrastructure;
 
@@ -27,7 +35,40 @@ public static class DependencyInjection
         services.AddTransient<IScheduleRepository, ScheduleRepository>();
         services.AddTransient<IPracticeRepository, PracticeRepository>();
         services.AddTransient<IAttendanceRepository, AttendanceRepository>();
+
+        services.AddS3Storage();
         
+        return services;
+    }
+
+    private static IServiceCollection AddS3Storage(this IServiceCollection services)
+    {
+        
+        var s3Options = new S3Options
+        {
+            AccessKey = Environment.GetEnvironmentVariable("STORAGE_USER")
+                   ?? throw new Exception("Cannot find 'STORAGE_USER' .env variable"),
+            SecretKey = Environment.GetEnvironmentVariable("STORAGE_PASSWORD")
+                       ?? throw new Exception("Cannot find 'STORAGE_PASSWORD' .env variable"),
+            StorageUrl = Environment.GetEnvironmentVariable("STORAGE_URL")
+                         ?? throw new Exception("Cannot find 'STORAGE_URL' .env variable")
+        };
+
+        services.Configure<S3Options>(options =>
+        {
+            options.AccessKey = s3Options.AccessKey;
+            options.SecretKey = s3Options.SecretKey;
+            options.StorageUrl = s3Options.StorageUrl;
+        });
+
+        services.AddAWSService<IAmazonS3>(new AWSOptions
+        {
+            Credentials = new BasicAWSCredentials(s3Options.AccessKey, s3Options.SecretKey),
+            Region = RegionEndpoint.EUSouth1
+        });
+
+        services.AddTransient<IFileStorage, S3FileStorage>();
+
         return services;
     }
     
