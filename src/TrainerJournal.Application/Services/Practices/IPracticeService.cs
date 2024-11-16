@@ -13,4 +13,6 @@ public interface IPracticeService
     public Task<ErrorOr<PracticeDto>> ChangePracticeAsync(Guid trainerId, Guid practiceId, ChangePracticeRequest request);
 
     public Task<ErrorOr<PracticeDto>> CancelPracticeAsync(Guid trainerId, Guid practiceId, CancelPracticeRequest request);
+
+    public Task<ErrorOr<PracticeDto>> ActivatePracticeAsync(Guid trainerId, Guid id);
 }

@@ -39,4 +39,23 @@ public abstract class Practice(
         if (Math.Abs(price - Price) > 0.0001) 
             Price = price;
     }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is Practice practice && Equals(practice);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id);
+    }
+
+    private bool Equals(Practice other)
+    {
+        return Math.Abs(Price - other.Price) < 0.0001
+               && GroupId == other.GroupId
+               && TrainerId == other.TrainerId
+               && HallAddress == other.HallAddress
+               && PracticeType == other.PracticeType;
+    }
 }

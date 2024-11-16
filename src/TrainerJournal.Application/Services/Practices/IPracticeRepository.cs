@@ -16,5 +16,7 @@ public interface IPracticeRepository
     
     public Task AddAsync(SinglePractice practice);
 
+    public void Remove(SinglePractice practice);
+
     public Task SaveChangesAsync();
 }

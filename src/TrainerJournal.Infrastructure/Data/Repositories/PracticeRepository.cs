@@ -14,6 +14,7 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
     public async Task<Practice?> GetByIdAsync(Guid id)
     {
         return await practices
+            .Include(p => (p as SinglePractice)!.OverridenPractice)
             .Include(p => p.Group)
             .Include(p => p.Trainer)
                 .ThenInclude(t => t.User)
@@ -52,5 +53,10 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
     public async Task AddAsync(SinglePractice practice)
     {
         await singlePractices.AddAsync(practice);
+    }
+
+    public void Remove(SinglePractice practice)
+    {
+        singlePractices.Remove(practice);
     }
 }

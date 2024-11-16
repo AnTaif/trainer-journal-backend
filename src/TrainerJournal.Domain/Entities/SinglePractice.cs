@@ -42,13 +42,22 @@ public class SinglePractice(
         if (price != null) ChangePrice(price.Value);
     }
 
+    public bool IsIdenticalToOverridenPractice()
+    {
+        if (OverridenPracticeId == null) return false;
+
+        Practice thisPractice = this;
+        Practice overridenPractice = OverridenPractice ?? throw new Exception("OverridenPractice is not included");
+        return thisPractice.Equals(overridenPractice);
+    }
+
     public void Cancel(string comment = "")
     {
         IsCanceled = true;
         CancelComment = comment;
     }
     
-    public void Uncancel()
+    public void Activate()
     {
         IsCanceled = false;
         CancelComment = null;

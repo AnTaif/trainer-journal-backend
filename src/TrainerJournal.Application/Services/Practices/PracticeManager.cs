@@ -74,6 +74,7 @@ public class PracticeManager(
             return newPractice;
         } 
         
+        logger.LogError("CancelPractice: {id} - {time} Practice type is unrecognized", practiceId, practiceStart);
         throw new Exception("Practice type is unrecognized");
     }
 

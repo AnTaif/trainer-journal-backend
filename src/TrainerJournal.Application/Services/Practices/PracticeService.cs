@@ -57,11 +57,34 @@ public class PracticeService(
         var practiceResult = await practiceManager.CancelSpecificPracticeAsync(
             practiceId, 
             request.PracticeStart, 
-            request.Comment);
+            request.Comment ?? "");
         if (practiceResult.IsError) return practiceResult.FirstError;
         
         await practiceRepository.SaveChangesAsync();
         return practiceResult.Value.ToDto(request.PracticeStart);
+    }
+
+    public async Task<ErrorOr<PracticeDto>> ActivatePracticeAsync(Guid trainerId, Guid id)
+    {
+        var practiceResult = await practiceManager.GetBasePracticeAsync(id, DateTime.MinValue);
+        if (practiceResult.IsError) return practiceResult.FirstError;
+        
+        if (practiceResult.Value is not SinglePractice singlePractice)
+            return Error.Failure("Practice has never changed");
+
+        if (!singlePractice.IsCanceled) 
+            return Error.Failure("Practice is already active");
+        
+        if (singlePractice.IsIdenticalToOverridenPractice())
+        {
+            practiceRepository.Remove(singlePractice);
+            await practiceRepository.SaveChangesAsync();
+            return singlePractice.OverridenPractice!.ToDto(singlePractice.OriginalStart!.Value);
+        }
+        
+        singlePractice.Activate();
+        await practiceRepository.SaveChangesAsync();
+        return singlePractice.ToDto(DateTime.MinValue);
     }
 
     private async Task<ErrorOr<PracticeDto>> GetSinglePracticeDtoAsync(Guid practiceId)
