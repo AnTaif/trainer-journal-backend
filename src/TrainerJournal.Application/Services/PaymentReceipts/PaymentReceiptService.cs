@@ -15,7 +15,7 @@ public class PaymentReceiptService(
         UploadPaymentReceiptRequest request)
     {
         var destName = Guid.NewGuid() + Path.GetExtension(imageName);
-        var url = await fileStorage.UploadAsync(imageStream, "public", destName);
+        var url = await fileStorage.UploadAsync(imageStream, "Public", destName);
 
         var file = new SavedFile(destName, url, FileType.PaymentReceipt);
 

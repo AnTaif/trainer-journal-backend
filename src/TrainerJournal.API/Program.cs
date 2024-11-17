@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Serilog;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.API.Logger;
@@ -24,6 +25,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithJwtSecurity();
 
@@ -32,9 +34,12 @@ builder.Services.AddCustomCors(corsOrigins);
 
 builder.Services.AddJwtAuth(builder.Configuration.GetSection("JwtOptions"));
 
+var contentRootPath = builder.Environment.ContentRootPath;
+var uploadFilesPath = Environment.GetEnvironmentVariable("FILES_PATH") ?? Path.Combine(contentRootPath, "Uploads");
+
 builder.Services
     .AddApplicationLayer()
-    .AddInfrastructureLayer();
+    .AddInfrastructureLayer(uploadFilesPath);
 
 var app = builder.Build();
 
@@ -63,6 +68,13 @@ app.UseCors("FrontendPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+Directory.CreateDirectory(Path.Combine(uploadFilesPath, "Public"));
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(uploadFilesPath, "Public")),
+    RequestPath = "/uploads"
+});
 
 app.MapGet("/", () => TypedResults.Content(
     content: "<html><body><a href=\"./swagger\">swagger</a></body></html>", contentType: "text/html"));

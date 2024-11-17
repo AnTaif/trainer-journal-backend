@@ -1,9 +1,4 @@
-using Amazon;
-using Amazon.Extensions.NETCore.Setup;
-using Amazon.Runtime;
-using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TrainerJournal.Application.Services;
 using TrainerJournal.Application.Services.Attendance;
@@ -22,7 +17,7 @@ namespace TrainerJournal.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, string uploadFilesPath)
     {
         var connectionString = GetConnectionString();
         services.AddDbContext<AppDbContext>(options =>
@@ -38,9 +33,26 @@ public static class DependencyInjection
         services.AddTransient<IAttendanceRepository, AttendanceRepository>();
         services.AddTransient<IPaymentReceiptRepository, PaymentReceiptRepository>();
         services.AddTransient<ISavedFileRepository, SavedFileRepository>();
+
+        services.AddLocalStorage(uploadFilesPath);
+        //services.AddS3Storage();
         
-        services.AddS3Storage();
-        
+        return services;
+    }
+
+    private static IServiceCollection AddLocalStorage(this IServiceCollection services, string uploadFilesPath)
+    {
+        var uploadsUrl = Environment.GetEnvironmentVariable("UPLOADS_URL") 
+            ?? throw new Exception("Cannot find 'UPLOADS_URL' .env variable");
+
+        services.Configure<UploadOptions>(options =>
+        {
+            options.UploadsUrl = uploadsUrl;
+            options.UploadFilesPath = uploadFilesPath;
+        });
+
+        services.AddSingleton<IFileStorage, LocalFileStorage>();
+
         return services;
     }
 
@@ -63,12 +75,6 @@ public static class DependencyInjection
             options.SecretKey = s3Options.SecretKey;
             options.StorageUrl = s3Options.StorageUrl;
         });
-
-        // services.AddAWSService<IAmazonS3>(new AWSOptions
-        // {
-        //     Credentials = new BasicAWSCredentials(s3Options.AccessKey, s3Options.SecretKey),
-        //     Region = RegionEndpoint.EUSouth1
-        // });
 
         services.AddSingleton<IFileStorage, S3FileStorage>();
 
