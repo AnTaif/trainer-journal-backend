@@ -11,6 +11,39 @@ public class PaymentReceiptService(
     ISavedFileRepository savedFileRepository,
     IPaymentReceiptRepository paymentReceiptRepository) : IPaymentReceiptService
 {
+    public async Task<ErrorOr<PaymentReceiptDto>> GetByIdAsync(Guid id)
+    {
+        var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
+        if (paymentReceipt == null) return Error.NotFound("Receipt not found");
+
+        return paymentReceipt.ToDto();
+    }
+
+    public async Task<ErrorOr<List<PaymentReceiptDto>>> GetByStudentUsernameAsync(Guid userId, string username, bool? verified)
+    {
+        List<PaymentReceipt> paymentReceipts;
+
+        if (verified == null)
+            paymentReceipts = await paymentReceiptRepository.GetByStudentUsernameAsync(username);
+        else
+            paymentReceipts =
+                await paymentReceiptRepository.GetVerifiedByStudentUsernameAsync(username, verified.Value);
+        
+        return paymentReceipts.Select(p => p.ToDto()).ToList();
+    }
+
+    public async Task<ErrorOr<List<PaymentReceiptDto>>> GetByUserIdAsync(Guid userId, bool? verified)
+    {
+        List<PaymentReceipt> paymentReceipts;
+
+        if (verified == null)
+            paymentReceipts = await paymentReceiptRepository.GetAllByUserIdAsync(userId);
+        else
+            paymentReceipts = await paymentReceiptRepository.GetVerifiedByUserIdAsync(userId, verified.Value);
+        
+        return paymentReceipts.Select(p => p.ToDto()).ToList();
+    }
+    
     public async Task<ErrorOr<PaymentReceiptDto>> UploadAsync(Guid userId, Stream imageStream, string imageName,
         UploadPaymentReceiptRequest request)
     {
@@ -29,10 +62,15 @@ public class PaymentReceiptService(
         return paymentReceipt!.ToDto();
     }
 
-    public async Task<ErrorOr<List<PaymentReceiptDto>>> GetByStudentUsernameAsync(Guid userId, string username)
+    public async Task<ErrorOr<bool>> DeleteAsync(Guid userId, Guid id)
     {
-        var paymentReceipts = await paymentReceiptRepository.GetByStudentUsernameAsync(username);
+        var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
+        if (paymentReceipt == null) return Error.NotFound("Receipt not found");
 
-        return paymentReceipts.Select(p => p.ToDto()).ToList();
+        savedFileRepository.Remove(paymentReceipt.Image);
+        fileStorage.Delete("Public", paymentReceipt.Image.StorageKey);
+        await paymentReceiptRepository.SaveChangesAsync();
+
+        return true;
     }
 }

@@ -1,14 +1,15 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using TrainerJournal.Application.Services.Students.Dtos;
 
 namespace TrainerJournal.Application.Services.PaymentReceipts.Dtos;
 
 public class PaymentReceiptDto
 {
-    [Required]
-    [DefaultValue("login")]
-    public string Username { get; init; } = null!;
+    public Guid Id { get; init; }
 
+    public StudentShortDto Student { get; init; }
+    
     public float Amount { get; init; }
 
     [Required]
@@ -17,9 +18,9 @@ public class PaymentReceiptDto
     
     public DateTime UploadDate { get; init; }
     
-    public bool IsChecked { get; init; }
+    public bool IsVerified { get; init; }
     
-    public DateTime? CheckDate { get; init; }
+    public DateTime? VerificationDate { get; init; }
 
     public bool IsAccepted { get; init; }
 

@@ -44,7 +44,12 @@ public class S3FileStorage : IFileStorage
 
         return $"{s3Options.StorageUrl}/{destinationDirectory}/{destinationFile}";
     }
-    
+
+    public void Delete(string destinationDirectory, string destinationFile)
+    {
+        throw new NotImplementedException();
+    }
+
     private async Task EnsureBucketExistsAsync(string bucketName)
     {
         try

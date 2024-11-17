@@ -19,18 +19,18 @@ public class PaymentReceipt(
 
     public DateTime UploadDate { get; private set; } = uploadDate;
     
-    public bool IsChecked { get; private set; }
+    public bool IsVerified { get; private set; }
     
-    public DateTime? CheckDate { get; private set; }
+    public DateTime? VerificationDate { get; private set; }
 
     public bool IsAccepted { get; private set; }
 
     public string? DeclineComment { get; private set; }
 
-    public void Check(bool isAccepted)
+    public void Verify(bool isAccepted)
     {
-        IsChecked = true;
+        IsVerified = true;
         IsAccepted = isAccepted;
-        CheckDate = DateTime.UtcNow;
+        VerificationDate = DateTime.UtcNow;
     }
 }
