@@ -21,9 +21,10 @@ public class Group : Entity<Guid>
     
     public Group() : base(Guid.NewGuid()) { }
     
-    public Group(string name, string hallAddress, HexColor hexColor, Guid trainerId) : base(Guid.NewGuid())
+    public Group(string name, float price, string hallAddress, HexColor hexColor, Guid trainerId) : base(Guid.NewGuid())
     {
         Name = name;
+        Price = price;
         HallAddress = hallAddress;
         HexColor = hexColor;
         TrainerId = trainerId;

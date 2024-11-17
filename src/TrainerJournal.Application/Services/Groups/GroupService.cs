@@ -42,6 +42,7 @@ public class GroupService(
     {
         var newGroup = new Group(
             request.Name, 
+            request.Price,
             request.HallAddress ?? "",
             request.HexColor == null ? colorGenerator.GetRandomGroupColor() : new HexColor(request.HexColor), 
             trainerId);

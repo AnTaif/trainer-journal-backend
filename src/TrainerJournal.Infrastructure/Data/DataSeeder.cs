@@ -110,13 +110,13 @@ public static class DataSeeder
         
         // SEED GROUPS
         
-        var group1 = new Group("Взрослая группа", "ул. Академика Постовского, 11", new HexColor("#A293FF"), 
+        var group1 = new Group("Взрослая группа", 400, "ул. Академика Постовского, 11", new HexColor("#A293FF"), 
             trainer1Guid)
         {
             Id = group1Guid
         };
 
-        var group2 = new Group("Младшая группа", "ул. Академика Постовского, 11", new HexColor("#93FFCB"), 
+        var group2 = new Group("Младшая группа", 300, "ул. Академика Постовского, 11", new HexColor("#93FFCB"), 
             trainer1Guid)
         {
             Id = group2Guid

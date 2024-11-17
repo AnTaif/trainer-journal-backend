@@ -8,6 +8,8 @@ public class CreateGroupRequest
     [Required]
     [DefaultValue("name")]
     public string Name { get; init; }
+    
+    public float Price { get; init; }
 
     [Required]
     [DefaultValue("address")]
