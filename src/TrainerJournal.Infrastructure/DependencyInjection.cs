@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TrainerJournal.Application.Services;
 using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Application.Services.Groups;
+using TrainerJournal.Application.Services.PaymentReceipts;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Schedules;
 using TrainerJournal.Application.Services.Students;
@@ -35,7 +36,9 @@ public static class DependencyInjection
         services.AddTransient<IScheduleRepository, ScheduleRepository>();
         services.AddTransient<IPracticeRepository, PracticeRepository>();
         services.AddTransient<IAttendanceRepository, AttendanceRepository>();
-
+        services.AddTransient<IPaymentReceiptRepository, PaymentReceiptRepository>();
+        services.AddTransient<ISavedFileRepository, SavedFileRepository>();
+        
         services.AddS3Storage();
         
         return services;
@@ -61,13 +64,13 @@ public static class DependencyInjection
             options.StorageUrl = s3Options.StorageUrl;
         });
 
-        services.AddAWSService<IAmazonS3>(new AWSOptions
-        {
-            Credentials = new BasicAWSCredentials(s3Options.AccessKey, s3Options.SecretKey),
-            Region = RegionEndpoint.EUSouth1
-        });
+        // services.AddAWSService<IAmazonS3>(new AWSOptions
+        // {
+        //     Credentials = new BasicAWSCredentials(s3Options.AccessKey, s3Options.SecretKey),
+        //     Region = RegionEndpoint.EUSouth1
+        // });
 
-        services.AddTransient<IFileStorage, S3FileStorage>();
+        services.AddSingleton<IFileStorage, S3FileStorage>();
 
         return services;
     }

@@ -1,3 +1,4 @@
+using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
@@ -7,10 +8,25 @@ using TrainerJournal.Domain.Options;
 
 namespace TrainerJournal.Infrastructure.Services;
 
-public class S3FileStorage(
-    IOptions<S3Options> s3Options,
-    IAmazonS3 s3Client) : IFileStorage
+public class S3FileStorage : IFileStorage
 {
+
+    private readonly S3Options s3Options;
+    private readonly AmazonS3Client s3Client;
+    
+    public S3FileStorage(IOptions<S3Options> options)
+    {
+        s3Options = options.Value;
+
+        var s3Config = new AmazonS3Config
+        {
+            ServiceURL = s3Options.StorageUrl,
+            ForcePathStyle = true
+        };
+
+        s3Client = new AmazonS3Client(s3Options.AccessKey, s3Options.SecretKey, s3Config);
+    }
+    
     public async Task<string> UploadAsync(Stream fileStream, string destinationDirectory, string destinationFile)
     {
         await EnsureBucketExistsAsync(destinationDirectory.Split("/")[0]);
@@ -19,13 +35,14 @@ public class S3FileStorage(
         {
             BucketName = destinationDirectory,
             Key = destinationFile,
-            InputStream = fileStream
+            InputStream = fileStream,
+            
         };
 
         var transferUtility = new TransferUtility(s3Client);
         await transferUtility.UploadAsync(request);
 
-        return $"{s3Options.Value.StorageUrl}/{destinationDirectory}/{destinationFile}";
+        return $"{s3Options.StorageUrl}/{destinationDirectory}/{destinationFile}";
     }
     
     private async Task EnsureBucketExistsAsync(string bucketName)
@@ -36,12 +53,37 @@ public class S3FileStorage(
             var exists = response.Buckets.Exists(b => b.BucketName == bucketName);
             if (!exists)
             {
-                await s3Client.PutBucketAsync(new PutBucketRequest { BucketName = bucketName });
+                await PutAnonymousBucketAsync(bucketName);
             }
         }
         catch
         {
-            await s3Client.PutBucketAsync(new PutBucketRequest { BucketName = bucketName });
+            await PutAnonymousBucketAsync(bucketName);
         }
+    }
+
+    private async Task PutAnonymousBucketAsync(string bucketName)
+    {
+        await s3Client.PutBucketAsync(new PutBucketRequest { BucketName = bucketName });
+        
+        var policy = $@"
+        {{
+            ""Version"": ""2012-10-17"",
+            ""Statement"": [
+                {{
+                    ""Effect"": ""Allow"",
+                    ""Principal"": ""*"",
+                    ""Action"": ""s3:GetObject"",
+                    ""Resource"": ""arn:aws:s3:::{bucketName}/*""
+                }}
+            ]
+        }}";
+
+        // Устанавливаем политику
+        await s3Client.PutBucketPolicyAsync(new PutBucketPolicyRequest
+        {
+            BucketName = bucketName,
+            Policy = policy
+        });
     }
 }
