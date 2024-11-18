@@ -54,7 +54,7 @@ public class AttendanceService(
         if (practice == null) return Error.NotFound("Practice not found");
         if (practice.TrainerId != userId) return Error.Forbidden("You are not a trainer of this group");
         
-        var newMark = new AttendanceMark(student.UserId, request.PracticeId, request.PracticeTime);
+        var newMark = new AttendanceMark(student, practice, request.PracticeTime, DateTime.UtcNow);
         
         attendanceRepository.Add(newMark);
         await attendanceRepository.SaveChangesAsync();
@@ -64,6 +64,7 @@ public class AttendanceService(
 
     private async Task UnmarkAttendanceAsync(AttendanceMark attendanceMark)
     {
+        attendanceMark.Unmark();
         attendanceRepository.Remove(attendanceMark);
         await attendanceRepository.SaveChangesAsync();
     }

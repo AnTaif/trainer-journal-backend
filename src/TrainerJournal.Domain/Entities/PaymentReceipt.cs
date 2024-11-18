@@ -1,4 +1,6 @@
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Enums.BalanceChangeReason;
+using TrainerJournal.Domain.Events;
 
 namespace TrainerJournal.Domain.Entities;
 
@@ -29,19 +31,22 @@ public class PaymentReceipt(
 
     public void Verify(bool isAccepted, string? declineComment)
     {
+        if (IsAccepted == isAccepted) return;
+        
+        VerificationDate = DateTime.UtcNow;
         if (IsAccepted)
         {
-            // Если вызывается Verify с IsAccepted - true, то необходимо откатить произошедшее ранее изменение баланса 
-            // TODO: revert balance change event
+            AddDomainEvent(new BalanceChangedEvent(Student, -Amount, Student.Balance, BalanceChangeReason.PaymentRejection,
+                VerificationDate.Value));
         }
         
         IsVerified = true;
         IsAccepted = isAccepted;
-        VerificationDate = DateTime.UtcNow;
 
         if (IsAccepted)
         {
-            // TODO: add balance change event
+            AddDomainEvent(new BalanceChangedEvent(Student, Amount, Student.Balance, BalanceChangeReason.Payment,
+                VerificationDate.Value));
         }
         else
             DeclineComment = declineComment ?? "";

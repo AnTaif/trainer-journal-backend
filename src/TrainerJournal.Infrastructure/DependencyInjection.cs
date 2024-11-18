@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TrainerJournal.Application.Services;
 using TrainerJournal.Application.Services.Attendance;
+using TrainerJournal.Application.Services.Finance;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.PaymentReceipts;
 using TrainerJournal.Application.Services.Practices;
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddTransient<IAttendanceRepository, AttendanceRepository>();
         services.AddTransient<IPaymentReceiptRepository, PaymentReceiptRepository>();
         services.AddTransient<ISavedFileRepository, SavedFileRepository>();
+        services.AddTransient<IBalanceChangeRepository, BalanceChangeRepository>();
 
         services.AddLocalStorage(uploadFilesPath);
         //services.AddS3Storage();
