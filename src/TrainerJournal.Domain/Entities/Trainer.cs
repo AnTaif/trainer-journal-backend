@@ -1,22 +1,30 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using TrainerJournal.Domain.Common;
 
 namespace TrainerJournal.Domain.Entities;
 
 /// <remarks>
 /// Use the UserId as the Primary Key
 /// </remarks>
-public class Trainer(Guid userId, string? phone = null, string? email = null)
+public class Trainer : Entity<Guid>
 {
-    /// <summary>
-    /// PrimaryKey for Trainer and ForeignKey for the User table
-    /// </summary>
-    public Guid UserId { get; init; } = userId;
-    [ForeignKey("UserId")]
+    [ForeignKey("Id")]
     public User User { get; private set; } = null!;
 
-    public string? Phone { get; private set; } = phone;
+    public string? Phone { get; private set; }
 
-    public string? Email { get; private set; } = email;
+    public string? Email { get; private set; }
+
+    public Trainer() : base(Guid.NewGuid()) { }
+    
+    /// <remarks>
+    /// Use the UserId as the Primary Key
+    /// </remarks>
+    public Trainer(Guid userId, string? phone = null, string? email = null) : base(userId)
+    {
+        Phone = phone;
+        Email = email;
+    }
 
     public void Update(string? phone, string? email)
     {

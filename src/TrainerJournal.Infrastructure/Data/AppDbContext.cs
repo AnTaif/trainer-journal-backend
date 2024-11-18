@@ -43,13 +43,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IMediator medi
 
         modelBuilder.Entity<Trainer>(b =>
         {
-            b.HasKey(t => t.UserId);
+            b.HasKey(t => t.Id);
             b.HasOne(t => t.User);
         });
 
         modelBuilder.Entity<Student>(b =>
         {
-            b.HasKey(s => s.UserId);
+            b.HasKey(s => s.Id);
             b.HasOne(s => s.User);
         });
         

@@ -20,19 +20,17 @@ public class AttendanceMark : Entity<Guid>
     
     public AttendanceMark(Student student, Practice practice, DateTime practiceTime, DateTime date) : base(Guid.NewGuid())
     {
-        StudentId = student.UserId;
+        StudentId = student.Id;
         PracticeId = practice.Id;
         PracticeTime = practiceTime;
         Date = date;
 
-        AddDomainEvent(new BalanceChangedEvent(student, practice.Price, student.Balance,
-            BalanceChangeReason.MarkAttendance, date));
+        student.UpdateBalance(practice.Price, BalanceChangeReason.MarkAttendance, date);
     }
 
     public void Unmark()
     {
-        AddDomainEvent(new BalanceChangedEvent(Student, -Practice.Price, Student.Balance,
-            BalanceChangeReason.UnmarkAttendance, DateTime.UtcNow));
+        Student.UpdateBalance(-Practice.Price, BalanceChangeReason.UnmarkAttendance, DateTime.UtcNow);
     }
     
     public void ChangePractice(Guid newPracticeId, DateTime newPracticeTime)

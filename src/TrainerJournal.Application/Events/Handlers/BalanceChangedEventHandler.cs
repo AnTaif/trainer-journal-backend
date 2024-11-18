@@ -11,10 +11,9 @@ public class BalanceChangedEventHandler(
 {
     public async Task Handle(BalanceChangedEvent domainEvent, CancellationToken cancellationToken)
     {
-        var newBalanceChange = new BalanceChange(domainEvent.Student.UserId, domainEvent.Amount, domainEvent.PreviousBalance,
+        var newBalanceChange = new BalanceChange(domainEvent.StudentId, domainEvent.Amount, domainEvent.PreviousBalance,
             domainEvent.BalanceChangeReason, domainEvent.Date);
 
-        domainEvent.Student.UpdateBalance(domainEvent.Amount);
         balanceChangeRepository.Add(newBalanceChange);
         await balanceChangeRepository.SaveChangesAsync();
     }

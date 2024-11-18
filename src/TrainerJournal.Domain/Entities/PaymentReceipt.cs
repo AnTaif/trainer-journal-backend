@@ -1,6 +1,5 @@
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Enums.BalanceChangeReason;
-using TrainerJournal.Domain.Events;
 
 namespace TrainerJournal.Domain.Entities;
 
@@ -36,8 +35,7 @@ public class PaymentReceipt(
         VerificationDate = DateTime.UtcNow;
         if (IsAccepted)
         {
-            AddDomainEvent(new BalanceChangedEvent(Student, -Amount, Student.Balance, BalanceChangeReason.PaymentRejection,
-                VerificationDate.Value));
+            Student.UpdateBalance(-Amount, BalanceChangeReason.PaymentRejection, VerificationDate.Value);
         }
         
         IsVerified = true;
@@ -45,8 +43,7 @@ public class PaymentReceipt(
 
         if (IsAccepted)
         {
-            AddDomainEvent(new BalanceChangedEvent(Student, Amount, Student.Balance, BalanceChangeReason.Payment,
-                VerificationDate.Value));
+            Student.UpdateBalance(Amount, BalanceChangeReason.Payment, VerificationDate.Value);
         }
         else
             DeclineComment = declineComment ?? "";

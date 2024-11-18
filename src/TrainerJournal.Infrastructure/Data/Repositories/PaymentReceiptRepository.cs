@@ -28,7 +28,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .Include(r => r.Student)
                 .ThenInclude(s => s.Groups)
             .Include(r => r.Image)
-            .Where(p => p.Student.UserId == userId || p.Student.Groups.Any(g => g.TrainerId == userId))
+            .Where(p => p.Student.Id == userId || p.Student.Groups.Any(g => g.TrainerId == userId))
             .ToListAsync();
     }
 
@@ -40,7 +40,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .Include(r => r.Student)
                 .ThenInclude(s => s.Groups)
             .Include(r => r.Image)
-            .Where(p => (p.Student.UserId == userId || p.Student.Groups.Any(g => g.TrainerId == userId))
+            .Where(p => (p.Student.Id == userId || p.Student.Groups.Any(g => g.TrainerId == userId))
                                         && p.IsVerified == verified)
             .ToListAsync();
     }

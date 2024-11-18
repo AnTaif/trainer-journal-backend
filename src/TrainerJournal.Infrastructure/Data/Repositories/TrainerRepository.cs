@@ -13,6 +13,6 @@ public class TrainerRepository(AppDbContext context) : BaseRepository(context), 
     {
         return await trainers
             .Include(t => t.User)
-            .FirstOrDefaultAsync(t => t.UserId == userId);
+            .FirstOrDefaultAsync(t => t.Id == userId);
     }
 }
