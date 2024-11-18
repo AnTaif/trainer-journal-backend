@@ -16,6 +16,8 @@ namespace TrainerJournal.API.Controllers;
 public class PaymentReceiptsController(
     IPaymentReceiptService paymentReceiptService) : ControllerBase
 {
+    private readonly string[] allowedFileExtensions = [".jpg", ".jpeg", ".png"];
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<PaymentReceiptDto>> GetByIdAsync(Guid id)
     {
@@ -37,7 +39,8 @@ public class PaymentReceiptsController(
     }
     
     [HttpGet("students/{username}")]
-    public async Task<ActionResult<List<PaymentReceiptDto>>> GetStudentsPaymentReceiptsAsync(string username, [FromQuery] bool? verified =  null)
+    public async Task<ActionResult<List<PaymentReceiptDto>>> GetStudentsPaymentReceiptsAsync(
+        string username, [FromQuery] bool? verified =  null)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
@@ -52,8 +55,17 @@ public class PaymentReceiptsController(
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
-
+        
         var fileName = file.FileName;
+        if (!allowedFileExtensions.Contains(Path.GetExtension(fileName)))
+            return BadRequest("Invalid file extension. Allowed extensions: .jpg, .jpeg, .png");
+            
+        const long maxFileSize = 5 * 1024 * 1024;
+        if (file.Length > maxFileSize)
+        {
+            return BadRequest($"The file size exceeds the allowed limit: {maxFileSize / (1024 * 1024)} MB");
+        }
+        
         var stream = file.OpenReadStream();
 
         var errorOr = await paymentReceiptService.UploadAsync(Guid.Parse(userId), stream, fileName, request);
