@@ -29,10 +29,12 @@ public static class StudentExtensions
             Username = student.User.UserName!,
             FullName = student.User.FullName.ToString(),
             Balance = student.Balance,
+            BirthDate = student.BirthDate,
             Age = GetYearsSince(student.BirthDate),
             SchoolGrade = student.SchoolGrade,
             Kyu = student.Kyu,
             Gender = student.User.Gender.ToGenderString(),
+            Address = student.Address,
             GroupIds = student.Groups.Select(g => g.Id).ToList(),
             Contact = student.Contacts.First().ToDto()
         };
