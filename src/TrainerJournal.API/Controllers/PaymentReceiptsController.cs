@@ -6,6 +6,7 @@ using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.PaymentReceipts;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos.Requests;
+using TrainerJournal.Domain.Constants;
 
 namespace TrainerJournal.API.Controllers;
 
@@ -67,5 +68,16 @@ public class PaymentReceiptsController(
 
         var errorOr = await paymentReceiptService.DeleteAsync(Guid.Parse(userId), id);
         return this.ToActionResult(errorOr, _ => NoContent());
+    }
+
+    [HttpPost("{id}/verify")]
+    [Authorize(Roles = Roles.Trainer)]
+    public async Task<ActionResult<PaymentReceiptDto>> VerifyPaymentReceiptAsync(Guid id, VerifyPaymentReceiptRequest request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var errorOr = await paymentReceiptService.VerifyAsync(id, request);
+        return this.ToActionResult(errorOr, Ok);
     }
 }

@@ -16,4 +16,6 @@ public interface IPaymentReceiptService
         UploadPaymentReceiptRequest request);
 
     public Task<ErrorOr<bool>> DeleteAsync(Guid userId, Guid id);
+
+    public Task<ErrorOr<PaymentReceiptDto>> VerifyAsync(Guid id, VerifyPaymentReceiptRequest request);
 }

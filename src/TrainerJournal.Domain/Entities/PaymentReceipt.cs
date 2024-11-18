@@ -27,10 +27,23 @@ public class PaymentReceipt(
 
     public string? DeclineComment { get; private set; }
 
-    public void Verify(bool isAccepted)
+    public void Verify(bool isAccepted, string? declineComment)
     {
+        if (IsAccepted)
+        {
+            // Если вызывается Verify с IsAccepted - true, то необходимо откатить произошедшее ранее изменение баланса 
+            // TODO: revert balance change event
+        }
+        
         IsVerified = true;
         IsAccepted = isAccepted;
         VerificationDate = DateTime.UtcNow;
+
+        if (IsAccepted)
+        {
+            // TODO: add balance change event
+        }
+        else
+            DeclineComment = declineComment ?? "";
     }
 }

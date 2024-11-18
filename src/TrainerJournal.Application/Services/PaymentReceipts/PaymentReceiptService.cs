@@ -73,4 +73,15 @@ public class PaymentReceiptService(
 
         return true;
     }
+
+    public async Task<ErrorOr<PaymentReceiptDto>> VerifyAsync(Guid id, VerifyPaymentReceiptRequest request)
+    {
+        var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
+        if (paymentReceipt == null) return Error.NotFound("Receipt not found");
+
+        paymentReceipt.Verify(request.IsAccepted, request.DeclineComment);
+        await paymentReceiptRepository.SaveChangesAsync();
+        
+        return paymentReceipt.ToDto();
+    }
 }
