@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrainerJournal.Infrastructure.Data;
@@ -12,9 +13,11 @@ using TrainerJournal.Infrastructure.Data;
 namespace TrainerJournal.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241118211318_AddDateToAttendanceMark")]
+    partial class AddDateToAttendanceMark
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,12 +31,12 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<Guid>("GroupsId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("StudentsId")
+                    b.Property<Guid>("StudentsUserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("GroupsId", "StudentsId");
+                    b.HasKey("GroupsId", "StudentsUserId");
 
-                    b.HasIndex("StudentsId");
+                    b.HasIndex("StudentsUserId");
 
                     b.ToTable("GroupStudent");
                 });
@@ -67,22 +70,22 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7350aec2-685e-480c-b23b-e23c8767291c"),
-                            ConcurrencyStamp = "10c115b2-1846-4826-8e81-c0bb8af3f7fd",
+                            Id = new Guid("8f9f87ab-fcb2-4dc1-8640-e2ddce737e4f"),
+                            ConcurrencyStamp = "e83f6c41-54be-489c-a91e-f016e884b672",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("af047d79-eff5-44b9-b09a-a938d8072e2f"),
-                            ConcurrencyStamp = "432e0f98-ea90-424c-9d38-e21351d7a6ef",
+                            Id = new Guid("6a32ce17-505d-431e-bd8b-89f55ed4ed48"),
+                            ConcurrencyStamp = "639a5915-b173-495d-92f8-9a7083dba16e",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         },
                         new
                         {
-                            Id = new Guid("6afef4ca-abee-4841-ae6c-0cecf638468f"),
-                            ConcurrencyStamp = "90bd2d45-06bc-447b-a961-944a381e1729",
+                            Id = new Guid("3330e792-d8d0-41e0-bbc1-4d9426d0da4a"),
+                            ConcurrencyStamp = "035d0337-0bf8-4dea-886c-b72f3a7219af",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -264,12 +267,12 @@ namespace TrainerJournal.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("StudentId")
+                    b.Property<Guid?>("StudentUserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentUserId");
 
                     b.ToTable("Contacts");
                 });
@@ -444,7 +447,7 @@ namespace TrainerJournal.Infrastructure.Migrations
 
             modelBuilder.Entity("TrainerJournal.Domain.Entities.Student", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
@@ -469,14 +472,14 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<DateTime>("TrainingStartDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("Students");
                 });
 
             modelBuilder.Entity("TrainerJournal.Domain.Entities.Trainer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
@@ -485,7 +488,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("Trainers");
                 });
@@ -624,7 +627,7 @@ namespace TrainerJournal.Infrastructure.Migrations
 
                     b.HasOne("TrainerJournal.Domain.Entities.Student", null)
                         .WithMany()
-                        .HasForeignKey("StudentsId")
+                        .HasForeignKey("StudentsUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -714,7 +717,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                 {
                     b.HasOne("TrainerJournal.Domain.Entities.Student", null)
                         .WithMany("Contacts")
-                        .HasForeignKey("StudentId");
+                        .HasForeignKey("StudentUserId");
                 });
 
             modelBuilder.Entity("TrainerJournal.Domain.Entities.Group", b =>
@@ -781,7 +784,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                 {
                     b.HasOne("TrainerJournal.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -792,7 +795,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                 {
                     b.HasOne("TrainerJournal.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

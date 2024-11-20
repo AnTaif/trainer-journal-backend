@@ -1,17 +1,16 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Enums.BalanceChangeReason;
+using TrainerJournal.Domain.Events;
 
 namespace TrainerJournal.Domain.Entities;
 
 /// <remarks>
 /// Use the UserId as the Primary Key
 /// </remarks>
-public class Student
+public class Student : Entity<Guid>
 {
-    /// <summary>
-    /// PrimaryKey for Student and ForeignKey for the User table
-    /// </summary>
-    public Guid UserId { get; private set; }
-    [ForeignKey("UserId")]
+    [ForeignKey("Id")]
     public User User { get; private set; } = null!;
 
     public List<Group> Groups { get; private set; } = new();
@@ -28,7 +27,7 @@ public class Student
 
     public List<Contact> Contacts { get; set; } = null!;
 
-    public Student() { }
+    public Student() : base(Guid.NewGuid()) { }
     
     public Student(
         Guid userId,
@@ -36,13 +35,13 @@ public class Student
         int schoolGrade, 
         int? kyu,
         string? address, 
-        List<Contact> contacts)
+        List<Contact> contacts) : base(userId)
     {
         BirthDate = birthDate;
         SchoolGrade = schoolGrade;
         UpdateKyu(kyu);
         Address = address ?? "";
-        UserId = userId;
+        Id = userId;
         Contacts = contacts;
     }
 
@@ -78,8 +77,9 @@ public class Student
         KyuUpdatedAt = DateTime.UtcNow;
     }
 
-    public void UpdateBalance(float balanceDiff)
+    public void UpdateBalance(float balanceDiff, BalanceChangeReason reason, DateTime eventDate)
     {
+        AddDomainEvent(new BalanceChangedEvent(Id, balanceDiff, Balance, reason, eventDate));
         Balance += balanceDiff;
     }
 

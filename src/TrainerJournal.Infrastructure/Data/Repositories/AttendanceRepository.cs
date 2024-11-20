@@ -12,6 +12,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
     public async Task<AttendanceMark?> GetByInfoAsync(string studentUsername, Guid practiceId, DateTime practiceTime)
     {
         return await attendanceMarks
+            .Include(a => a.Practice)
             .Include(a => a.Student)
                 .ThenInclude(s => s.User)
             .FirstOrDefaultAsync(a =>
@@ -41,6 +42,8 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
     {
         return await attendanceMarks
             //.Include(a => a.Practice)
+            .Include(a => a.Student)
+                .ThenInclude(s => s.User)
             .Where(a => a.Practice.GroupId == groupId)
             .Where(a => start <= a.PracticeTime && a.PracticeTime <= end)
             .ToListAsync();

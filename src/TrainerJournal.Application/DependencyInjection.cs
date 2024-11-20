@@ -2,8 +2,10 @@ using Microsoft.Extensions.DependencyInjection;
 using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Application.Services.Auth;
 using TrainerJournal.Application.Services.Auth.Tokens;
+using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Colors;
+using TrainerJournal.Application.Services.PaymentReceipts;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Schedules;
 using TrainerJournal.Application.Services.Students;
@@ -25,6 +27,8 @@ public static class DependencyInjection
         services.AddTransient<IPracticeManager, PracticeManager>();
         services.AddTransient<IPracticeService, PracticeService>();
         services.AddTransient<IAttendanceService, AttendanceService>();
+        services.AddTransient<IPaymentReceiptService, PaymentReceiptService>();
+        services.AddTransient<IBalanceChangeManager, BalanceChangeManager>();
         
         services.AddMediatR(cfg =>
         {

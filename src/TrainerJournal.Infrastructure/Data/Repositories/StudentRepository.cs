@@ -16,7 +16,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .Include(s => s.User)
             .Include(s => s.Groups)
             .Include(s => s.Contacts)
-            .FirstOrDefaultAsync(student => student.UserId == userId);
+            .FirstOrDefaultAsync(student => student.Id == userId);
     }
 
     public async Task<Student?> GetByUsernameAsync(string username)

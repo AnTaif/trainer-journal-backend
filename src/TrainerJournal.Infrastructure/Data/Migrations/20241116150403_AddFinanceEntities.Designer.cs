@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrainerJournal.Infrastructure.Data;
@@ -12,9 +13,11 @@ using TrainerJournal.Infrastructure.Data;
 namespace TrainerJournal.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241116150403_AddFinanceEntities")]
+    partial class AddFinanceEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,12 +31,12 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<Guid>("GroupsId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("StudentsId")
+                    b.Property<Guid>("StudentsUserId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("GroupsId", "StudentsId");
+                    b.HasKey("GroupsId", "StudentsUserId");
 
-                    b.HasIndex("StudentsId");
+                    b.HasIndex("StudentsUserId");
 
                     b.ToTable("GroupStudent");
                 });
@@ -67,22 +70,22 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7350aec2-685e-480c-b23b-e23c8767291c"),
-                            ConcurrencyStamp = "10c115b2-1846-4826-8e81-c0bb8af3f7fd",
+                            Id = new Guid("bdd75d68-b171-425c-b81f-29518cb91680"),
+                            ConcurrencyStamp = "df803940-4637-4ee0-886c-b70223509344",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("af047d79-eff5-44b9-b09a-a938d8072e2f"),
-                            ConcurrencyStamp = "432e0f98-ea90-424c-9d38-e21351d7a6ef",
+                            Id = new Guid("92e49a67-c0d5-4362-819e-2609845d312e"),
+                            ConcurrencyStamp = "a93a349b-6932-4831-9505-b49b95c4c507",
                             Name = "Trainer",
                             NormalizedName = "TRAINER"
                         },
                         new
                         {
-                            Id = new Guid("6afef4ca-abee-4841-ae6c-0cecf638468f"),
-                            ConcurrencyStamp = "90bd2d45-06bc-447b-a961-944a381e1729",
+                            Id = new Guid("2b0b61d9-2855-4d5d-a8d8-3a38fba2500c"),
+                            ConcurrencyStamp = "ee294738-8097-44ec-9625-e5c02ec7990f",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -197,9 +200,6 @@ namespace TrainerJournal.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("PracticeId")
                         .HasColumnType("uuid");
 
@@ -264,12 +264,12 @@ namespace TrainerJournal.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("StudentId")
+                    b.Property<Guid?>("StudentUserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentUserId");
 
                     b.ToTable("Contacts");
                 });
@@ -322,6 +322,9 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
+                    b.Property<DateTime?>("CheckDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("DeclineComment")
                         .HasColumnType("text");
 
@@ -331,16 +334,13 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<bool>("IsAccepted")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool>("IsChecked")
                         .HasColumnType("boolean");
 
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("UploadDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("VerificationDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -444,7 +444,7 @@ namespace TrainerJournal.Infrastructure.Migrations
 
             modelBuilder.Entity("TrainerJournal.Domain.Entities.Student", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
@@ -469,14 +469,14 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<DateTime>("TrainingStartDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("Students");
                 });
 
             modelBuilder.Entity("TrainerJournal.Domain.Entities.Trainer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
@@ -485,7 +485,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("Trainers");
                 });
@@ -624,7 +624,7 @@ namespace TrainerJournal.Infrastructure.Migrations
 
                     b.HasOne("TrainerJournal.Domain.Entities.Student", null)
                         .WithMany()
-                        .HasForeignKey("StudentsId")
+                        .HasForeignKey("StudentsUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -714,7 +714,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                 {
                     b.HasOne("TrainerJournal.Domain.Entities.Student", null)
                         .WithMany("Contacts")
-                        .HasForeignKey("StudentId");
+                        .HasForeignKey("StudentUserId");
                 });
 
             modelBuilder.Entity("TrainerJournal.Domain.Entities.Group", b =>
@@ -781,7 +781,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                 {
                     b.HasOne("TrainerJournal.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -792,7 +792,7 @@ namespace TrainerJournal.Infrastructure.Migrations
                 {
                     b.HasOne("TrainerJournal.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

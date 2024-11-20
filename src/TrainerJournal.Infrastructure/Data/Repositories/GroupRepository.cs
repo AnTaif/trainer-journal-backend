@@ -15,7 +15,7 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
             .Include(g => g.Students)
             .Include(g => g.Trainer)
             .Where(g => !g.IsDeleted 
-                        && (g.TrainerId == userId || g.Students.Any(s => s.UserId == userId)))
+                        && (g.TrainerId == userId || g.Students.Any(s => s.Id == userId)))
             .ToListAsync();
     }
 
@@ -33,7 +33,9 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
     {
         return await groups
             .Include(g => g.Students)
+                .ThenInclude(s => s.User)
             .Include(g => g.Trainer)
+                .ThenInclude(t => t.User)
             .FirstOrDefaultAsync(g => g.Id == id);
     }
 

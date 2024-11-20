@@ -49,14 +49,25 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
 
         return this.ToActionResult(result, Ok);
     }
-
-    [HttpPost("students/{username}/attendance")]
-    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(string username, MarkUnmarkAttendanceRequest request)
+    
+    [HttpPost("students/{username}/attendance/mark")]
+    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(string username, MarkAttendanceRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await attendanceService.MarkUnmarkAttendanceAsync(Guid.Parse(userId), username, request);
+        var result = await attendanceService.MarkAttendanceAsync(Guid.Parse(userId), username, request);
+
+        return this.ToActionResult(result, Ok);
+    }
+    
+    [HttpDelete("students/{username}/attendance/mark")]
+    public async Task<ActionResult<AttendanceMarkDto?>> UnmarkAttendanceAsync(string username, MarkAttendanceRequest request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await attendanceService.MarkAttendanceAsync(Guid.Parse(userId), username, request);
 
         return this.ToActionResult(result, Ok);
     }

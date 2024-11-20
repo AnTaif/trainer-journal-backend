@@ -18,7 +18,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IMediator medi
     
     public DbSet<Group> Groups { get; set; } = null!;
     
-    public DbSet<Payment> Payments { get; set; } = null!;
+    public DbSet<PaymentReceipt> PaymentReceipts { get; set; } = null!;
+
+    public DbSet<BalanceChange> BalanceChanges { get; set; } = null!;
+
+    public DbSet<SavedFile> SavedFiles { get; set; } = null!;
 
     public DbSet<Schedule> Schedules { get; set; } = null!;
 
@@ -39,13 +43,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IMediator medi
 
         modelBuilder.Entity<Trainer>(b =>
         {
-            b.HasKey(t => t.UserId);
+            b.HasKey(t => t.Id);
             b.HasOne(t => t.User);
         });
 
         modelBuilder.Entity<Student>(b =>
         {
-            b.HasKey(s => s.UserId);
+            b.HasKey(s => s.Id);
             b.HasOne(s => s.User);
         });
         

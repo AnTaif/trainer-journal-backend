@@ -40,6 +40,17 @@ public static class StudentExtensions
         };
     }
 
+    public static StudentShortDto ToShortDto(this Student student)
+    {
+        return new StudentShortDto
+        {
+            Username = student.User.UserName!,
+            FullName = student.User.FullName.ToString(),
+            Balance = student.Balance,
+            GroupIds = student.Groups.Select(g => g.Id).ToList()
+        };
+    }
+
     private static int GetYearsSince(DateTime date)
     {
         var years = DateTime.UtcNow.Year - date.Year;
