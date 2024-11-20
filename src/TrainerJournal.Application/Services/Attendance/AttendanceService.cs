@@ -2,6 +2,7 @@ using ErrorOr;
 using TrainerJournal.Application.Services.Attendance.Dtos;
 using TrainerJournal.Application.Services.Attendance.Dtos.Requests;
 using TrainerJournal.Application.Services.Attendance.Dtos.Responses;
+using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Students;
@@ -10,6 +11,7 @@ using TrainerJournal.Domain.Entities;
 namespace TrainerJournal.Application.Services.Attendance;
 
 public class AttendanceService(
+    IBalanceChangeManager balanceChangeManager,
     IStudentRepository studentRepository,
     IPracticeRepository practiceRepository,
     IGroupRepository groupRepository,
@@ -24,7 +26,20 @@ public class AttendanceService(
         
         var attendance = await attendanceRepository.GetAttendanceByGroupIdAsync(groupId, start, end);
 
-        return attendance.ToResponses();
+        var finances =
+            new Dictionary<Guid, (float StartBalance, float Expenses, float Payments, float EndBalance)>();
+
+        foreach (var student in group.Students)
+        {
+            var balanceReport = await balanceChangeManager.GetStudentBalanceReport(
+                student.Id, start, end);
+
+            finances.Add(student.Id,
+                (balanceReport.StartBalance, balanceReport.Expenses, balanceReport.Payments,
+                    balanceReport.EndBalance));
+        }
+        
+        return attendance.ToResponses(group.Students, finances);
     }
 
     public async Task<ErrorOr<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(

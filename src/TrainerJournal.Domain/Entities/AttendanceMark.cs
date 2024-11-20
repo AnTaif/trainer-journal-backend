@@ -25,12 +25,12 @@ public class AttendanceMark : Entity<Guid>
         PracticeTime = practiceTime;
         Date = date;
 
-        student.UpdateBalance(practice.Price, BalanceChangeReason.MarkAttendance, date);
+        student.UpdateBalance(-practice.Price, BalanceChangeReason.MarkAttendance, date);
     }
 
     public void Unmark()
     {
-        Student.UpdateBalance(-Practice.Price, BalanceChangeReason.UnmarkAttendance, DateTime.UtcNow);
+        Student.UpdateBalance(Practice.Price, BalanceChangeReason.UnmarkAttendance, DateTime.UtcNow);
     }
     
     public void ChangePractice(Guid newPracticeId, DateTime newPracticeTime)

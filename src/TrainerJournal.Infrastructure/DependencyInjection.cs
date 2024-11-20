@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TrainerJournal.Application.Services;
 using TrainerJournal.Application.Services.Attendance;
-using TrainerJournal.Application.Services.Finance;
+using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.PaymentReceipts;
 using TrainerJournal.Application.Services.Practices;

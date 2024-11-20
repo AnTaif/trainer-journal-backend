@@ -33,7 +33,9 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
     {
         return await groups
             .Include(g => g.Students)
+                .ThenInclude(s => s.User)
             .Include(g => g.Trainer)
+                .ThenInclude(t => t.User)
             .FirstOrDefaultAsync(g => g.Id == id);
     }
 

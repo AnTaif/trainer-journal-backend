@@ -16,4 +16,12 @@ public class BalanceChange(Guid studentId, float amount, float previousBalance, 
     public BalanceChangeReason Reason { get; private set; } = reason;
     
     public DateTime Date { get; private set; } = date;
+
+    public bool IsExpense()
+        => Reason is BalanceChangeReason.MarkAttendance or BalanceChangeReason.UnmarkAttendance;
+
+    public bool IsPayment()
+        => Reason is BalanceChangeReason.Payment or BalanceChangeReason.PaymentRejection;
+
+    public float GetAfterBalance() => PreviousBalance + Amount;
 }

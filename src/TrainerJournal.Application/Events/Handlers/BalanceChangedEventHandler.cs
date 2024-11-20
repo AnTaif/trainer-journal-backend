@@ -1,5 +1,5 @@
 using MediatR;
-using TrainerJournal.Application.Services.Finance;
+using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Events;

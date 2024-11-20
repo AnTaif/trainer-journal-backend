@@ -6,17 +6,38 @@ namespace TrainerJournal.Application.Services.Attendance;
 
 public static class AttendanceMarkExtensions
 {
-    public static List<GetStudentAttendanceResponse> ToResponses(this IEnumerable<AttendanceMark> attendanceMarks)
+    public static List<GetStudentAttendanceResponse> ToResponses(
+        this IEnumerable<AttendanceMark> attendanceMarks,
+        List<Student> students,
+        IReadOnlyDictionary<Guid, (float StartBalance, float Expenses, float Payments, float EndBalance)> finances)
     {
-        return attendanceMarks
-            .GroupBy(a => a.StudentId)
-            .Select(g => new GetStudentAttendanceResponse
+        var studentAttendance = new Dictionary<Guid, List<AttendanceMark>>();
+
+        foreach (var attendanceMark in attendanceMarks)
         {
-            StudentId = g.Key,
-            Attendance = g.Select(a => a.ToDto()).ToList()
-        }).ToList();
+            studentAttendance.TryAdd(attendanceMark.StudentId, []);
+            studentAttendance[attendanceMark.StudentId].Add(attendanceMark);
+        }
+
+        return students
+            .Select(s =>
+            {
+                var finance = finances[s.Id];
+                studentAttendance.TryGetValue(s.Id, out var attendance);
+                return new GetStudentAttendanceResponse
+                {
+                    Username = s.User.UserName!,
+                    FullName = s.User.FullName.ToString(),
+                    StartBalance = finance.StartBalance,
+                    Expenses = finance.Expenses,
+                    Payments = finance.Payments,
+                    EndBalance = finance.EndBalance,
+                    Attendance = attendance?.Select(a => a.ToDto()).ToList() ?? []
+                };
+            })
+            .ToList();
     }
-    
+
     public static AttendanceMarkDto ToDto(this AttendanceMark attendanceMark)
     {
         return new AttendanceMarkDto
