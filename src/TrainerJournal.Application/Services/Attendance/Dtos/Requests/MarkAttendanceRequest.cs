@@ -1,6 +1,6 @@
 namespace TrainerJournal.Application.Services.Attendance.Dtos.Requests;
 
-public class MarkUnmarkAttendanceRequest
+public class MarkAttendanceRequest
 {
     public Guid PracticeId { get; set; }
 
@@ -8,6 +8,4 @@ public class MarkUnmarkAttendanceRequest
     /// Used to handle SchedulePractice attendance
     /// </summary>
     public DateTime PracticeTime { get; set; }
-
-    public bool IsMarked { get; set; } = true;
 }

@@ -50,19 +50,13 @@ public class AttendanceService(
         return attendance.Select(a => a.ToDto()).ToList();
     }
 
-    public async Task<ErrorOr<AttendanceMarkDto?>> MarkUnmarkAttendanceAsync(Guid userId, string studentUsername, MarkUnmarkAttendanceRequest request)
+    public async Task<ErrorOr<AttendanceMarkDto?>> MarkAttendanceAsync(Guid userId, string studentUsername, MarkAttendanceRequest request)
     {
         var student = await studentRepository.GetByUsernameAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
         
         var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeTime);
-        if (mark != null && !request.IsMarked)
-        {
-            await UnmarkAttendanceAsync(mark);
-            return new ErrorOr<AttendanceMarkDto?>().Value;
-        }
-        
-        if (mark != null && request.IsMarked) return mark.ToDto();
+        if (mark != null) return mark.ToDto();
         
         var practice = await practiceRepository.GetByIdAsync(request.PracticeId);
 
@@ -75,6 +69,18 @@ public class AttendanceService(
         await attendanceRepository.SaveChangesAsync();
 
         return newMark.ToDto();
+    }
+
+    public async Task<ErrorOr<bool>> UnmarkAttendanceAsync(Guid userId, string studentUsername, MarkAttendanceRequest request)
+    {
+        var student = await studentRepository.GetByUsernameAsync(studentUsername);
+        if (student == null) return Error.NotFound("Student not found");
+        
+        var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeTime);
+        if (mark == null) return true;
+        
+        await UnmarkAttendanceAsync(mark);
+        return true;
     }
 
     private async Task UnmarkAttendanceAsync(AttendanceMark attendanceMark)

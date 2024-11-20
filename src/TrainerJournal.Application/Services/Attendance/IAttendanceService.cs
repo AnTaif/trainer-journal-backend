@@ -11,5 +11,7 @@ public interface IAttendanceService
     
     public Task<ErrorOr<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(Guid userId, string studentName, DateTime start, DateTime end);
     
-    public Task<ErrorOr<AttendanceMarkDto?>> MarkUnmarkAttendanceAsync(Guid userId, string studentUsername, MarkUnmarkAttendanceRequest request);
+    public Task<ErrorOr<AttendanceMarkDto?>> MarkAttendanceAsync(Guid userId, string studentUsername, MarkAttendanceRequest request);
+    
+    public Task<ErrorOr<bool>> UnmarkAttendanceAsync(Guid userId, string studentUsername, MarkAttendanceRequest request);
 }
