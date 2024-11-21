@@ -28,17 +28,17 @@ public class GroupController(
         if (userId == null) return Unauthorized();
 
         var result = await groupService.GetGroupsByTrainerIdAsync(Guid.Parse(userId));
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
     {
         var result = await groupService.GetByIdAsync(id);
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<GroupDto>> CreateGroupAsync(CreateGroupRequest request)
     {
@@ -46,7 +46,7 @@ public class GroupController(
         if (userId == null) return Unauthorized();
 
         var result = await groupService.CreateAsync(request, Guid.Parse(userId));
-        return this.ToActionResult(result, value => CreatedAtAction("CreateGroup", value));
+        return result.ToActionResult(this, value => CreatedAtAction("CreateGroup", value));
     }
 
     [HttpPut("{id}")]
@@ -56,7 +56,7 @@ public class GroupController(
         if (userId == null) return Unauthorized();
 
         var result = await groupService.UpdateInfoAsync(infoRequest, id, Guid.Parse(userId));
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
 
     [HttpDelete("{id}")]
@@ -66,9 +66,9 @@ public class GroupController(
         if (userId == null) return Unauthorized();
 
         var result = await groupService.DeleteAsync(id, Guid.Parse(userId));
-        return this.ToActionResult(result, _ => NoContent());
+        return result.ToActionResult(this);
     }
-    
+
     [HttpGet("{id}/students")]
     [Authorize]
     public async Task<ActionResult<List<StudentItemDto>>> GetGroupStudentsAsync(Guid id)
@@ -77,11 +77,11 @@ public class GroupController(
         if (userId == null) return Unauthorized();
 
         var result = await studentService.GetStudentsByGroupAsync(id, Guid.Parse(userId));
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
-    
+
     /// <summary>
-    /// Adds existed Student to the Group
+    ///     Adds existed Student to the Group
     /// </summary>
     [HttpPost("{id}/students")]
     [Authorize(Roles = Roles.Trainer)]
@@ -90,11 +90,11 @@ public class GroupController(
         var trainerId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (trainerId == null) return Unauthorized();
 
-        var result = 
+        var result =
             await studentService.AddStudentToGroupAsync(id, request, Guid.Parse(trainerId));
-        return this.ToActionResult(result, _ => NoContent());
+        return result.ToActionResult(this, _ => NoContent());
     }
-    
+
     [HttpDelete("{id}/students/{username}")]
     [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult> ExcludeStudentFromGroupAsync(Guid id, string username)
@@ -102,8 +102,8 @@ public class GroupController(
         var trainerId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (trainerId == null) return Unauthorized();
 
-        var result = 
+        var result =
             await studentService.ExcludeStudentFromGroupAsync(id, username, Guid.Parse(trainerId));
-        return this.ToActionResult(result, _ => NoContent());
+        return result.ToActionResult(this);
     }
 }

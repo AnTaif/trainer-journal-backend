@@ -1,6 +1,6 @@
-using ErrorOr;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos.Requests;
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums;
 
@@ -11,7 +11,7 @@ public class PaymentReceiptService(
     ISavedFileRepository savedFileRepository,
     IPaymentReceiptRepository paymentReceiptRepository) : IPaymentReceiptService
 {
-    public async Task<ErrorOr<PaymentReceiptDto>> GetByIdAsync(Guid id)
+    public async Task<Result<PaymentReceiptDto>> GetByIdAsync(Guid id)
     {
         var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
         if (paymentReceipt == null) return Error.NotFound("Receipt not found");
@@ -19,7 +19,8 @@ public class PaymentReceiptService(
         return paymentReceipt.ToDto();
     }
 
-    public async Task<ErrorOr<List<PaymentReceiptDto>>> GetByStudentUsernameAsync(Guid userId, string username, bool? verified)
+    public async Task<Result<List<PaymentReceiptDto>>> GetByStudentUsernameAsync(Guid userId, string username,
+        bool? verified)
     {
         List<PaymentReceipt> paymentReceipts;
 
@@ -28,11 +29,11 @@ public class PaymentReceiptService(
         else
             paymentReceipts =
                 await paymentReceiptRepository.GetVerifiedByStudentUsernameAsync(username, verified.Value);
-        
+
         return paymentReceipts.Select(p => p.ToDto()).ToList();
     }
 
-    public async Task<ErrorOr<List<PaymentReceiptDto>>> GetByUserIdAsync(Guid userId, bool? verified)
+    public async Task<Result<List<PaymentReceiptDto>>> GetByUserIdAsync(Guid userId, bool? verified)
     {
         List<PaymentReceipt> paymentReceipts;
 
@@ -40,11 +41,11 @@ public class PaymentReceiptService(
             paymentReceipts = await paymentReceiptRepository.GetAllByUserIdAsync(userId);
         else
             paymentReceipts = await paymentReceiptRepository.GetVerifiedByUserIdAsync(userId, verified.Value);
-        
+
         return paymentReceipts.Select(p => p.ToDto()).ToList();
     }
-    
-    public async Task<ErrorOr<PaymentReceiptDto>> UploadAsync(Guid userId, Stream imageStream, string imageName,
+
+    public async Task<Result<PaymentReceiptDto>> UploadAsync(Guid userId, Stream imageStream, string imageName,
         UploadPaymentReceiptRequest request)
     {
         var destName = Guid.NewGuid() + Path.GetExtension(imageName);
@@ -62,7 +63,7 @@ public class PaymentReceiptService(
         return paymentReceipt!.ToDto();
     }
 
-    public async Task<ErrorOr<bool>> DeleteAsync(Guid userId, Guid id)
+    public async Task<Result> DeleteAsync(Guid userId, Guid id)
     {
         var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
         if (paymentReceipt == null) return Error.NotFound("Receipt not found");
@@ -71,17 +72,17 @@ public class PaymentReceiptService(
         fileStorage.Delete("Public", paymentReceipt.Image.StorageKey);
         await paymentReceiptRepository.SaveChangesAsync();
 
-        return true;
+        return Result.Success();
     }
 
-    public async Task<ErrorOr<PaymentReceiptDto>> VerifyAsync(Guid id, VerifyPaymentReceiptRequest request)
+    public async Task<Result<PaymentReceiptDto>> VerifyAsync(Guid id, VerifyPaymentReceiptRequest request)
     {
         var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
         if (paymentReceipt == null) return Error.NotFound("Receipt not found");
 
         paymentReceipt.Verify(request.IsAccepted, request.DeclineComment);
         await paymentReceiptRepository.SaveChangesAsync();
-        
+
         return paymentReceipt.ToDto();
     }
 }

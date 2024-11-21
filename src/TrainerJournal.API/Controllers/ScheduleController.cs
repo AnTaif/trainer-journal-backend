@@ -24,7 +24,7 @@ public class ScheduleController(
         if (userId == null) return Unauthorized();
 
         var result = await scheduleService.GetScheduleAsync(Guid.Parse(userId), date.ToUniversalTime(), view);
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
 
     [HttpGet("groups/{id}/schedule")]
@@ -35,9 +35,9 @@ public class ScheduleController(
         if (userId == null) return Unauthorized();
 
         var result = await scheduleService.GetGroupScheduleAsync(id, date.ToUniversalTime(), view);
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpPost("groups/{id}/schedule")]
     [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<List<ScheduleItemDto>>> CreateSchedule(Guid id, CreateScheduleRequest request)
@@ -46,6 +46,7 @@ public class ScheduleController(
         if (userId == null) return Unauthorized();
 
         var result = await scheduleService.CreateScheduleAsync(Guid.Parse(userId), id, request);
-        return this.ToActionResult(result, value => CreatedAtAction("CreateSchedule", value));
+        return result.ToActionResult(this,
+            value => CreatedAtAction("CreateSchedule", value));
     }
 }

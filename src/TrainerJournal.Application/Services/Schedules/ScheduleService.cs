@@ -1,8 +1,8 @@
-using ErrorOr;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Schedules.Dtos;
 using TrainerJournal.Application.Services.Schedules.Dtos.Requests;
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.PracticeType;
 using TrainerJournal.Domain.Enums.ViewSchedule;
@@ -14,7 +14,7 @@ public class ScheduleService(
     IPracticeRepository practiceRepository,
     IScheduleRepository scheduleRepository) : IScheduleService
 {
-        public async Task<ErrorOr<List<ScheduleItemDto>>> GetScheduleAsync(Guid userId, DateTime Date, ViewSchedule View)
+    public async Task<Result<List<ScheduleItemDto>>> GetScheduleAsync(Guid userId, DateTime Date, ViewSchedule View)
     {
         var start = Date.Date;
         var end = start + View.ToTimeSpan();
@@ -22,24 +22,56 @@ public class ScheduleService(
 
         var singlePractices = await practiceRepository.GetSinglePracticesByUserIdAsync(userId, start, end);
         var schedules = await scheduleRepository.GetAllByUserIdAsync(userId, start, end);
-        
+
         var responseList = GetScheduleResponseList(singlePractices, schedules, scheduleDays, start);
 
         return responseList;
     }
 
-    public async Task<ErrorOr<List<ScheduleItemDto>>> GetGroupScheduleAsync(Guid groupId, DateTime Date, ViewSchedule View)
+    public async Task<Result<List<ScheduleItemDto>>> GetGroupScheduleAsync(Guid groupId, DateTime Date,
+        ViewSchedule View)
     {
         var start = Date.Date;
         var end = start + View.ToTimeSpan();
         var scheduleDays = View.ToTimeSpan().Days;
-        
+
         var singlePractices = await practiceRepository.GetSinglePracticesByGroupIdAsync(groupId, start, end);
         var schedules = await scheduleRepository.GetAllByGroupIdAsync(groupId, start, end);
 
         var responseList = GetScheduleResponseList(singlePractices, schedules, scheduleDays, start);
 
         return responseList;
+    }
+
+    public async Task<Result<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, Guid groupId,
+        CreateScheduleRequest request)
+    {
+        var group = await groupRepository.GetByIdAsync(groupId);
+        if (group == null) return Error.NotFound("Group not found");
+
+        var schedule = new Schedule(groupId, request.StartDay.Date, request.Until?.Date);
+        await scheduleRepository.AddAsync(schedule);
+
+        var schedulePractices = request.Practices
+            .Select(practiceRequest =>
+                new SchedulePractice(
+                    schedule.Id,
+                    group.Id,
+                    group.Price,
+                    practiceRequest.Start,
+                    practiceRequest.End,
+                    group.HallAddress,
+                    PracticeType.Regular,
+                    trainerId))
+            .ToList();
+
+        await practiceRepository.AddRangeAsync(schedulePractices);
+
+        var oldSchedule = await scheduleRepository.GetGroupActiveScheduleAsync(group.Id);
+        oldSchedule?.SetUntil(schedule.StartDay - TimeSpan.FromDays(1));
+
+        await practiceRepository.SaveChangesAsync();
+        return schedulePractices.Select(s => s.ToItemDto(group)).ToList();
     }
 
     private List<ScheduleItemDto> GetScheduleResponseList(
@@ -50,7 +82,7 @@ public class ScheduleService(
     {
         var responseList = new List<ScheduleItemDto>();
         var overridenStarts = new HashSet<DateTime>();
-        
+
         AddSinglePracticesToResponseList(singlePractices, responseList, overridenStarts);
         AddSchedulesToResponseList(schedules, start, scheduleDays, responseList, overridenStarts);
 
@@ -59,7 +91,7 @@ public class ScheduleService(
 
     private static void AddSinglePracticesToResponseList(
         List<SinglePractice> singlePractices,
-        List<ScheduleItemDto> responseList, 
+        List<ScheduleItemDto> responseList,
         HashSet<DateTime> overridenStarts)
     {
         foreach (var practice in singlePractices)
@@ -72,12 +104,11 @@ public class ScheduleService(
     private static void AddSchedulesToResponseList(
         List<Schedule> schedules,
         DateTime start,
-        int scheduleDays, 
-        List<ScheduleItemDto> responseList, 
+        int scheduleDays,
+        List<ScheduleItemDto> responseList,
         HashSet<DateTime> overridenStarts)
     {
         foreach (var schedule in schedules)
-        {
             for (var i = 0; i < scheduleDays; i++)
             {
                 var curr = start + TimeSpan.FromDays(i);
@@ -87,7 +118,7 @@ public class ScheduleService(
                 {
                     var currentStart = SchedulePractice.CombineDateAndTime(curr, practice.Start);
                     if (currentStart < schedule.StartDay) continue;
-                    
+
                     var currentEnd = SchedulePractice.CombineDateAndTime(curr, practice.End);
                     if (currentEnd > schedule.Until) continue;
 
@@ -106,36 +137,5 @@ public class ScheduleService(
                     });
                 }
             }
-        }
-    }
-
-    public async Task<ErrorOr<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, Guid groupId, CreateScheduleRequest request)
-    {
-        var group = await groupRepository.GetByIdAsync(groupId);
-        if (group == null) return Error.NotFound("Group not found");
-
-        var schedule = new Schedule(groupId, request.StartDay.Date, request.Until?.Date);
-        await scheduleRepository.AddAsync(schedule);
-        
-        var schedulePractices = request.Practices
-            .Select(practiceRequest => 
-                new SchedulePractice(
-                    schedule.Id,
-                    group.Id, 
-                    group.Price, 
-                    practiceRequest.Start, 
-                    practiceRequest.End, 
-                    group.HallAddress,
-                    PracticeType.Regular, 
-                    trainerId))
-            .ToList();
-        
-        await practiceRepository.AddRangeAsync(schedulePractices);
-
-        var oldSchedule = await scheduleRepository.GetGroupActiveScheduleAsync(group.Id);
-        oldSchedule?.SetUntil(schedule.StartDay - TimeSpan.FromDays(1));
-        
-        await practiceRepository.SaveChangesAsync();
-        return schedulePractices.Select(s => s.ToItemDto(group)).ToList();
     }
 }

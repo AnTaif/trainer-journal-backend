@@ -1,5 +1,5 @@
-using ErrorOr;
 using Microsoft.Extensions.Logging;
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.PracticeType;
 
@@ -9,7 +9,7 @@ public class PracticeManager(
     ILogger<PracticeManager> logger,
     IPracticeRepository practiceRepository) : IPracticeManager
 {
-    public async Task<ErrorOr<Practice>> GetBasePracticeAsync(Guid id, DateTime time)
+    public async Task<Result<Practice>> GetBasePracticeAsync(Guid id, DateTime time)
     {
         var practice = await practiceRepository.GetByIdAsync(id);
         if (practice == null) return Error.NotFound("Group not found");
@@ -22,7 +22,7 @@ public class PracticeManager(
         if (practice is SchedulePractice schedulePractice)
         {
             if (!IsPracticeDateValid(schedulePractice, time))
-                return Error.Validation("Original SchedulePractice and the 'practiceDate' must be the same day of the week");
+                return Error.BadRequest("Original SchedulePractice and the 'practiceDate' must be the same day of the week");
             if (await IsSchedulePracticeOverridenAsync(schedulePractice.Id, time))
                 return Error.NotFound("This SchedulePractice is overriden by different single practice");
 
@@ -32,11 +32,11 @@ public class PracticeManager(
         throw new Exception("Practice type is unrecognized");
     }
 
-    public async Task<ErrorOr<Practice>> UpdateSpecificPracticeAsync(Guid practiceId, DateTime practiceStart, Guid? groupId, 
+    public async Task<Result<Practice>> UpdateSpecificPracticeAsync(Guid practiceId, DateTime practiceStart, Guid? groupId, 
         DateTime? newStart, DateTime? newEnd, string? hallAddress, string? practiceType, float? price)
     {
         var practiceResult = await GetBasePracticeAsync(practiceId, practiceStart);
-        if (practiceResult.IsError) return practiceResult;
+        if (practiceResult.IsError()) return practiceResult.Error;
         var practice = practiceResult.Value;
 
         if (practice is SinglePractice singlePractice)
@@ -54,11 +54,11 @@ public class PracticeManager(
         throw new Exception("Practice type is unrecognized");
     }
 
-    public async Task<ErrorOr<Practice>> CancelSpecificPracticeAsync(
+    public async Task<Result<Practice>> CancelSpecificPracticeAsync(
         Guid practiceId, DateTime practiceStart, string comment = "")
     {
         var practiceResult = await GetBasePracticeAsync(practiceId, practiceStart);
-        if (practiceResult.IsError) return practiceResult;
+        if (practiceResult.IsError()) return practiceResult.Error;
         var practice = practiceResult.Value;
 
         if (practice is SinglePractice singlePractice)

@@ -26,10 +26,10 @@ public class StudentController(
         var trainerId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (trainerId == null) return Unauthorized();
 
-        var errorOr = await studentService.GetStudentsByTrainerAsync(Guid.Parse(trainerId), withGroup);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await studentService.GetStudentsByTrainerAsync(Guid.Parse(trainerId), withGroup);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpPost]
     [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<CreateStudentResponse>> CreateGroupStudentAsync(CreateStudentRequest request)
@@ -37,8 +37,9 @@ public class StudentController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await studentService.CreateAsync(request);
-        return this.ToActionResult(errorOr, value => CreatedAtAction("CreateGroupStudent", value));
+        var result = await studentService.CreateAsync(request);
+        return result.ToActionResult(this,
+            value => CreatedAtAction("CreateGroupStudent", value));
     }
 
     [HttpGet("{username}/groups")]
@@ -47,7 +48,7 @@ public class StudentController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await groupService.GetGroupsByStudentUsernameAsync(username);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await groupService.GetGroupsByStudentUsernameAsync(username);
+        return result.ToActionResult(this);
     }
 }

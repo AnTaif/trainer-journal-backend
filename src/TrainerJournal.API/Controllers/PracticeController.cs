@@ -22,8 +22,9 @@ public class PracticeController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await practiceService.CreateSinglePracticeAsync(Guid.Parse(userId), request);
-        return this.ToActionResult(errorOr, value => CreatedAtAction("CreateSingle", value));
+        var result = await practiceService.CreateSinglePracticeAsync(Guid.Parse(userId), request);
+        return result.ToActionResult(this,
+            value => CreatedAtAction("CreateSingle", value));
     }
 
     [HttpGet("{id}")]
@@ -33,8 +34,8 @@ public class PracticeController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await practiceService.GetPractice(Guid.Parse(userId), id, practiceDate);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await practiceService.GetPractice(Guid.Parse(userId), id, practiceDate);
+        return result.ToActionResult(this);
     }
 
     [HttpPost("{id}/cancel")]
@@ -43,8 +44,8 @@ public class PracticeController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await practiceService.CancelPracticeAsync(Guid.Parse(userId), id, request);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await practiceService.CancelPracticeAsync(Guid.Parse(userId), id, request);
+        return result.ToActionResult(this);
     }
 
     [HttpPost("{id}/activate")]
@@ -53,17 +54,17 @@ public class PracticeController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await practiceService.ActivatePracticeAsync(Guid.Parse(userId), id);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await practiceService.ActivatePracticeAsync(Guid.Parse(userId), id);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpPut("{id}")]
-    public async Task<ActionResult<PracticeDto>> ChangeAsync(Guid id, ChangePracticeRequest request) 
+    public async Task<ActionResult<PracticeDto>> ChangeAsync(Guid id, ChangePracticeRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await practiceService.ChangePracticeAsync(Guid.Parse(userId), id, request);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await practiceService.ChangePracticeAsync(Guid.Parse(userId), id, request);
+        return result.ToActionResult(this);
     }
 }

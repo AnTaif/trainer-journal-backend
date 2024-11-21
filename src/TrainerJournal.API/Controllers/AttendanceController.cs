@@ -24,17 +24,17 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         if (userId == null) return Unauthorized();
 
         var result = await attendanceService.GetGroupAttendanceAsync(
-            Guid.Parse(userId), 
-            id, 
-            start, 
+            Guid.Parse(userId),
+            id,
+            start,
             end ?? start + TimeSpan.FromDays(30));
 
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
 
     [HttpGet("students/{username}/attendance")]
     public async Task<ActionResult<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(
-        string username, 
+        string username,
         [FromQuery] DateTime start,
         [FromQuery] DateTime? end = null)
     {
@@ -42,33 +42,35 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         if (userId == null) return Unauthorized();
 
         var result = await attendanceService.GetStudentAttendanceAsync(
-            Guid.Parse(userId), 
-            username, 
-            start, 
+            Guid.Parse(userId),
+            username,
+            start,
             end ?? start + TimeSpan.FromDays(30));
 
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpPost("students/{username}/attendance/mark")]
-    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(string username, MarkAttendanceRequest request)
+    public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(string username,
+        MarkAttendanceRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
         var result = await attendanceService.MarkAttendanceAsync(Guid.Parse(userId), username, request);
 
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpDelete("students/{username}/attendance/mark")]
-    public async Task<ActionResult<AttendanceMarkDto?>> UnmarkAttendanceAsync(string username, MarkAttendanceRequest request)
+    public async Task<ActionResult<AttendanceMarkDto?>> UnmarkAttendanceAsync(string username,
+        MarkAttendanceRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
         var result = await attendanceService.MarkAttendanceAsync(Guid.Parse(userId), username, request);
 
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
 }

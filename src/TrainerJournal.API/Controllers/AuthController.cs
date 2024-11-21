@@ -14,6 +14,6 @@ public class AuthController(IAuthService authService) : ControllerBase
     public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest request)
     {
         var result = await authService.LoginAsync(request);
-        return this.ToActionResult(result, Ok);
+        return result.ToActionResult(this);
     }
 }

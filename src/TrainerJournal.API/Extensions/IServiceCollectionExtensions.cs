@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -17,8 +16,9 @@ public static class IServiceCollectionExtensions
         var jwtOptions = new JwtOptions();
         jwtSection.Bind(jwtOptions);
 
-        jwtOptions.Secret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? 
-                            throw new ArgumentNullException(nameof(services), "JWT_SECRET environment variable is not set");
+        jwtOptions.Secret = Environment.GetEnvironmentVariable("JWT_SECRET") ??
+                            throw new ArgumentNullException(nameof(services),
+                                "JWT_SECRET environment variable is not set");
 
         services.Configure<JwtOptions>(options =>
         {
@@ -62,7 +62,7 @@ public static class IServiceCollectionExtensions
 
         return services;
     }
-    
+
     public static void AddCustomCors(this IServiceCollection services, string[]? origins)
     {
         services.AddCors(options =>
@@ -105,7 +105,7 @@ public static class IServiceCollectionExtensions
                     Array.Empty<string>()
                 }
             });
-            
+
             options.SchemaFilter<NullDefaultSchemaFilter>();
         });
         return services;

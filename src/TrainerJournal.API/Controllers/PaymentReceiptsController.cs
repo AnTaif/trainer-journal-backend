@@ -17,59 +17,58 @@ public class PaymentReceiptsController(
     IPaymentReceiptService paymentReceiptService) : ControllerBase
 {
     private readonly string[] allowedFileExtensions = [".jpg", ".jpeg", ".png"];
-    
+
     [HttpGet("{id}")]
     public async Task<ActionResult<PaymentReceiptDto>> GetByIdAsync(Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await paymentReceiptService.GetByIdAsync(id);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await paymentReceiptService.GetByIdAsync(id);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpGet]
-    public async Task<ActionResult<List<PaymentReceiptDto>>> GetPaymentReceiptsAsync([FromQuery] bool? verified =  null)
+    public async Task<ActionResult<List<PaymentReceiptDto>>> GetPaymentReceiptsAsync([FromQuery] bool? verified = null)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await paymentReceiptService.GetByUserIdAsync(Guid.Parse(userId), verified);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await paymentReceiptService.GetByUserIdAsync(Guid.Parse(userId), verified);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpGet("students/{username}")]
     public async Task<ActionResult<List<PaymentReceiptDto>>> GetStudentsPaymentReceiptsAsync(
-        string username, [FromQuery] bool? verified =  null)
+        string username, [FromQuery] bool? verified = null)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await paymentReceiptService.GetByStudentUsernameAsync(Guid.Parse(userId), username, verified);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await paymentReceiptService.GetByStudentUsernameAsync(Guid.Parse(userId), username, verified);
+        return result.ToActionResult(this);
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<PaymentReceiptDto>> UploadPaymentReceiptAsync(
         IFormFile file, [FromForm] UploadPaymentReceiptRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
-        
+
         var fileName = file.FileName;
         if (!allowedFileExtensions.Contains(Path.GetExtension(fileName)))
             return BadRequest("Invalid file extension. Allowed extensions: .jpg, .jpeg, .png");
-            
+
         const long maxFileSize = 5 * 1024 * 1024;
         if (file.Length > maxFileSize)
-        {
             return BadRequest($"The file size exceeds the allowed limit: {maxFileSize / (1024 * 1024)} MB");
-        }
-        
+
         var stream = file.OpenReadStream();
 
-        var errorOr = await paymentReceiptService.UploadAsync(Guid.Parse(userId), stream, fileName, request);
-        return this.ToActionResult(errorOr, value => CreatedAtAction("UploadPaymentReceipt", value));
+        var result = await paymentReceiptService.UploadAsync(Guid.Parse(userId), stream, fileName, request);
+        return result.ToActionResult(this,
+            value => CreatedAtAction("UploadPaymentReceipt", value));
     }
 
     [HttpDelete("{id}")]
@@ -78,18 +77,19 @@ public class PaymentReceiptsController(
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await paymentReceiptService.DeleteAsync(Guid.Parse(userId), id);
-        return this.ToActionResult(errorOr, _ => NoContent());
+        var result = await paymentReceiptService.DeleteAsync(Guid.Parse(userId), id);
+        return result.ToActionResult(this);
     }
 
     [HttpPost("{id}/verify")]
     [Authorize(Roles = Roles.Trainer)]
-    public async Task<ActionResult<PaymentReceiptDto>> VerifyPaymentReceiptAsync(Guid id, VerifyPaymentReceiptRequest request)
+    public async Task<ActionResult<PaymentReceiptDto>> VerifyPaymentReceiptAsync(Guid id,
+        VerifyPaymentReceiptRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var errorOr = await paymentReceiptService.VerifyAsync(id, request);
-        return this.ToActionResult(errorOr, Ok);
+        var result = await paymentReceiptService.VerifyAsync(id, request);
+        return result.ToActionResult(this);
     }
 }
