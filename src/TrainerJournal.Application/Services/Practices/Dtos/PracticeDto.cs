@@ -13,7 +13,7 @@ public class PracticeDto
     
     public DateTime End { get; init; }
     
-    public PracticeGroupDto Group { get; init; }
+    public PracticeGroupDto? Group { get; init; }
     
     public PracticeTrainerDto Trainer { get; init; }
 

@@ -24,11 +24,12 @@ public static class PracticeExtensions
             Id = singlePractice.Id,
             Start = singlePractice.Start,
             End = singlePractice.End,
-            Group = new PracticeGroupDto
+            Group = singlePractice.GroupId != null 
+                ? new PracticeGroupDto
             {
-                Id = singlePractice.GroupId,
+                Id = singlePractice.GroupId.Value,
                 Name = singlePractice.Group.Name
-            },
+            } : null,
             Trainer = new PracticeTrainerDto
             {
                 Id = singlePractice.TrainerId,
@@ -54,7 +55,7 @@ public static class PracticeExtensions
             End = end,
             Group = new PracticeGroupDto
             {
-                Id = schedulePractice.GroupId,
+                Id = schedulePractice.GroupId!.Value,
                 Name = schedulePractice.Group.Name
             },
             Trainer = new PracticeTrainerDto

@@ -6,14 +6,14 @@ namespace TrainerJournal.Application.Services.Practices.Dtos.Requests;
 
 public class CreateSinglePracticeRequest
 {
-    public Guid GroupId { get; init; }
+    public Guid? GroupId { get; init; }
     public DateTime Start { get; init; }
     public DateTime End { get; init; }
-    
+
     [Required]
     [PracticeEnum]
     [DefaultValue("Семинар")]
-    public string PracticeType { get; init; }
+    public string PracticeType { get; init; } = null!;
     
     public string? HallAddress { get; init; }
     

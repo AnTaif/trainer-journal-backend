@@ -28,7 +28,7 @@ public static class SchedulePracticeExtensions
             Id = practice.Id,
             Start = practice.Start,
             End = practice.End,
-            GroupName = practice.Group.Name,
+            GroupName = practice.GroupId != null ? practice.Group.Name : null,
             HallAddress = practice.HallAddress,
             PracticeType = practice.PracticeType.ToPracticeTypeString(),
             Price = practice.Price,

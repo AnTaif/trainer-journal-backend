@@ -24,11 +24,20 @@ public class PracticeService(
     public async Task<Result<PracticeDto>> CreateSinglePracticeAsync(Guid trainerId,
         CreateSinglePracticeRequest request)
     {
-        var group = await groupRepository.GetByIdAsync(request.GroupId);
-        if (group == null) return Error.NotFound("Group not found");
+        var hallAddress = request.HallAddress ?? "";
+        var price = request.Price;
+        
+        if (request.GroupId != null)
+        {
+            var group = await groupRepository.GetByIdAsync(request.GroupId.Value);
+            if (group == null) return Error.NotFound("Group not found");
 
-        var newPractice = new SinglePractice(request.GroupId, request.Price ?? group.Price, request.Start, request.End,
-            request.HallAddress ?? group.HallAddress, request.PracticeType.ToPracticeTypeEnum(), trainerId);
+            hallAddress = group.HallAddress;
+            price = group.Price;
+        }
+
+        var newPractice = new SinglePractice(request.GroupId, price!.Value, request.Start, request.End,
+            hallAddress, request.PracticeType.ToPracticeTypeEnum(), trainerId);
 
         await practiceRepository.AddAsync(newPractice);
         await practiceRepository.SaveChangesAsync();

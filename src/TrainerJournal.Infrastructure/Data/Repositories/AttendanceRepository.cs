@@ -44,7 +44,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             //.Include(a => a.Practice)
             .Include(a => a.Student)
                 .ThenInclude(s => s.User)
-            .Where(a => a.Practice.GroupId == groupId)
+            .Where(a => a.Practice.GroupId != null && a.Practice.GroupId == groupId)
             .Where(a => start <= a.PracticeTime && a.PracticeTime <= end)
             .ToListAsync();
     }

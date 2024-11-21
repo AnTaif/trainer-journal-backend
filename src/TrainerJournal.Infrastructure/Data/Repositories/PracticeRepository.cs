@@ -32,7 +32,7 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
         return await singlePractices
             .Include(p => p.Group)
                 .ThenInclude(g => g.Students)
-            .Where(p => p.TrainerId == userId || p.Group.Students.Any(s => s.Id == userId))
+            .Where(p => p.TrainerId == userId || p.GroupId == null || p.Group.Students.Any(s => s.Id == userId))
             .ToListAsync();
     }
 
@@ -41,7 +41,7 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
         return await singlePractices
             .Include(p => p.Group)
                 .ThenInclude(g => g.Students)
-            .Where(p => p.GroupId == groupId)
+            .Where(p => p.GroupId != null && p.GroupId == groupId)
             .ToListAsync();
     }
 

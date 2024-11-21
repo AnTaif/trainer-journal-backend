@@ -7,7 +7,7 @@ namespace TrainerJournal.Domain.Entities;
 /// </summary>
 public class SchedulePractice(
     Guid scheduleId,
-    Guid groupId,
+    Guid? groupId,
     float price,
     DateTime start,
     DateTime end,

@@ -4,7 +4,7 @@ using TrainerJournal.Domain.Enums.PracticeType;
 namespace TrainerJournal.Domain.Entities;
 
 public abstract class Practice(
-    Guid groupId,
+    Guid? groupId,
     float price,
     DateTime start,
     DateTime end,
@@ -19,7 +19,7 @@ public abstract class Practice(
 
     public DateTime End { get; protected set; } = end;
 
-    public Guid GroupId { get; protected set; } = groupId;
+    public Guid? GroupId { get; protected set; } = groupId;
     public Group Group { get; protected set; } = null!;
     
     public Guid TrainerId { get; protected set; } = trainerId;

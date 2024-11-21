@@ -14,7 +14,7 @@ public class ScheduleItemDto
     
     [Required]
     [DefaultValue("Команда 1")]
-    public string GroupName { get; init; }
+    public string? GroupName { get; init; }
 
     public string HallAddress { get; init; }
 

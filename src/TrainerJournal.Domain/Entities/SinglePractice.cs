@@ -10,7 +10,7 @@ namespace TrainerJournal.Domain.Entities;
 /// При создании нового повторяемого расписания единичные тренировки, подпадающие под расписание - удаляются
 /// </remarks>
 public class SinglePractice(
-    Guid groupId,
+    Guid? groupId,
     float price,
     DateTime start,
     DateTime end,
