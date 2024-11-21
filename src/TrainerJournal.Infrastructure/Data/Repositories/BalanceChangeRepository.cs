@@ -13,9 +13,9 @@ public class BalanceChangeRepository(AppDbContext context) : BaseRepository(cont
     public async Task<List<BalanceChange>> GetStudentBalanceChangesAsync(Guid studentId, DateTime start, DateTime end)
     {
         return await balanceChanges
+            .OrderBy(b => b.Date)
             .Where(b => b.StudentId == studentId
                         && start <= b.Date && b.Date <= end)
-            .OrderBy(b => b.Date)
             .ToListAsync();
     }
 

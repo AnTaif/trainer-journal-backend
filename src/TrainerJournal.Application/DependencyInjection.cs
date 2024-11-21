@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddTransient<IAttendanceService, AttendanceService>();
         services.AddTransient<IPaymentReceiptService, PaymentReceiptService>();
         services.AddTransient<IBalanceChangeManager, BalanceChangeManager>();
+        services.AddTransient<IBalanceChangeService, BalanceChangeService>();
         
         services.AddMediatR(cfg =>
         {

@@ -19,9 +19,6 @@ public class BalanceChangeManager(
     public async Task<(float StartBalance, float Expenses, float Payments, float EndBalance)> GetStudentBalanceReport(
         Guid userId, DateTime start, DateTime end)
     {
-        var student = await studentRepository.GetByUserIdAsync(userId);
-        if (student == null) return (0, 0, 0, 0);
-        
         var balanceChanges = await balanceChangeRepository.GetStudentBalanceChangesAsync(
             userId, start, end);
 

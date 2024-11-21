@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using TrainerJournal.API.Extensions;
+using TrainerJournal.Application.Services.BalanceChanges;
+using TrainerJournal.Application.Services.BalanceChanges.Dtos;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Students;
@@ -17,6 +19,7 @@ namespace TrainerJournal.API.Controllers;
 [Route("students")]
 [Authorize]
 public class StudentController(
+    IBalanceChangeService balanceChangeService,
     IGroupService groupService,
     IStudentService studentService) : ControllerBase
 {
@@ -49,6 +52,22 @@ public class StudentController(
         if (userId == null) return Unauthorized();
 
         var result = await groupService.GetGroupsByStudentUsernameAsync(username);
+        return result.ToActionResult(this);
+    }
+    
+    [HttpGet("{username}/balance-changes")]
+    public async Task<ActionResult<List<BalanceChangeDto>>> GetStudentBalanceChangesAsync(
+        string username, DateTime start, DateTime end)
+    {
+        var result = await balanceChangeService.GetStudentBalanceChanges(username, start, end);
+        return result.ToActionResult(this);
+    }
+
+    [HttpGet("{username}/balance-changes/report")]
+    public async Task<ActionResult<BalanceChangeReportDto>> GetStudentBalanceChangeReportAsync(
+        string username, DateTime start, DateTime end)
+    {
+        var result = await balanceChangeService.GetStudentBalanceChangeReportAsync(username, start, end);
         return result.ToActionResult(this);
     }
 }
