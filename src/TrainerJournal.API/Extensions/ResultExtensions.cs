@@ -3,7 +3,7 @@ using TrainerJournal.Domain.Common;
 
 namespace TrainerJournal.API.Extensions;
 
-public static class ControllerBaseExtensions
+public static class ResultExtensions
 {
     public static ActionResult ToActionResult<T>(
         this Result<T> result, ControllerBase thisController, Func<T, ActionResult>? onValue = null)

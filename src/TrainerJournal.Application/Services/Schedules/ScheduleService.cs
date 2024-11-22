@@ -25,7 +25,7 @@ public class ScheduleService(
 
         var responseList = GetScheduleResponseList(singlePractices, schedules, scheduleDays, start);
 
-        return responseList;
+        return responseList.OrderBy(p => p.Start).ToList();
     }
 
     public async Task<Result<List<ScheduleItemDto>>> GetGroupScheduleAsync(Guid groupId, DateTime Date,
@@ -40,7 +40,7 @@ public class ScheduleService(
 
         var responseList = GetScheduleResponseList(singlePractices, schedules, scheduleDays, start);
 
-        return responseList;
+        return responseList.OrderBy(p => p.Start).ToList();
     }
 
     public async Task<Result<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, Guid groupId,
