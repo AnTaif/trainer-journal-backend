@@ -4,6 +4,7 @@ using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Constants;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
+using TrainerJournal.Domain.Enums.PracticeType;
 
 namespace TrainerJournal.Infrastructure.Data;
 
@@ -17,6 +18,8 @@ public static class DataSeeder
     private static readonly Guid student4Guid = new("ee1cbfa5-2167-4f46-a0e8-98cf4ba460e8");
     private static readonly Guid group1Guid = new("084d03ac-6192-4f03-abe3-cdab8aa7ad74");
     private static readonly Guid group2Guid = new("b491d9a7-4428-46f2-bf09-71dbfc31919d");
+    private static readonly Guid schedule1Guid = Guid.NewGuid();
+    private static readonly DateTime currentTime = DateTime.UtcNow;
     
     private const string password = "Password123"; // Get from environment
 
@@ -130,6 +133,64 @@ public static class DataSeeder
         student2.AddToGroup(group1);
         student3.AddToGroup(group1);
         student4.AddToGroup(group1);
+        
+        // SEED SCHEDULE
+
+        var scheduleStart = currentTime - TimeSpan.FromDays(7);
+        var schedule1 = new Schedule(group1Guid, scheduleStart)
+        {
+            Id = schedule1Guid
+        };
+        dbContext.Schedules.Add(schedule1);
+
+        // SEED SCHEDULE PRACTICES
+
+        var schedulePractice1Start = (scheduleStart + TimeSpan.FromDays(1)).Date +
+                                     new DateTime(2024, 11, 22, 13, 0, 0, DateTimeKind.Utc).TimeOfDay;
+        var schedulePractice2Start = (scheduleStart + TimeSpan.FromDays(3)).Date +
+                                     new DateTime(2024, 11, 22, 14, 30, 0, DateTimeKind.Utc).TimeOfDay;
+        var schedulePractice3Start = (scheduleStart + TimeSpan.FromDays(5)).Date + 
+                                     new DateTime(2024, 11, 22, 17, 45, 0, DateTimeKind.Utc).TimeOfDay;
+        
+        var schedulePractices = new List<SchedulePractice>
+        {
+            new(
+                schedule1Guid, 
+                group1Guid, 
+                group1.Price, 
+                schedulePractice1Start,
+                schedulePractice1Start + TimeSpan.FromMinutes(90), 
+                group1.HallAddress, 
+                PracticeType.Regular, 
+                group1.TrainerId),
+            new(
+                schedule1Guid, 
+                group1Guid, 
+                group1.Price, 
+                schedulePractice2Start,
+                schedulePractice2Start + TimeSpan.FromMinutes(60), 
+                group1.HallAddress, 
+                PracticeType.Regular, 
+                group1.TrainerId),
+            new(
+                schedule1Guid, 
+                group1Guid, 
+                group1.Price, 
+                schedulePractice3Start,
+                schedulePractice3Start + TimeSpan.FromMinutes(90), 
+                group1.HallAddress, 
+                PracticeType.Regular, 
+                group1.TrainerId)
+        };
+        dbContext.SchedulePractices.AddRange(schedulePractices);
+        
+        // SEED SINGLE PRACTICES
+
+        var seminar1Start = schedulePractice1Start + TimeSpan.FromDays(8);
+        var seminar1 = new SinglePractice(null, 1000, seminar1Start, seminar1Start + TimeSpan.FromMinutes(90),
+            "Актовый зал Гука", PracticeType.Seminar, trainer1Guid);
+
+        dbContext.SinglePractices.Add(seminar1);
     }
 
     private static async Task AddUserAsync(UserManager<User> userManager, User user, params string[] roles)
