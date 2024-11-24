@@ -75,6 +75,8 @@ public static class IQueryableExtensions
         return queryable
             .Include(p => (p as SinglePractice)!.OverridenPractice)
             .Include(p => p.Group)
+                .ThenInclude(g => g.Students)
+                    .ThenInclude(s => s.User)
             .Include(p => p.Trainer)
             .ThenInclude(t => t.User);
     }

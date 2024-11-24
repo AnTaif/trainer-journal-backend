@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using TrainerJournal.Application.Services.Attendance.Dtos;
 using TrainerJournal.Application.Services.Attendance.Dtos.Requests;
 using TrainerJournal.Application.Services.Attendance.Dtos.Responses;
@@ -11,10 +12,10 @@ using TrainerJournal.Domain.Entities;
 namespace TrainerJournal.Application.Services.Attendance;
 
 public class AttendanceService(
+    ILogger<AttendanceService> logger,
     IPracticeManager practiceManager,
     IBalanceChangeManager balanceChangeManager,
     IStudentRepository studentRepository,
-    IPracticeRepository practiceRepository,
     IGroupRepository groupRepository,
     IAttendanceRepository attendanceRepository) : IAttendanceService
 {
@@ -85,6 +86,77 @@ public class AttendanceService(
 
         await UnmarkAttendanceAsync(mark);
         return Result.Success();
+    }
+
+    public async Task<Result<List<GetPracticeAttendanceResponse>>> GetPracticeAttendanceAsync(Guid userId, Guid practiceId, DateTime practiceStart)
+    {
+        var practiceResult = await practiceManager.GetBasePracticeWithIncludesAsync(practiceId, practiceStart);
+        if (practiceResult.IsError()) return practiceResult.Error;
+        var practice = practiceResult.Value;
+
+        var usernames =
+            new HashSet<string>(await attendanceRepository.GetMarkedStudentsByPracticeAsync(practiceId, practiceStart));
+
+        return practice.Group.Students.Select(s => 
+            new GetPracticeAttendanceResponse
+            {
+                Username = s.User.UserName!,
+                FullName = s.User.FullName.ToString(),
+                IsMarked = usernames.Contains(s.User.UserName!)
+            }).ToList();
+    }
+
+    public async Task<Result<List<GetPracticeAttendanceResponse>>> MarkPracticeAttendanceAsync(Guid userId, Guid practiceId,
+        MarkPracticeAttendanceRequest request)
+    {
+        var practiceResult = await practiceManager.GetBasePracticeWithIncludesAsync(practiceId, request.PracticeStart);
+        if (practiceResult.IsError()) return practiceResult.Error;
+        var practice = practiceResult.Value;
+
+        var previousMarkedUsernames =
+            new HashSet<string>(
+                await attendanceRepository.GetMarkedStudentsByPracticeAsync(practiceId, request.PracticeStart));
+
+        var currentMarkedUsernames = new HashSet<string>(request.MarkedUsernames);
+
+        var notChangedUsernames = previousMarkedUsernames.Intersect(currentMarkedUsernames).ToHashSet();
+        var markedUsernames = currentMarkedUsernames.Except(previousMarkedUsernames).ToHashSet();
+        
+        var attendanceMarks = new List<AttendanceMark>();
+
+        foreach (var student in practice.Group.Students)
+        {
+            var user = student.User;
+            if (notChangedUsernames.Contains(user.UserName!)) continue;
+
+            if (markedUsernames.Contains(user.UserName!))
+            {
+                var mark = new AttendanceMark(student, practice, request.PracticeStart);
+                attendanceMarks.Add(mark);
+            }
+            else
+            {
+                var mark = await attendanceRepository.GetByInfoAsync(user.UserName!, practiceId, request.PracticeStart);
+                if (mark == null)
+                {
+                    logger.LogError("MarkPracticeAttendanceAsync: Can't find AttendanceMark to delete");
+                    continue;
+                }
+                mark.Unmark();
+                attendanceRepository.Remove(mark);
+            }
+        }
+
+        attendanceRepository.AddRange(attendanceMarks);
+        await attendanceRepository.SaveChangesAsync();
+        
+        return practice.Group.Students.Select(s => 
+            new GetPracticeAttendanceResponse
+            {
+                Username = s.User.UserName!,
+                FullName = s.User.FullName.ToString(),
+                IsMarked = currentMarkedUsernames.Contains(s.User.UserName!)
+            }).ToList();
     }
 
     private async Task UnmarkAttendanceAsync(AttendanceMark attendanceMark)

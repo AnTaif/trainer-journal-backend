@@ -7,6 +7,7 @@ using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Application.Services.Attendance.Dtos;
 using TrainerJournal.Application.Services.Attendance.Dtos.Requests;
 using TrainerJournal.Application.Services.Attendance.Dtos.Responses;
+using TrainerJournal.Application.Services.Practices.Dtos.Requests;
 
 namespace TrainerJournal.API.Controllers;
 
@@ -14,7 +15,7 @@ namespace TrainerJournal.API.Controllers;
 [Authorize]
 public class AttendanceController(IAttendanceService attendanceService) : ControllerBase
 {
-    [HttpGet("groups/{id}/attendance")]
+    [HttpGet("attendance/groups/{id}")]
     public async Task<ActionResult<List<GetStudentAttendanceResponse>>> GetGroupAttendanceAsync(
         Guid id,
         [FromQuery] DateTime start,
@@ -32,7 +33,7 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return result.ToActionResult(this);
     }
 
-    [HttpGet("students/{username}/attendance")]
+    [HttpGet("attendance/students/{username}")]
     public async Task<ActionResult<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(
         string username,
         [FromQuery] DateTime start,
@@ -50,7 +51,7 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return result.ToActionResult(this);
     }
 
-    [HttpPost("students/{username}/attendance/mark")]
+    [HttpPost("attendance/students/{username}/mark")]
     public async Task<ActionResult<AttendanceMarkDto?>> MarkAttendanceAsync(string username,
         MarkAttendanceRequest request)
     {
@@ -62,7 +63,7 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return result.ToActionResult(this);
     }
 
-    [HttpDelete("students/{username}/attendance/mark")]
+    [HttpDelete("attendance/students/{username}/mark")]
     public async Task<ActionResult<AttendanceMarkDto?>> UnmarkAttendanceAsync(string username,
         MarkAttendanceRequest request)
     {
@@ -72,5 +73,27 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         var result = await attendanceService.UnmarkAttendanceAsync(Guid.Parse(userId), username, request);
 
         return result.ToActionResult(this);
+    }
+
+    [HttpGet("attendance/practices/{id}")]
+    public async Task<ActionResult<List<GetPracticeAttendanceResponse>>> GetPracticeAttendanceAsync(Guid id,
+        DateTime practiceStart)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await attendanceService.GetPracticeAttendanceAsync(Guid.Parse(userId), id, practiceStart);
+        return result.ToActionResult(this);
+    }
+
+    [HttpPost("attendance/practices/{id}")]
+    public async Task<ActionResult> MarkPracticeAttendanceAsync(Guid id, MarkPracticeAttendanceRequest request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        var result = await attendanceService.MarkPracticeAttendanceAsync(Guid.Parse(userId), id, request);
+        return result.ToActionResult(this, value => 
+            CreatedAtAction("MarkPracticeAttendance", value));
     }
 }

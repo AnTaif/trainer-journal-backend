@@ -18,14 +18,14 @@ public class AttendanceMark : Entity<Guid>
 
     public AttendanceMark() : base(Guid.NewGuid()) { } // Constructor for ef core dbContext
     
-    public AttendanceMark(Student student, Practice practice, DateTime practiceTime, DateTime date) : base(Guid.NewGuid())
+    public AttendanceMark(Student student, Practice practice, DateTime practiceTime, DateTime? date = null) : base(Guid.NewGuid())
     {
         StudentId = student.Id;
         PracticeId = practice.Id;
         PracticeTime = practiceTime;
-        Date = date;
+        Date = date ?? DateTime.UtcNow;
 
-        student.UpdateBalance(-practice.Price, BalanceChangeReason.MarkAttendance, date);
+        student.UpdateBalance(-practice.Price, BalanceChangeReason.MarkAttendance, Date);
     }
 
     public void Unmark()

@@ -17,4 +17,9 @@ public interface IAttendanceService
         MarkAttendanceRequest request);
 
     public Task<Result> UnmarkAttendanceAsync(Guid userId, string studentUsername, MarkAttendanceRequest request);
+
+    public Task<Result<List<GetPracticeAttendanceResponse>>> GetPracticeAttendanceAsync(Guid userId, Guid practiceId,
+        DateTime practiceStart);
+
+    public Task<Result<List<GetPracticeAttendanceResponse>>> MarkPracticeAttendanceAsync(Guid userId, Guid practiceId, MarkPracticeAttendanceRequest request);
 }
