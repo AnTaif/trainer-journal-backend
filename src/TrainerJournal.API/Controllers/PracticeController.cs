@@ -48,13 +48,13 @@ public class PracticeController(
         return result.ToActionResult(this);
     }
 
-    [HttpPost("{id}/activate")]
-    public async Task<ActionResult<PracticeDto>> ActivatePracticeAsync(Guid id)
+    [HttpPost("{id}/resume")]
+    public async Task<ActionResult<PracticeDto>> ResumePracticeAsync(Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await practiceService.ActivatePracticeAsync(Guid.Parse(userId), id);
+        var result = await practiceService.ResumePracticeAsync(Guid.Parse(userId), id);
         return result.ToActionResult(this);
     }
 

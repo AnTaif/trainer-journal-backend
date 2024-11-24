@@ -16,5 +16,5 @@ public interface IAttendanceService
     public Task<Result<AttendanceMarkDto?>> MarkAttendanceAsync(Guid userId, string studentUsername,
         MarkAttendanceRequest request);
 
-    public Task<Result<bool>> UnmarkAttendanceAsync(Guid userId, string studentUsername, MarkAttendanceRequest request);
+    public Task<Result> UnmarkAttendanceAsync(Guid userId, string studentUsername, MarkAttendanceRequest request);
 }

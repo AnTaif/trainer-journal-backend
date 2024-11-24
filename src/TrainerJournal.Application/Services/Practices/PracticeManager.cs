@@ -12,6 +12,17 @@ public class PracticeManager(
     public async Task<Result<Practice>> GetBasePracticeAsync(Guid id, DateTime time)
     {
         var practice = await practiceRepository.GetByIdAsync(id);
+        return await InnerGetBasePracticeAsync(practice, time);
+    }
+    
+    public async Task<Result<Practice>> GetBasePracticeWithIncludesAsync(Guid id, DateTime time)
+    {
+        var practice = await practiceRepository.GetByIdWithIncludesAsync(id);
+        return await InnerGetBasePracticeAsync(practice, time);
+    }
+
+    private async Task<Result<Practice>> InnerGetBasePracticeAsync(Practice? practice, DateTime time)
+    {
         if (practice == null) return Error.NotFound("Group not found");
 
         if (practice is SinglePractice singlePractice)
@@ -35,7 +46,7 @@ public class PracticeManager(
     public async Task<Result<Practice>> UpdateSpecificPracticeAsync(Guid practiceId, DateTime practiceStart, Guid? groupId, 
         DateTime? newStart, DateTime? newEnd, string? hallAddress, string? practiceType, float? price)
     {
-        var practiceResult = await GetBasePracticeAsync(practiceId, practiceStart);
+        var practiceResult = await GetBasePracticeWithIncludesAsync(practiceId, practiceStart);
         if (practiceResult.IsError()) return practiceResult.Error;
         var practice = practiceResult.Value;
 
@@ -57,7 +68,7 @@ public class PracticeManager(
     public async Task<Result<Practice>> CancelSpecificPracticeAsync(
         Guid practiceId, DateTime practiceStart, string comment = "")
     {
-        var practiceResult = await GetBasePracticeAsync(practiceId, practiceStart);
+        var practiceResult = await GetBasePracticeWithIncludesAsync(practiceId, practiceStart);
         if (practiceResult.IsError()) return practiceResult.Error;
         var practice = practiceResult.Value;
 

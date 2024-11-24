@@ -7,6 +7,8 @@ public interface IStudentRepository
     public Task<Student?> GetByUserIdAsync(Guid userId);
 
     public Task<Student?> GetByUsernameAsync(string username);
+    
+    public Task<Student?> GetByUsernameWithIncludesAsync(string username);
 
     public Task<List<Student>> GetAllByGroupIdAsync(Guid groupId);
 

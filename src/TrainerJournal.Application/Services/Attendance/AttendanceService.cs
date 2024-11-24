@@ -11,6 +11,7 @@ using TrainerJournal.Domain.Entities;
 namespace TrainerJournal.Application.Services.Attendance;
 
 public class AttendanceService(
+    IPracticeManager practiceManager,
     IBalanceChangeManager balanceChangeManager,
     IStudentRepository studentRepository,
     IPracticeRepository practiceRepository,
@@ -59,9 +60,10 @@ public class AttendanceService(
         var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeTime);
         if (mark != null) return mark.ToDto();
 
-        var practice = await practiceRepository.GetByIdAsync(request.PracticeId);
-
-        if (practice == null) return Error.NotFound("Practice not found");
+        var practiceResult = await practiceManager.GetBasePracticeAsync(request.PracticeId, request.PracticeTime);
+        if (practiceResult.IsError()) return practiceResult.Error;
+        var practice = practiceResult.Value;
+        
         if (practice.TrainerId != userId) return Error.Forbidden("You are not a trainer of this group");
 
         var newMark = new AttendanceMark(student, practice, request.PracticeTime, DateTime.UtcNow);
@@ -72,17 +74,17 @@ public class AttendanceService(
         return newMark.ToDto();
     }
 
-    public async Task<Result<bool>> UnmarkAttendanceAsync(Guid userId, string studentUsername,
+    public async Task<Result> UnmarkAttendanceAsync(Guid userId, string studentUsername,
         MarkAttendanceRequest request)
     {
-        var student = await studentRepository.GetByUsernameAsync(studentUsername);
+        var student = await studentRepository.GetByUsernameWithIncludesAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
         var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeTime);
-        if (mark == null) return true;
+        if (mark == null) return Result.Success();
 
         await UnmarkAttendanceAsync(mark);
-        return true;
+        return Result.Success();
     }
 
     private async Task UnmarkAttendanceAsync(AttendanceMark attendanceMark)

@@ -71,7 +71,7 @@ public class StudentService(
     public async Task<Result<StudentInfoDto>> AddStudentToGroupAsync(Guid groupId, AddStudentRequest request,
         Guid trainerId)
     {
-        var student = await studentRepository.GetByUsernameAsync(request.StudentUsername);
+        var student = await studentRepository.GetByUsernameWithIncludesAsync(request.StudentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
         var group = await groupRepository.GetByIdAsync(groupId);
@@ -86,7 +86,7 @@ public class StudentService(
     public async Task<Result> ExcludeStudentFromGroupAsync(
         Guid groupId, string studentUsername, Guid trainerId)
     {
-        var student = await studentRepository.GetByUsernameAsync(studentUsername);
+        var student = await studentRepository.GetByUsernameWithIncludesAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
         var group = await groupRepository.GetByIdAsync(groupId);

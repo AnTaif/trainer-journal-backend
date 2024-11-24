@@ -16,5 +16,5 @@ public interface IPracticeService
     public Task<Result<PracticeDto>>
         CancelPracticeAsync(Guid trainerId, Guid practiceId, CancelPracticeRequest request);
 
-    public Task<Result<PracticeDto>> ActivatePracticeAsync(Guid trainerId, Guid id);
+    public Task<Result<PracticeDto>> ResumePracticeAsync(Guid trainerId, Guid id);
 }

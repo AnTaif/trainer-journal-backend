@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Infrastructure.Common;
@@ -14,10 +15,13 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
     public async Task<Practice?> GetByIdAsync(Guid id)
     {
         return await practices
-            .Include(p => (p as SinglePractice)!.OverridenPractice)
-            .Include(p => p.Group)
-            .Include(p => p.Trainer)
-                .ThenInclude(t => t.User)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+    
+    public async Task<Practice?> GetByIdWithIncludesAsync(Guid id)
+    {
+        return await practices
+            .IncludeAll()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
@@ -61,5 +65,17 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
     public void Remove(SinglePractice practice)
     {
         singlePractices.Remove(practice);
+    }
+}
+
+public static class IQueryableExtensions
+{
+    public static IQueryable<Practice> IncludeAll(this IQueryable<Practice> queryable)
+    {
+        return queryable
+            .Include(p => (p as SinglePractice)!.OverridenPractice)
+            .Include(p => p.Group)
+            .Include(p => p.Trainer)
+            .ThenInclude(t => t.User);
     }
 }

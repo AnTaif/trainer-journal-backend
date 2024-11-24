@@ -5,6 +5,8 @@ namespace TrainerJournal.Application.Services.Practices;
 public interface IPracticeRepository
 {
     public Task<Practice?> GetByIdAsync(Guid id);
+    
+    public Task<Practice?> GetByIdWithIncludesAsync(Guid id);
 
     public Task<bool> HasOverridenSinglePracticeAsync(Guid overridenPracticeId, DateTime originalStart);
 

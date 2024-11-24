@@ -18,8 +18,14 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .Include(s => s.Contacts)
             .FirstOrDefaultAsync(student => student.Id == userId);
     }
-
+    
     public async Task<Student?> GetByUsernameAsync(string username)
+    {
+        return await students
+            .FirstOrDefaultAsync(student => student.User.UserName == username);
+    }
+
+    public async Task<Student?> GetByUsernameWithIncludesAsync(string username)
     {
         return await students
             .Include(s => s.User)

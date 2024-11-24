@@ -69,7 +69,7 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
         if (userId == null) return Unauthorized();
 
-        var result = await attendanceService.MarkAttendanceAsync(Guid.Parse(userId), username, request);
+        var result = await attendanceService.UnmarkAttendanceAsync(Guid.Parse(userId), username, request);
 
         return result.ToActionResult(this);
     }

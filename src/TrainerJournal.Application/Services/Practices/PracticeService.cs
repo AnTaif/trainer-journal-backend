@@ -14,7 +14,7 @@ public class PracticeService(
 {
     public async Task<Result<PracticeDto>> GetPractice(Guid userId, Guid practiceId, DateTime practiceDate)
     {
-        var practiceResult = await practiceManager.GetBasePracticeAsync(practiceId, practiceDate);
+        var practiceResult = await practiceManager.GetBasePracticeWithIncludesAsync(practiceId, practiceDate);
         if (practiceResult.IsError()) return practiceResult.Error;
 
         await practiceRepository.SaveChangesAsync();
@@ -76,9 +76,9 @@ public class PracticeService(
         return practiceResult.Value.ToDto(request.PracticeStart);
     }
 
-    public async Task<Result<PracticeDto>> ActivatePracticeAsync(Guid trainerId, Guid id)
+    public async Task<Result<PracticeDto>> ResumePracticeAsync(Guid trainerId, Guid id)
     {
-        var practiceResult = await practiceManager.GetBasePracticeAsync(id, DateTime.MinValue);
+        var practiceResult = await practiceManager.GetBasePracticeWithIncludesAsync(id, DateTime.MinValue);
         if (practiceResult.IsError()) return practiceResult.Error;
 
         if (practiceResult.Value is not SinglePractice singlePractice)
@@ -101,7 +101,7 @@ public class PracticeService(
 
     private async Task<Result<PracticeDto>> GetSinglePracticeDtoAsync(Guid practiceId)
     {
-        return await practiceRepository.GetByIdAsync(practiceId) is SinglePractice practice
+        return await practiceRepository.GetByIdWithIncludesAsync(practiceId) is SinglePractice practice
             ? practice.ToDto()
             : throw new Exception("Practice was not created after SaveChangesAsync().");
     }
