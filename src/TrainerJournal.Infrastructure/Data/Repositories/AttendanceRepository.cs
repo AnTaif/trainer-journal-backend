@@ -20,6 +20,15 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
                 && a.PracticeId == practiceId && a.PracticeTime == practiceTime);
     }
 
+    public async Task<List<AttendanceMark>> GetByPracticeAsync(Guid practiceId, DateTime practiceStart)
+    {
+        return await attendanceMarks
+            .Include(a => a.Student)
+                .ThenInclude(s => s.User)
+            .Where(a => a.PracticeId == practiceId && a.PracticeTime == practiceStart)
+            .ToListAsync();
+    }
+
     public async Task<List<string>> GetMarkedStudentsByPracticeAsync(Guid practiceId, DateTime practiceStart)
     {
         return await attendanceMarks
@@ -73,5 +82,10 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
     public void Remove(AttendanceMark attendanceMark)
     {
         attendanceMarks.Remove(attendanceMark);
+    }
+
+    public void RemoveRange(List<AttendanceMark> attendanceMarksToRemove)
+    {
+        attendanceMarks.RemoveRange(attendanceMarksToRemove);
     }
 }

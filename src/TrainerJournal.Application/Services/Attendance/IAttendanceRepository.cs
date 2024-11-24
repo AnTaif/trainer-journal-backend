@@ -6,6 +6,8 @@ public interface IAttendanceRepository
 {
     public Task<AttendanceMark?> GetByInfoAsync(string studentUsername, Guid practiceId, DateTime practiceTime);
 
+    public Task<List<AttendanceMark>> GetByPracticeAsync(Guid practiceId, DateTime practiceStart);
+
     public Task<List<string>> GetMarkedStudentsByPracticeAsync(Guid practiceId, DateTime practiceStart);
     
     public Task<List<AttendanceMark>> GetByStudentIdAsync(Guid studentId, DateTime start, DateTime end);
@@ -19,6 +21,8 @@ public interface IAttendanceRepository
     public void AddRange(List<AttendanceMark> addedAttendanceMarks);
 
     public void Remove(AttendanceMark attendanceMark);
+
+    public void RemoveRange(List<AttendanceMark> attendanceMarksToRemove);
 
     public Task SaveChangesAsync();
 }

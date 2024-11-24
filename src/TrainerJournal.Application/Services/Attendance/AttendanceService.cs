@@ -113,16 +113,18 @@ public class AttendanceService(
         if (practiceResult.IsError()) return practiceResult.Error;
         var practice = practiceResult.Value;
 
-        var previousMarkedUsernames =
-            new HashSet<string>(
-                await attendanceRepository.GetMarkedStudentsByPracticeAsync(practiceId, request.PracticeStart));
+        var practiceMarks = await attendanceRepository.GetByPracticeAsync(practiceId, request.PracticeStart);
+
+        var previousMarkedUsernames = 
+            new HashSet<string>(practiceMarks.Select(m => m.Student.User.UserName!));
 
         var currentMarkedUsernames = new HashSet<string>(request.MarkedUsernames);
 
         var notChangedUsernames = previousMarkedUsernames.Intersect(currentMarkedUsernames).ToHashSet();
         var markedUsernames = currentMarkedUsernames.Except(previousMarkedUsernames).ToHashSet();
-        
-        var attendanceMarks = new List<AttendanceMark>();
+
+        var newAttendanceMarks = new List<AttendanceMark>();
+        var attendanceMarksToRemove = new List<AttendanceMark>();
 
         foreach (var student in practice.Group.Students)
         {
@@ -132,22 +134,23 @@ public class AttendanceService(
             if (markedUsernames.Contains(user.UserName!))
             {
                 var mark = new AttendanceMark(student, practice, request.PracticeStart);
-                attendanceMarks.Add(mark);
+                newAttendanceMarks.Add(mark);
             }
             else
             {
-                var mark = await attendanceRepository.GetByInfoAsync(user.UserName!, practiceId, request.PracticeStart);
+                var mark = practiceMarks.FirstOrDefault(m => m.StudentId == student.Id);
                 if (mark == null)
                 {
                     logger.LogError("MarkPracticeAttendanceAsync: Can't find AttendanceMark to delete");
                     continue;
                 }
                 mark.Unmark();
-                attendanceRepository.Remove(mark);
+                attendanceMarksToRemove.Add(mark);
             }
         }
 
-        attendanceRepository.AddRange(attendanceMarks);
+        attendanceRepository.RemoveRange(attendanceMarksToRemove);
+        attendanceRepository.AddRange(newAttendanceMarks);
         await attendanceRepository.SaveChangesAsync();
         
         return practice.Group.Students.Select(s => 
