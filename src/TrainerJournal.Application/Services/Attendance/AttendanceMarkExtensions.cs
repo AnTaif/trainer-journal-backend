@@ -43,7 +43,7 @@ public static class AttendanceMarkExtensions
         return new AttendanceMarkDto
         {
             PracticeId = attendanceMark.PracticeId,
-            PracticeTime = attendanceMark.PracticeTime
+            PracticeStart = attendanceMark.PracticeTime
         };
     }
 }

@@ -1,4 +1,5 @@
 using TrainerJournal.Application.Services.BalanceChanges.Dtos;
+using TrainerJournal.Application.Services.BalanceChanges.Dtos.Responses;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Domain.Common;
 
@@ -9,14 +10,14 @@ public class BalanceChangeService(
     IBalanceChangeRepository balanceChangeRepository,
     IBalanceChangeManager balanceChangeManager) : IBalanceChangeService
 {
-    public async Task<Result<List<BalanceChangeDto>>> GetStudentBalanceChanges(string username, DateTime start, DateTime end)
+    public async Task<Result<List<GetStudentBalanceChangeResponse>>> GetStudentBalanceChanges(string username, DateTime start, DateTime end)
     {
         var student = await studentRepository.GetByUsernameWithIncludesAsync(username);
         if (student == null) return Error.NotFound("Student not found");
 
         var changes = await balanceChangeRepository.GetStudentBalanceChangesAsync(student.Id, start, end);
 
-        return changes.Select(c => c.ToDto(username)).ToList();
+        return changes.Select(c => c.ToStudentResponse()).ToList();
     }
 
     public async Task<Result<BalanceChangeReportDto>> GetStudentBalanceChangeReportAsync(string username, DateTime start, DateTime end)

@@ -4,5 +4,5 @@ public class MarkPracticeAttendanceRequest
 {
     public DateTime PracticeStart { get; init; }
     
-    public List<string> MarkedUsernames { get; init; }
+    public List<string> MarkedUsernames { get; init; } = null!;
 }

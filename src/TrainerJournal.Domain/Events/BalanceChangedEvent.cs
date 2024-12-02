@@ -1,5 +1,4 @@
 using TrainerJournal.Domain.Common;
-using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.BalanceChangeReason;
 
 namespace TrainerJournal.Domain.Events;

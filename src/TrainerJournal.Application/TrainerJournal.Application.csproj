@@ -19,7 +19,6 @@
 
     <ItemGroup>
       <Folder Include="Services\BalanceChanges\Dtos\Requests\" />
-      <Folder Include="Services\BalanceChanges\Dtos\Responses\" />
       <Folder Include="Services\Practices\Dtos\Responses\" />
       <Folder Include="Services\Schedules\Dtos\Responses\" />
       <Folder Include="Services\Trainers\Dtos\Responses\" />

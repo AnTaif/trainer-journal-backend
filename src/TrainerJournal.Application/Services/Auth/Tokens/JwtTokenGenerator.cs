@@ -40,7 +40,7 @@ public class JwtTokenGenerator(IOptions<JwtOptions> options) : ITokenGenerator
             SecurityAlgorithms.HmacSha256);
     }
 
-    private List<Claim> CreateClaims(User user, IEnumerable<string> roles)
+    private static List<Claim> CreateClaims(User user, IEnumerable<string> roles)
     {
         if (user.UserName == null)
             throw new ArgumentNullException(nameof(user), "Username cannot be null");

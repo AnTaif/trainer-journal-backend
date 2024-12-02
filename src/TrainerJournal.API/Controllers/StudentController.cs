@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using TrainerJournal.API.Extensions;
 using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.BalanceChanges.Dtos;
+using TrainerJournal.Application.Services.BalanceChanges.Dtos.Responses;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Students;
@@ -56,7 +57,7 @@ public class StudentController(
     }
     
     [HttpGet("{username}/balance-changes")]
-    public async Task<ActionResult<List<BalanceChangeDto>>> GetStudentBalanceChangesAsync(
+    public async Task<ActionResult<List<GetStudentBalanceChangeResponse>>> GetStudentBalanceChangesAsync(
         string username, DateTime start, DateTime end)
     {
         var result = await balanceChangeService.GetStudentBalanceChanges(username, start, end);

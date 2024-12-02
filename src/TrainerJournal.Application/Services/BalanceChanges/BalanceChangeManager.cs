@@ -24,10 +24,12 @@ public class BalanceChangeManager(
 
         if (balanceChanges.Count == 0)
         {
+            // Находим последнее изменение баланса, чтобы получить инфу о балансе на период
             var edgeBalanceChange = await balanceChangeRepository.GetStudentLeftEdgeBalanceChangeAsync
                 (userId, start, end);
 
             var balance = edgeBalanceChange?.GetAfterBalance() ?? 0;
+            
             return (balance, 0, 0, balance);
         }
 

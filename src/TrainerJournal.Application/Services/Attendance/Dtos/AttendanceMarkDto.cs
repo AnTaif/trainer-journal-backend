@@ -4,5 +4,5 @@ public class AttendanceMarkDto
 {
     public Guid PracticeId { get; init; }
 
-    public DateTime PracticeTime { get; init; }
+    public DateTime PracticeStart { get; init; }
 }

@@ -1,4 +1,5 @@
 using TrainerJournal.Application.Services.BalanceChanges.Dtos;
+using TrainerJournal.Application.Services.BalanceChanges.Dtos.Responses;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.BalanceChangeReason;
 
@@ -11,6 +12,18 @@ public static class BalanceChangeExtensions
         return new BalanceChangeDto
         {
             Username = username,
+            Amount = balanceChange.Amount,
+            PreviousBalance = balanceChange.PreviousBalance,
+            AfterBalance = balanceChange.PreviousBalance + balanceChange.Amount,
+            Reason = balanceChange.Reason.ToBalanceChangeString(),
+            Date = balanceChange.Date
+        };
+    }
+    
+    public static GetStudentBalanceChangeResponse ToStudentResponse(this BalanceChange balanceChange)
+    {
+        return new GetStudentBalanceChangeResponse
+        {
             Amount = balanceChange.Amount,
             PreviousBalance = balanceChange.PreviousBalance,
             AfterBalance = balanceChange.PreviousBalance + balanceChange.Amount,

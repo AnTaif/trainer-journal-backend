@@ -9,12 +9,12 @@ namespace TrainerJournal.Application.Events.Handlers;
 public class BalanceChangedEventHandler(
     IBalanceChangeRepository balanceChangeRepository) : INotificationHandler<BalanceChangedEvent>
 {
-    public async Task Handle(BalanceChangedEvent domainEvent, CancellationToken cancellationToken)
+    public Task Handle(BalanceChangedEvent domainEvent, CancellationToken cancellationToken)
     {
         var newBalanceChange = new BalanceChange(domainEvent.StudentId, domainEvent.Amount, domainEvent.PreviousBalance,
             domainEvent.BalanceChangeReason, domainEvent.Date);
 
         balanceChangeRepository.Add(newBalanceChange);
-        await balanceChangeRepository.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 }

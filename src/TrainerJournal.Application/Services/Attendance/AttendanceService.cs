@@ -58,16 +58,16 @@ public class AttendanceService(
         var student = await studentRepository.GetByUsernameAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
-        var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeTime);
+        var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeStart);
         if (mark != null) return mark.ToDto();
 
-        var practiceResult = await practiceManager.GetBasePracticeAsync(request.PracticeId, request.PracticeTime);
+        var practiceResult = await practiceManager.GetBasePracticeAsync(request.PracticeId, request.PracticeStart);
         if (practiceResult.IsError()) return practiceResult.Error;
         var practice = practiceResult.Value;
         
         if (practice.TrainerId != userId) return Error.Forbidden("You are not a trainer of this group");
 
-        var newMark = new AttendanceMark(student, practice, request.PracticeTime, DateTime.UtcNow);
+        var newMark = new AttendanceMark(student, practice, request.PracticeStart, DateTime.UtcNow);
 
         attendanceRepository.Add(newMark);
         await attendanceRepository.SaveChangesAsync();
@@ -81,10 +81,13 @@ public class AttendanceService(
         var student = await studentRepository.GetByUsernameWithIncludesAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
-        var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeTime);
+        var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeStart);
         if (mark == null) return Result.Success();
 
-        await UnmarkAttendanceAsync(mark);
+        mark.Unmark();
+        attendanceRepository.Remove(mark);
+        
+        await attendanceRepository.SaveChangesAsync();
         return Result.Success();
     }
 
@@ -114,6 +117,7 @@ public class AttendanceService(
         var practice = practiceResult.Value;
 
         var practiceMarks = await attendanceRepository.GetByPracticeAsync(practiceId, request.PracticeStart);
+        var practiceMarkByStudentId = practiceMarks.ToDictionary(a => a.StudentId);
 
         var previousMarkedUsernames = 
             new HashSet<string>(practiceMarks.Select(m => m.Student.User.UserName!));
@@ -138,7 +142,7 @@ public class AttendanceService(
             }
             else
             {
-                var mark = practiceMarks.FirstOrDefault(m => m.StudentId == student.Id);
+                var mark = practiceMarkByStudentId.GetValueOrDefault(student.Id);
                 if (mark == null)
                 {
                     logger.LogError("MarkPracticeAttendanceAsync: Can't find AttendanceMark to delete");
@@ -160,12 +164,5 @@ public class AttendanceService(
                 FullName = s.User.FullName.ToString(),
                 IsMarked = currentMarkedUsernames.Contains(s.User.UserName!)
             }).ToList();
-    }
-
-    private async Task UnmarkAttendanceAsync(AttendanceMark attendanceMark)
-    {
-        attendanceMark.Unmark();
-        attendanceRepository.Remove(attendanceMark);
-        await attendanceRepository.SaveChangesAsync();
     }
 }

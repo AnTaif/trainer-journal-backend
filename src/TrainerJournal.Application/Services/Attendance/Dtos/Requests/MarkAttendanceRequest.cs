@@ -7,5 +7,5 @@ public class MarkAttendanceRequest
     /// <summary>
     /// Used to handle SchedulePractice attendance
     /// </summary>
-    public DateTime PracticeTime { get; set; }
+    public DateTime PracticeStart { get; set; }
 }
