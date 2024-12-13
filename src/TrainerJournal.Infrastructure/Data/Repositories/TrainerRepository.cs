@@ -15,4 +15,9 @@ public class TrainerRepository(AppDbContext context) : BaseRepository(context), 
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.Id == userId);
     }
+
+    public async Task AddAsync(Trainer trainer)
+    {
+        await trainers.AddAsync(trainer);
+    }
 }

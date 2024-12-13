@@ -9,6 +9,7 @@ using TrainerJournal.Application.Services.PaymentReceipts;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Schedules;
 using TrainerJournal.Application.Services.Students;
+using TrainerJournal.Application.Services.Trainers;
 using TrainerJournal.Application.Services.Users;
 
 namespace TrainerJournal.Application;
@@ -30,6 +31,7 @@ public static class DependencyInjection
         services.AddTransient<IPaymentReceiptService, PaymentReceiptService>();
         services.AddTransient<IBalanceChangeManager, BalanceChangeManager>();
         services.AddTransient<IBalanceChangeService, BalanceChangeService>();
+        services.AddTransient<ITrainerService, TrainerService>();
         
         services.AddMediatR(cfg =>
         {
