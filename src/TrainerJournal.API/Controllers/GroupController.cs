@@ -16,12 +16,13 @@ namespace TrainerJournal.API.Controllers;
 
 [ApiController]
 [Route("/groups")]
-[Authorize(Roles = Roles.Trainer)]
+[Authorize]
 public class GroupController(
     IStudentService studentService,
     IGroupService groupService) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GetGroupsResponse>> GetAllAsync()
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -32,7 +33,6 @@ public class GroupController(
     }
 
     [HttpGet("{id}")]
-    [Authorize]
     public async Task<ActionResult<GroupDto>> GetByIdAsync(Guid id)
     {
         var result = await groupService.GetByIdAsync(id);
@@ -40,6 +40,7 @@ public class GroupController(
     }
 
     [HttpPost]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GroupDto>> CreateGroupAsync(CreateGroupRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -50,6 +51,7 @@ public class GroupController(
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<GroupDto>> ChangeGroupAsync(UpdateGroupInfoRequest infoRequest, Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
@@ -70,7 +72,6 @@ public class GroupController(
     }
 
     [HttpGet("{id}/students")]
-    [Authorize]
     public async Task<ActionResult<List<StudentItemDto>>> GetGroupStudentsAsync(Guid id)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);

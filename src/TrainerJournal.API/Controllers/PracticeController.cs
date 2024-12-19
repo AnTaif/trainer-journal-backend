@@ -12,7 +12,7 @@ namespace TrainerJournal.API.Controllers;
 
 [ApiController]
 [Route("schedule/practices")]
-[Authorize(Roles = Roles.Trainer)]
+[Authorize]
 public class PracticeController(
     IPracticeService practiceService) : ControllerBase
 {
@@ -28,7 +28,6 @@ public class PracticeController(
     }
 
     [HttpGet("{id}")]
-    [Authorize(Roles = $"{Roles.Trainer},{Roles.User}")]
     public async Task<ActionResult<PracticeDto>> GetPracticeAsync(Guid id, DateTime practiceDate)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);

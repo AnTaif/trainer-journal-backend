@@ -8,6 +8,7 @@ using TrainerJournal.Application.Services.Attendance.Dtos;
 using TrainerJournal.Application.Services.Attendance.Dtos.Requests;
 using TrainerJournal.Application.Services.Attendance.Dtos.Responses;
 using TrainerJournal.Application.Services.Practices.Dtos.Requests;
+using TrainerJournal.Domain.Constants;
 
 namespace TrainerJournal.API.Controllers;
 
@@ -64,6 +65,7 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
     }
 
     [HttpDelete("attendance/students/{username}/mark")]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<AttendanceMarkDto?>> UnmarkAttendanceAsync(string username,
         MarkAttendanceRequest request)
     {
@@ -87,6 +89,7 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
     }
 
     [HttpPost("attendance/practices/{id}")]
+    [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult> MarkPracticeAttendanceAsync(Guid id, MarkPracticeAttendanceRequest request)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
