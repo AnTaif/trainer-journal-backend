@@ -39,6 +39,7 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
             .Where(p => start <= p.Start && p.Start <= end
                                          && (p.TrainerId == userId || p.GroupId == null ||
                                              p.Group.Students.Any(s => s.Id == userId)))
+            .OrderBy(s => s.Start)
             .ToListAsync();
     }
 
@@ -49,6 +50,7 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
                 .ThenInclude(g => g.Students)
             .Where(p => p.GroupId != null && p.GroupId == groupId 
                                           && start <= p.Start && p.Start <= end)
+            .OrderBy(s => s.Start)
             .ToListAsync();
     }
 

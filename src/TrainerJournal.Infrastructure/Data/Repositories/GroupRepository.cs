@@ -16,6 +16,7 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
             .Include(g => g.Trainer)
             .Where(g => !g.IsDeleted 
                         && (g.TrainerId == userId || g.Students.Any(s => s.Id == userId)))
+            .OrderBy(g => g.Name)
             .ToListAsync();
     }
 
@@ -26,6 +27,7 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
                 .ThenInclude(s => s.User)
             .Include(g => g.Trainer)
             .Where(g => !g.IsDeleted && g.Students.Any(s => s.User.UserName == username))
+            .OrderBy(g => g.Name)
             .ToListAsync();
     }
 

@@ -34,7 +34,7 @@ public class BalanceChangeRepository(AppDbContext context) : BaseRepository(cont
             .Where(b => b.StudentId == studentId
                         && b.Reason == reason
                         && start <= b.Date && b.Date <= end)
-            .OrderBy(b => b.Date)
+            .OrderByDescending(b => b.Date)
             .ToListAsync();
     }
 

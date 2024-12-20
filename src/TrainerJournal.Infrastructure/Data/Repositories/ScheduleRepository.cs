@@ -29,6 +29,7 @@ public class ScheduleRepository(AppDbContext context) : BaseRepository(context),
                 (start >= s.StartDay && start <= (s.Until ?? DateTime.MaxValue)) 
                 || (end >= s.StartDay && end <= (s.Until ?? DateTime.MaxValue)) 
                 || (start <= s.StartDay && end >= (s.Until ?? DateTime.MaxValue)))
+            .OrderBy(s => s.StartDay)
             .ToListAsync();
     }
 
@@ -43,6 +44,7 @@ public class ScheduleRepository(AppDbContext context) : BaseRepository(context),
                 (start >= s.StartDay && start <= (s.Until ?? DateTime.MaxValue)) 
                 || (end >= s.StartDay && end <= (s.Until ?? DateTime.MaxValue)) 
                 || (start <= s.StartDay && end >= (s.Until ?? DateTime.MaxValue)))
+            .OrderBy(s => s.StartDay)
             .ToListAsync();
     }
 

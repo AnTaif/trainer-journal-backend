@@ -29,6 +29,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
                 .ThenInclude(s => s.Groups)
             .Include(r => r.Image)
             .Where(p => p.Student.Id == userId || p.Student.Groups.Any(g => g.TrainerId == userId))
+            .OrderByDescending(p => p.UploadDate) //TODO: Изменить на время последнего изменения? 
             .ToListAsync();
     }
 
@@ -42,6 +43,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .Include(r => r.Image)
             .Where(p => (p.Student.Id == userId || p.Student.Groups.Any(g => g.TrainerId == userId))
                                         && p.IsVerified == verified)
+            .OrderByDescending(p => p.UploadDate) //TODO: Изменить на время последнего изменения? 
             .ToListAsync();
     }
 
@@ -54,6 +56,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .Include(r => r.Student)
             .ThenInclude(s => s.Groups)
             .Where(r => r.Student.User.UserName == username)
+            .OrderByDescending(p => p.UploadDate) //TODO: Изменить на время последнего изменения? 
             .ToListAsync();
     }
 
@@ -66,6 +69,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .ThenInclude(s => s.Groups)
             .Include(r => r.Image)
             .Where(r => r.Student.User.UserName == username && r.IsVerified == verified)
+            .OrderByDescending(p => p.UploadDate) //TODO: Изменить на время последнего изменения? 
             .ToListAsync();
     }
 

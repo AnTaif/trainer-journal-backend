@@ -40,6 +40,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .Include(s => s.User)
             .Include(s => s.Contacts)
             .Where(s => s.Groups.Any(g => g.Id == groupId))
+            .OrderBy(s => s.User.FullName.ToString())
             .ToListAsync();
     }
 
@@ -48,15 +49,22 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
         var includableQuery = students
             .Include(s => s.User)
             .Include(s => s.Contacts)
-            .Include(s => s.Groups);
+            .Include(s => s.Groups)
+            .AsQueryable();
 
         if (withGroup)
-            return await includableQuery
-                .Where(s => s.Groups.Any(g => g.TrainerId == trainerId))
-                .ToListAsync();
-
+        {
+            includableQuery = includableQuery
+                .Where(s => s.Groups.Any(g => g.TrainerId == trainerId));
+        }
+        else
+        {
+            includableQuery = includableQuery
+                .Where(s => s.Groups.Count == 0);
+        }
+        
         return await includableQuery
-            .Where(s => s.Groups.Count == 0)
+            .OrderBy(s => s.User.FullName.ToString())
             .ToListAsync();
     }
 
