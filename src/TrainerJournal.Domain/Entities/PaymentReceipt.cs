@@ -28,6 +28,11 @@ public class PaymentReceipt(
 
     public string? DeclineComment { get; private set; }
 
+    public void EditAmount(float newAmount)
+    {
+        Amount = newAmount;
+    }
+
     public void Accept()
     {
         IsAccepted = true;
@@ -39,5 +44,10 @@ public class PaymentReceipt(
         IsAccepted = false;
         DeclineComment = declineComment;
         VerificationDate = null;
+    }
+
+    public void ChangeImage(Guid newImageid)
+    {
+        ImageId = newImageid;
     }
 }

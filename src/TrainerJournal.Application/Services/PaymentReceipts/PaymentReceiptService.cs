@@ -67,6 +67,40 @@ public class PaymentReceiptService(
         return paymentReceipt!.ToDto();
     }
 
+    public async Task<Result<PaymentReceiptDto>> EditAsync(Guid secureUserId, Guid id, Stream? newImageStream, string? newImageName, float? newAmount)
+    {
+        var receipt = await paymentReceiptRepository.GetByIdAsync(id);
+        if (receipt == null) return Error.NotFound("Receipt not found");
+
+        if (newImageStream != null)
+        {
+            await HandleEditReceiptImageAsync(receipt, newImageStream, newImageName!);
+        }
+
+        if (newAmount != null)
+        {
+            receipt.EditAmount(newAmount.Value);
+        }
+
+        await paymentReceiptRepository.SaveChangesAsync();
+        return receipt.ToDto();
+    }
+
+    private async Task HandleEditReceiptImageAsync(PaymentReceipt receipt, Stream image, string imageName)
+    {
+        var fileToDelete = receipt.Image;
+        
+        var destName = Guid.NewGuid() + Path.GetExtension(imageName);
+        var url = await fileStorage.UploadAsync(image, "Public", destName);
+        var file = new SavedFile(destName, url, FileType.PaymentReceipt);
+        
+        savedFileRepository.Add(file);
+        receipt.ChangeImage(file.Id);
+        savedFileRepository.Remove(fileToDelete);
+        
+        fileStorage.Delete("Public", fileToDelete.StorageKey);
+    }
+
     public async Task<Result> DeleteAsync(Guid userId, Guid id)
     {
         var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);

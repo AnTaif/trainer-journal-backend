@@ -81,6 +81,35 @@ public class PaymentReceiptsController(
         return result.ToActionResult(this);
     }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult<PaymentReceiptDto>> EditPaymentReceiptAsync(
+        Guid id, 
+        IFormFile? file,
+        [FromForm] EditPaymentReceiptRequest? request)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+
+        Stream? stream = null;
+        string? fileName = null;
+
+        if (file != null)
+        {
+            fileName = file.FileName;
+            if (!allowedFileExtensions.Contains(Path.GetExtension(fileName)))
+                return BadRequest("Invalid file extension. Allowed extensions: .jpg, .jpeg, .png");
+
+            const long maxFileSize = 5 * 1024 * 1024;
+            if (file.Length > maxFileSize)
+                return BadRequest($"The file size exceeds the allowed limit: {maxFileSize / (1024 * 1024)} MB");
+
+            stream = file.OpenReadStream();
+        }
+
+        var result = await paymentReceiptService.EditAsync(Guid.Parse(userId), id, stream, fileName, request?.Amount);
+        return result.ToActionResult(this);
+    }
+
     [HttpPost("{id}/verify")]
     [Authorize(Roles = Roles.Trainer)]
     public async Task<ActionResult<PaymentReceiptDto>> VerifyPaymentReceiptAsync(Guid id,
