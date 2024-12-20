@@ -1,4 +1,5 @@
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Practices;

@@ -1,6 +1,7 @@
 using TrainerJournal.Application.Services.Users.Dtos;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
 

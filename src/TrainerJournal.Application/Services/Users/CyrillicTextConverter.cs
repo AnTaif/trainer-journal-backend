@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace TrainerJournal.Domain.Services;
+namespace TrainerJournal.Application.Services.Users;
 
 public static class CyrillicTextConverter
 {

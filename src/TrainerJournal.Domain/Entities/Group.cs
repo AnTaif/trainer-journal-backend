@@ -1,5 +1,6 @@
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Events;
+using TrainerJournal.Domain.ValueObjects;
 
 namespace TrainerJournal.Domain.Entities;
 

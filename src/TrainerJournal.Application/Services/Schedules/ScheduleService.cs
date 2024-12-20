@@ -3,6 +3,7 @@ using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Schedules.Dtos;
 using TrainerJournal.Application.Services.Schedules.Dtos.Requests;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.PracticeType;
 using TrainerJournal.Domain.Enums.ViewSchedule;

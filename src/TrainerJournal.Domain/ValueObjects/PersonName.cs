@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TrainerJournal.Domain.Common;
+namespace TrainerJournal.Domain.ValueObjects;
 
 [ComplexType]
 public class PersonName

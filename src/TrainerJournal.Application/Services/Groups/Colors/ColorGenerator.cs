@@ -1,5 +1,6 @@
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Options;
+using TrainerJournal.Domain.ValueObjects;
 
 namespace TrainerJournal.Application.Services.Groups.Colors;
 

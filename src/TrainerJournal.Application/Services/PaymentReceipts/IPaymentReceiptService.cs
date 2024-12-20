@@ -1,6 +1,7 @@
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos.Requests;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 
 namespace TrainerJournal.Application.Services.PaymentReceipts;
 

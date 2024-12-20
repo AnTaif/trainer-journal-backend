@@ -1,4 +1,4 @@
-namespace TrainerJournal.Domain.Common;
+namespace TrainerJournal.Domain.Common.Result;
 
 public class Result<T>
 {

@@ -4,6 +4,7 @@ using TrainerJournal.Application.Services.Auth.Dtos.Requests;
 using TrainerJournal.Application.Services.Auth.Dtos.Responses;
 using TrainerJournal.Application.Services.Auth.Tokens;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Auth;

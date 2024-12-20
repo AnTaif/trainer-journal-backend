@@ -4,6 +4,7 @@ using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Students.Dtos.Responses;
 using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
 

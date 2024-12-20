@@ -5,6 +5,7 @@ using TrainerJournal.Domain.Constants;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
 using TrainerJournal.Domain.Enums.PracticeType;
+using TrainerJournal.Domain.ValueObjects;
 
 namespace TrainerJournal.Infrastructure.Data;
 

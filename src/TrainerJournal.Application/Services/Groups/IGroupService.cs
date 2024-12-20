@@ -2,6 +2,7 @@ using TrainerJournal.Application.Services.Groups.Dtos;
 using TrainerJournal.Application.Services.Groups.Dtos.Requests;
 using TrainerJournal.Application.Services.Groups.Dtos.Responses;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 
 namespace TrainerJournal.Application.Services.Groups;
 

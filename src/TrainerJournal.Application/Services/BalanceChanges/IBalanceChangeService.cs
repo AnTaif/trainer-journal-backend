@@ -1,6 +1,7 @@
 using TrainerJournal.Application.Services.BalanceChanges.Dtos;
 using TrainerJournal.Application.Services.BalanceChanges.Dtos.Responses;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 
 namespace TrainerJournal.Application.Services.BalanceChanges;
 

@@ -2,6 +2,7 @@ using TrainerJournal.Application.Services.Students.Dtos;
 using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Students.Dtos.Responses;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Students;

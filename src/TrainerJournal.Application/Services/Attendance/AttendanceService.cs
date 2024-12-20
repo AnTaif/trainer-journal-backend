@@ -7,6 +7,7 @@ using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.BalanceChangeReason;
 

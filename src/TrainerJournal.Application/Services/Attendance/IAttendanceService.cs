@@ -2,6 +2,7 @@ using TrainerJournal.Application.Services.Attendance.Dtos;
 using TrainerJournal.Application.Services.Attendance.Dtos.Requests;
 using TrainerJournal.Application.Services.Attendance.Dtos.Responses;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 
 namespace TrainerJournal.Application.Services.Attendance;
 

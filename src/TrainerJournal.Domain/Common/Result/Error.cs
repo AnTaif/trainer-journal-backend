@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace TrainerJournal.Domain.Common;
+namespace TrainerJournal.Domain.Common.Result;
 
 public class Error(HttpStatusCode statusCode, string message)
 {

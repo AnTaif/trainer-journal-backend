@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.PracticeType;
 

@@ -1,6 +1,7 @@
 using TrainerJournal.Application.Services.Schedules.Dtos;
 using TrainerJournal.Application.Services.Schedules.Dtos.Requests;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Enums.ViewSchedule;
 
 namespace TrainerJournal.Application.Services.Schedules;

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TrainerJournal.Domain.Common;
+using TrainerJournal.Domain.Common.Result;
 
 namespace TrainerJournal.API.Extensions;
 
