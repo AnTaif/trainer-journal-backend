@@ -77,9 +77,8 @@ public class Student : Entity<Guid>
         KyuUpdatedAt = DateTime.UtcNow;
     }
 
-    public void UpdateBalance(float balanceDiff, BalanceChangeReason reason, DateTime eventDate)
+    public void UpdateBalance(float balanceDiff)
     {
-        AddDomainEvent(new BalanceChangedEvent(Id, balanceDiff, Balance, reason, eventDate));
         Balance += balanceDiff;
     }
 

@@ -8,6 +8,7 @@ using TrainerJournal.Application.Services.Practices;
 using TrainerJournal.Application.Services.Students;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
+using TrainerJournal.Domain.Enums.BalanceChangeReason;
 
 namespace TrainerJournal.Application.Services.Attendance;
 
@@ -69,6 +70,8 @@ public class AttendanceService(
 
         var newMark = new AttendanceMark(student, practice, request.PracticeStart, DateTime.UtcNow);
 
+        await balanceChangeManager.ChangeBalanceAsync(student, -practice.Price, BalanceChangeReason.MarkAttendance);
+        
         attendanceRepository.Add(newMark);
         await attendanceRepository.SaveChangesAsync();
 
@@ -84,7 +87,9 @@ public class AttendanceService(
         var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeStart);
         if (mark == null) return Result.Success();
 
-        mark.Unmark();
+        await balanceChangeManager.ChangeBalanceAsync(student, mark.Practice.Price,
+            BalanceChangeReason.UnmarkAttendance);
+        
         attendanceRepository.Remove(mark);
         
         await attendanceRepository.SaveChangesAsync();
@@ -138,6 +143,10 @@ public class AttendanceService(
             if (markedUsernames.Contains(user.UserName!))
             {
                 var mark = new AttendanceMark(student, practice, request.PracticeStart);
+                
+                await balanceChangeManager.ChangeBalanceAsync(student, -practice.Price,
+                    BalanceChangeReason.MarkAttendance);
+                
                 newAttendanceMarks.Add(mark);
             }
             else
@@ -148,7 +157,10 @@ public class AttendanceService(
                     logger.LogError("MarkPracticeAttendanceAsync: Can't find AttendanceMark to delete");
                     continue;
                 }
-                mark.Unmark();
+                
+                await balanceChangeManager.ChangeBalanceAsync(student, mark.Practice.Price,
+                    BalanceChangeReason.UnmarkAttendance);
+                
                 attendanceMarksToRemove.Add(mark);
             }
         }

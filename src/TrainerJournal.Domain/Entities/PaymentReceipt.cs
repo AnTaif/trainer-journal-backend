@@ -28,24 +28,16 @@ public class PaymentReceipt(
 
     public string? DeclineComment { get; private set; }
 
-    public void Verify(bool isAccepted, string? declineComment)
+    public void Accept()
     {
-        if (IsAccepted == isAccepted) return;
-        
+        IsAccepted = true;
         VerificationDate = DateTime.UtcNow;
-        if (IsAccepted)
-        {
-            Student.UpdateBalance(-Amount, BalanceChangeReason.PaymentRejection, VerificationDate.Value);
-        }
-        
-        IsVerified = true;
-        IsAccepted = isAccepted;
+    }
 
-        if (IsAccepted)
-        {
-            Student.UpdateBalance(Amount, BalanceChangeReason.Payment, VerificationDate.Value);
-        }
-        else
-            DeclineComment = declineComment ?? "";
+    public void Decline(string declineComment)
+    {
+        IsAccepted = false;
+        DeclineComment = declineComment;
+        VerificationDate = null;
     }
 }

@@ -1,4 +1,6 @@
 using TrainerJournal.Application.Services.Students;
+using TrainerJournal.Domain.Entities;
+using TrainerJournal.Domain.Enums.BalanceChangeReason;
 
 namespace TrainerJournal.Application.Services.BalanceChanges;
 
@@ -54,4 +56,16 @@ public class BalanceChangeManager(
         return (startBalance, expenses, payments, endBalance);
     }
 
+    public Task ChangeBalanceAsync(Student student, float balanceChange, BalanceChangeReason reason)
+    {
+        var date = DateTime.UtcNow;
+        
+        var newBalanceChange = new BalanceChange(student.Id, balanceChange, student.Balance,
+            reason, date);
+
+        student.UpdateBalance(balanceChange);
+        
+        balanceChangeRepository.Add(newBalanceChange);
+        return Task.CompletedTask;
+    }
 }

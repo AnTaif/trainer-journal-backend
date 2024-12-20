@@ -1,13 +1,16 @@
+using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos.Requests;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums;
+using TrainerJournal.Domain.Enums.BalanceChangeReason;
 
 namespace TrainerJournal.Application.Services.PaymentReceipts;
 
 public class PaymentReceiptService(
     IFileStorage fileStorage,
+    IBalanceChangeManager balanceChangeManager,
     ISavedFileRepository savedFileRepository,
     IPaymentReceiptRepository paymentReceiptRepository) : IPaymentReceiptService
 {
@@ -79,8 +82,20 @@ public class PaymentReceiptService(
     {
         var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
         if (paymentReceipt == null) return Error.NotFound("Receipt not found");
-
-        paymentReceipt.Verify(request.IsAccepted, request.DeclineComment);
+        
+        if (request.IsAccepted)
+        {
+            paymentReceipt.Accept();
+            await balanceChangeManager.ChangeBalanceAsync(paymentReceipt.Student, paymentReceipt.Amount,
+                BalanceChangeReason.Payment);
+        }
+        else
+        {
+            paymentReceipt.Decline(request.DeclineComment ?? "");
+            await balanceChangeManager.ChangeBalanceAsync(paymentReceipt.Student, -paymentReceipt.Amount,
+                BalanceChangeReason.PaymentRejection);
+        }
+        
         await paymentReceiptRepository.SaveChangesAsync();
 
         return paymentReceipt.ToDto();
