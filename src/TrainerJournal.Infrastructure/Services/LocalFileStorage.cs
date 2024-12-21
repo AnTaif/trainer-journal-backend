@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using TrainerJournal.Application.Services;
+using TrainerJournal.Application.Services.Files;
 using TrainerJournal.Domain.Options;
 
 namespace TrainerJournal.Infrastructure.Services;

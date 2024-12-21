@@ -1,4 +1,4 @@
-namespace TrainerJournal.Application.Services;
+namespace TrainerJournal.Application.Services.Files;
 
 public interface IFileStorage
 {

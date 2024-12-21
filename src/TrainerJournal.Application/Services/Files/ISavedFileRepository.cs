@@ -1,6 +1,6 @@
 using TrainerJournal.Domain.Entities;
 
-namespace TrainerJournal.Application.Services;
+namespace TrainerJournal.Application.Services.Files;
 
 public interface ISavedFileRepository
 {

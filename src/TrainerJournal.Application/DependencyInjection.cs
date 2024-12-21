@@ -3,6 +3,7 @@ using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Application.Services.Auth;
 using TrainerJournal.Application.Services.Auth.Tokens;
 using TrainerJournal.Application.Services.BalanceChanges;
+using TrainerJournal.Application.Services.Files;
 using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.Groups.Colors;
 using TrainerJournal.Application.Services.PaymentReceipts;
@@ -32,6 +33,7 @@ public static class DependencyInjection
         services.AddTransient<IBalanceChangeManager, BalanceChangeManager>();
         services.AddTransient<IBalanceChangeService, BalanceChangeService>();
         services.AddTransient<ITrainerService, TrainerService>();
+        services.AddTransient<IFileManager, FileManager>();
         
         services.AddMediatR(cfg =>
         {

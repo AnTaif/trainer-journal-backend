@@ -3,7 +3,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Microsoft.Extensions.Options;
-using TrainerJournal.Application.Services;
+using TrainerJournal.Application.Services.Files;
 using TrainerJournal.Domain.Options;
 
 namespace TrainerJournal.Infrastructure.Services;

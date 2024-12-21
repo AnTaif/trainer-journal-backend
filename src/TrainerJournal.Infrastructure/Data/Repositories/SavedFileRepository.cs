@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TrainerJournal.Application.Services;
+using TrainerJournal.Application.Services.Files;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Infrastructure.Common;
 

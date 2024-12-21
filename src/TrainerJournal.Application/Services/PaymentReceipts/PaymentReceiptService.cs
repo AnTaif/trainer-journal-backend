@@ -1,7 +1,7 @@
 using TrainerJournal.Application.Services.BalanceChanges;
+using TrainerJournal.Application.Services.Files;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos.Requests;
-using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Common.Result;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums;
@@ -10,9 +10,8 @@ using TrainerJournal.Domain.Enums.BalanceChangeReason;
 namespace TrainerJournal.Application.Services.PaymentReceipts;
 
 public class PaymentReceiptService(
-    IFileStorage fileStorage,
     IBalanceChangeManager balanceChangeManager,
-    ISavedFileRepository savedFileRepository,
+    IFileManager fileManager,
     IPaymentReceiptRepository paymentReceiptRepository) : IPaymentReceiptService
 {
     public async Task<Result<PaymentReceiptDto>> GetByIdAsync(Guid id)
@@ -52,14 +51,10 @@ public class PaymentReceiptService(
     public async Task<Result<PaymentReceiptDto>> UploadAsync(Guid userId, Stream imageStream, string imageName,
         UploadPaymentReceiptRequest request)
     {
-        var destName = Guid.NewGuid() + Path.GetExtension(imageName);
-        var url = await fileStorage.UploadAsync(imageStream, "Public", destName);
-
-        var file = new SavedFile(destName, url, FileType.PaymentReceipt);
-
+        var file = await fileManager.SavePublicFileAsync(imageStream, imageName, FileType.PaymentReceipt);
+        
         var newPaymentReceipt = new PaymentReceipt(userId, request.Amount, file.Id, DateTime.UtcNow);
-
-        savedFileRepository.Add(file);
+        
         paymentReceiptRepository.AddPaymentReceipt(newPaymentReceipt);
         await paymentReceiptRepository.SaveChangesAsync();
 
@@ -89,16 +84,11 @@ public class PaymentReceiptService(
     private async Task HandleEditReceiptImageAsync(PaymentReceipt receipt, Stream image, string imageName)
     {
         var fileToDelete = receipt.Image;
+        var file = await fileManager.SavePublicFileAsync(image, imageName, FileType.PaymentReceipt);
         
-        var destName = Guid.NewGuid() + Path.GetExtension(imageName);
-        var url = await fileStorage.UploadAsync(image, "Public", destName);
-        var file = new SavedFile(destName, url, FileType.PaymentReceipt);
-        
-        savedFileRepository.Add(file);
         receipt.ChangeImage(file.Id);
-        savedFileRepository.Remove(fileToDelete);
         
-        fileStorage.Delete("Public", fileToDelete.StorageKey);
+        fileManager.DeletePublicFile(fileToDelete);
     }
 
     public async Task<Result> DeleteAsync(Guid userId, Guid id)
@@ -106,10 +96,9 @@ public class PaymentReceiptService(
         var paymentReceipt = await paymentReceiptRepository.GetByIdAsync(id);
         if (paymentReceipt == null) return Error.NotFound("Receipt not found");
 
-        savedFileRepository.Remove(paymentReceipt.Image);
-        fileStorage.Delete("Public", paymentReceipt.Image.StorageKey);
+        fileManager.DeletePublicFile(paymentReceipt.Image);
+        
         await paymentReceiptRepository.SaveChangesAsync();
-
         return Result.Success();
     }
 
