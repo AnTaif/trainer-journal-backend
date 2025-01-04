@@ -28,13 +28,13 @@ docker-compose down
 ## Migrations:
 1. Navigate to the Infrastructure project:
 ```bash
-cd src/TrainerJournal.Infrastructure
+cd src/Infrastructure
 ```
 2. Make changes to db models and add migration:
 ```bash
-dotnet ef migrations add <Name> -s ../TrainerJournal.API
+dotnet ef migrations add <Name> -s ../Api
 ```
 3. Update database:
 ```bash
-dotnet ef database update -s ../TrainerJournal.API
+dotnet ef database update -s ../Api
 ```
