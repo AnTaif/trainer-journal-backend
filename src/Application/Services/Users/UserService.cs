@@ -25,8 +25,8 @@ public class UserService(
         var user = await userManager.FindByIdAsync(id.ToString());
         if (user == null) return Error.NotFound("User not found");
 
-        var student = await studentRepository.GetByUserIdAsync(id);
-        var trainer = await trainerRepository.GetByUserIdAsync(id);
+        var student = await studentRepository.FindByUserIdAsync(id);
+        var trainer = await trainerRepository.FindByUserIdAsync(id);
 
         if (student == null && trainer == null)
             logger.LogError("User with an id {id} has neither a trainer nor a student account", id);
@@ -48,8 +48,8 @@ public class UserService(
         var user = await userManager.FindByNameAsync(username);
         if (user == null) return Error.NotFound("User not found");
 
-        var student = await studentRepository.GetByUserIdAsync(user.Id);
-        var trainer = await trainerRepository.GetByUserIdAsync(user.Id);
+        var student = await studentRepository.FindByUserIdAsync(user.Id);
+        var trainer = await trainerRepository.FindByUserIdAsync(user.Id);
 
         if (student == null && trainer == null)
             logger.LogError("User with an id {id} has neither a trainer nor a student account", user.Id);
@@ -71,11 +71,11 @@ public class UserService(
         var user = await userManager.FindByIdAsync(id.ToString());
         if (user == null) return Error.NotFound("User not found");
 
-        var student = await studentRepository.GetByUserIdAsync(id);
+        var student = await studentRepository.FindByUserIdAsync(id);
         if (student == null && request.StudentInfo != null)
             return Error.BadRequest("This user is not a student");
 
-        var trainer = await trainerRepository.GetByUserIdAsync(id);
+        var trainer = await trainerRepository.FindByUserIdAsync(id);
         if (trainer == null && request.TrainerInfo != null)
             return Error.BadRequest("This user is not a trainer");
 
@@ -119,7 +119,7 @@ public class UserService(
         var user = await userManager.FindByNameAsync(username);
         if (user == null) return Error.NotFound("User not found");
 
-        var student = await studentRepository.GetByUserIdAsync(user.Id);
+        var student = await studentRepository.FindByUserIdAsync(user.Id);
         if (student == null) return Error.BadRequest("This user is not a student");
 
         if (request.UserInfo != null)

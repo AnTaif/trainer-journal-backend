@@ -30,7 +30,7 @@ public class PracticeService(
         
         if (request.GroupId != null)
         {
-            var group = await groupRepository.GetByIdAsync(request.GroupId.Value);
+            var group = await groupRepository.FindByIdAsync(request.GroupId.Value);
             if (group == null) return Error.NotFound("Group not found");
 
             hallAddress = group.HallAddress;
@@ -40,7 +40,7 @@ public class PracticeService(
         var newPractice = new SinglePractice(request.GroupId, price!.Value, request.Start, request.End,
             hallAddress, request.PracticeType.ToPracticeTypeEnum(), trainerId);
 
-        await practiceRepository.AddAsync(newPractice);
+        practiceRepository.Add(newPractice);
         await practiceRepository.SaveChangesAsync();
 
         return await GetSinglePracticeDtoAsync(newPractice.Id);
@@ -102,7 +102,7 @@ public class PracticeService(
 
     private async Task<Result<PracticeDto>> GetSinglePracticeDtoAsync(Guid practiceId)
     {
-        return await practiceRepository.GetByIdWithIncludesAsync(practiceId) is SinglePractice practice
+        return await practiceRepository.FindByIdWithIncludesAsync(practiceId) is SinglePractice practice
             ? practice.ToDto()
             : throw new Exception("Practice was not created after SaveChangesAsync().");
     }

@@ -1,24 +1,23 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Practices;
 
-public interface IPracticeRepository
+public interface IPracticeRepository : IUnitOfWork
 {
-    public Task<Practice?> GetByIdAsync(Guid id);
+    Task<Practice?> FindByIdAsync(Guid id);
     
-    public Task<Practice?> GetByIdWithIncludesAsync(Guid id);
-
-    public Task<bool> HasOverridenSinglePracticeAsync(Guid overridenPracticeId, DateTime originalStart);
-
-    public Task<List<SinglePractice>> GetSinglePracticesByUserIdAsync(Guid userId, DateTime start, DateTime end);
-
-    public Task<List<SinglePractice>> GetSinglePracticesByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
-
-    public Task AddRangeAsync(List<SchedulePractice> newPractices);
+    Task<Practice?> FindByIdWithIncludesAsync(Guid id);
     
-    public Task AddAsync(SinglePractice practice);
+    Task<List<SinglePractice>> SelectSinglePracticesByUserIdAsync(Guid userId, DateTime start, DateTime end);
 
-    public void Remove(SinglePractice practice);
+    Task<List<SinglePractice>> SelectSinglePracticesByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
 
-    public Task SaveChangesAsync();
+    void AddRange(List<SchedulePractice> newPractices);
+    
+    void Add(SinglePractice practice);
+
+    void Remove(SinglePractice practice);
+    
+    Task<bool> HasOverridenSinglePracticeAsync(Guid overridenPracticeId, DateTime originalStart);
 }

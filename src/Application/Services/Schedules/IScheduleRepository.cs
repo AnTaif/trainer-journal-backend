@@ -1,18 +1,17 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Schedules;
 
-public interface IScheduleRepository
+public interface IScheduleRepository : IUnitOfWork
 {
-    public Task<Schedule?> GetByIdAsync(Guid id);
+    Task<Schedule?> FindByIdAsync(Guid id);
     
-    public Task<List<Schedule>> GetAllByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
+    Task<Schedule?> FindGroupActiveScheduleAsync(Guid groupId);
+    
+    Task<List<Schedule>> SelectByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
 
-    public Task<List<Schedule>> GetAllByUserIdAsync(Guid userId, DateTime start, DateTime end);
-
-    public Task<Schedule?> GetGroupActiveScheduleAsync(Guid groupId);
+    Task<List<Schedule>> SelectByUserIdAsync(Guid userId, DateTime start, DateTime end);
     
-    public Task AddAsync(Schedule schedule);
-    
-    public Task SaveChangesAsync();
+    void Add(Schedule schedule);
 }

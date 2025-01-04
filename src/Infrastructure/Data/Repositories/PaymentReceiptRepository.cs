@@ -9,7 +9,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
 {
     private DbSet<PaymentReceipt> receipts => dbContext.PaymentReceipts;
     
-    public async Task<PaymentReceipt?> GetByIdAsync(Guid id)
+    public async Task<PaymentReceipt?> FindByIdAsync(Guid id)
     {
         return await receipts
             .Include(r => r.Student)
@@ -20,7 +20,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public async Task<List<PaymentReceipt>> GetAllByUserIdAsync(Guid userId)
+    public async Task<List<PaymentReceipt>> SelectByUserIdAsync(Guid userId)
     {
         return await receipts
             .Include(r => r.Student)
@@ -33,7 +33,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .ToListAsync();
     }
 
-    public async Task<List<PaymentReceipt>> GetVerifiedByUserIdAsync(Guid userId, bool verified)
+    public async Task<List<PaymentReceipt>> SelectByUserIdAsync(Guid userId, bool verified)
     {
         return await receipts
             .Include(r => r.Student)
@@ -47,7 +47,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .ToListAsync();
     }
 
-    public async Task<List<PaymentReceipt>> GetByStudentUsernameAsync(string username)
+    public async Task<List<PaymentReceipt>> SelectByStudentUsernameAsync(string username)
     {
         return await receipts
             .Include(r => r.Student)
@@ -60,7 +60,7 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .ToListAsync();
     }
 
-    public async Task<List<PaymentReceipt>> GetVerifiedByStudentUsernameAsync(string username, bool verified)
+    public async Task<List<PaymentReceipt>> SelectByStudentUsernameAsync(string username, bool verified)
     {
         return await receipts
             .Include(r => r.Student)

@@ -9,7 +9,7 @@ public class ScheduleRepository(AppDbContext context) : BaseRepository(context),
 {
     private DbSet<Schedule> schedules => dbContext.Schedules;
     
-    public async Task<Schedule?> GetByIdAsync(Guid id)
+    public async Task<Schedule?> FindByIdAsync(Guid id)
     {
         return await schedules
             .Include(s => s.Practices)
@@ -17,8 +17,14 @@ public class ScheduleRepository(AppDbContext context) : BaseRepository(context),
                 .ThenInclude(g => g.Students)
             .FirstOrDefaultAsync(s => s.Id == id);
     }
+    
+    public async Task<Schedule?> FindGroupActiveScheduleAsync(Guid groupId)
+    {
+        return await schedules
+            .FirstOrDefaultAsync(s => s.GroupId == groupId && s.Until == null);
+    }
 
-    public async Task<List<Schedule>> GetAllByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
+    public async Task<List<Schedule>> SelectByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
     {
         return await schedules
             .Include(s => s.Practices)
@@ -33,7 +39,7 @@ public class ScheduleRepository(AppDbContext context) : BaseRepository(context),
             .ToListAsync();
     }
 
-    public async Task<List<Schedule>> GetAllByUserIdAsync(Guid userId, DateTime start, DateTime end)
+    public async Task<List<Schedule>> SelectByUserIdAsync(Guid userId, DateTime start, DateTime end)
     {
         return await schedules
             .Include(s => s.Practices)
@@ -48,14 +54,8 @@ public class ScheduleRepository(AppDbContext context) : BaseRepository(context),
             .ToListAsync();
     }
 
-    public async Task<Schedule?> GetGroupActiveScheduleAsync(Guid groupId)
+    public void Add(Schedule schedule)
     {
-        return await schedules
-            .FirstOrDefaultAsync(s => s.GroupId == groupId && s.Until == null);
-    }
-
-    public async Task AddAsync(Schedule schedule)
-    {
-        await schedules.AddAsync(schedule);
+        schedules.Add(schedule);
     }
 }

@@ -19,7 +19,7 @@ public class TrainerService(
         var user = userResult.Value;
 
         var trainer = new Trainer(user.Id, request.Phone, request.Email);
-        await trainerRepository.AddAsync(trainer);
+        trainerRepository.Add(trainer);
         await trainerRepository.SaveChangesAsync();
 
         return new RegisterUserResponse

@@ -1,20 +1,19 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Groups;
 
-public interface IGroupRepository
+public interface IGroupRepository : IUnitOfWork
 {
-    public Task<List<Group>> GetAllByUserIdAsync(Guid userId);
+    Task<Group?> FindByIdAsync(Guid id);
+    
+    Task<List<Group>> SelectByUserIdAsync(Guid userId);
 
-    public Task<List<Group>> GetAllByStudentUsernameAsync(string username);
+    Task<List<Group>> SelectByStudentUsernameAsync(string username);
 
-    public Task<Group?> GetByIdAsync(Guid id);
+    void Add(Group group);
 
-    public void Add(Group group);
+    void Remove(Group group);
 
-    public void Remove(Group group);
-
-    public void Update(Group group);
-
-    public Task SaveChangesAsync();
+    void Update(Group group);
 }

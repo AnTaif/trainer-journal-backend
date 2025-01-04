@@ -10,7 +10,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
     private DbSet<Student> students => dbContext.Students;
     private DbSet<Contact> contacts => dbContext.Contacts;
     
-    public async Task<Student?> GetByUserIdAsync(Guid userId)
+    public async Task<Student?> FindByUserIdAsync(Guid userId)
     {
         return await students
             .Include(s => s.User)
@@ -19,13 +19,13 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .FirstOrDefaultAsync(student => student.Id == userId);
     }
     
-    public async Task<Student?> GetByUsernameAsync(string username)
+    public async Task<Student?> FindByUsernameAsync(string username)
     {
         return await students
             .FirstOrDefaultAsync(student => student.User.UserName == username);
     }
 
-    public async Task<Student?> GetByUsernameWithIncludesAsync(string username)
+    public async Task<Student?> FindByUsernameWithIncludesAsync(string username)
     {
         return await students
             .Include(s => s.User)
@@ -34,7 +34,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .FirstOrDefaultAsync(student => student.User.UserName == username);
     }
 
-    public async Task<List<Student>> GetAllByGroupIdAsync(Guid groupId)
+    public async Task<List<Student>> SelectByGroupIdAsync(Guid groupId)
     {
         return await students
             .Include(s => s.User)
@@ -44,7 +44,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .ToListAsync();
     }
 
-    public async Task<List<Student>> GetAllByTrainerIdAsync(Guid trainerId, bool withGroup)
+    public async Task<List<Student>> SelectByTrainerIdAsync(Guid trainerId, bool withGroup)
     {
         var includableQuery = students
             .Include(s => s.User)

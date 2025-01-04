@@ -1,28 +1,27 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Attendance;
 
-public interface IAttendanceRepository
+public interface IAttendanceRepository : IUnitOfWork
 {
-    public Task<AttendanceMark?> GetByInfoAsync(string studentUsername, Guid practiceId, DateTime practiceTime);
+    Task<AttendanceMark?> FindByInfoAsync(string studentUsername, Guid practiceId, DateTime practiceTime);
 
-    public Task<List<AttendanceMark>> GetByPracticeAsync(Guid practiceId, DateTime practiceStart);
+    Task<List<AttendanceMark>> SelectByPracticeAsync(Guid practiceId, DateTime practiceStart);
 
-    public Task<List<string>> GetMarkedStudentsByPracticeAsync(Guid practiceId, DateTime practiceStart);
+    Task<List<string>> SelectMarkedStudentsByPracticeAsync(Guid practiceId, DateTime practiceStart);
     
-    public Task<List<AttendanceMark>> GetByStudentIdAsync(Guid studentId, DateTime start, DateTime end);
+    Task<List<AttendanceMark>> SelectByStudentIdAsync(Guid studentId, DateTime start, DateTime end);
     
-    public Task<List<AttendanceMark>> GetByStudentUsernameAsync(string studentUsername, DateTime start, DateTime end);
+    Task<List<AttendanceMark>> SelectByStudentUsernameAsync(string studentUsername, DateTime start, DateTime end);
 
-    public Task<List<AttendanceMark>> GetAttendanceByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
+    Task<List<AttendanceMark>> SelectByGroupIdAsync(Guid groupId, DateTime start, DateTime end);
 
-    public void Add(AttendanceMark attendanceMark);
+    void Add(AttendanceMark attendanceMark);
 
-    public void AddRange(List<AttendanceMark> addedAttendanceMarks);
+    void AddRange(List<AttendanceMark> addedAttendanceMarks);
 
-    public void Remove(AttendanceMark attendanceMark);
+    void Remove(AttendanceMark attendanceMark);
 
-    public void RemoveRange(List<AttendanceMark> attendanceMarksToRemove);
-
-    public Task SaveChangesAsync();
+    void RemoveRange(List<AttendanceMark> attendanceMarksToRemove);
 }

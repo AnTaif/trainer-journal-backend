@@ -21,8 +21,8 @@ public class ScheduleService(
         var end = start + View.ToTimeSpan();
         var scheduleDays = View.ToTimeSpan().Days;
 
-        var singlePractices = await practiceRepository.GetSinglePracticesByUserIdAsync(userId, start, end);
-        var schedules = await scheduleRepository.GetAllByUserIdAsync(userId, start, end);
+        var singlePractices = await practiceRepository.SelectSinglePracticesByUserIdAsync(userId, start, end);
+        var schedules = await scheduleRepository.SelectByUserIdAsync(userId, start, end);
 
         var responseList = GetScheduleResponseList(singlePractices, schedules, scheduleDays, start);
 
@@ -36,8 +36,8 @@ public class ScheduleService(
         var end = start + View.ToTimeSpan();
         var scheduleDays = View.ToTimeSpan().Days;
 
-        var singlePractices = await practiceRepository.GetSinglePracticesByGroupIdAsync(groupId, start, end);
-        var schedules = await scheduleRepository.GetAllByGroupIdAsync(groupId, start, end);
+        var singlePractices = await practiceRepository.SelectSinglePracticesByGroupIdAsync(groupId, start, end);
+        var schedules = await scheduleRepository.SelectByGroupIdAsync(groupId, start, end);
 
         var responseList = GetScheduleResponseList(singlePractices, schedules, scheduleDays, start);
 
@@ -47,11 +47,11 @@ public class ScheduleService(
     public async Task<Result<List<ScheduleItemDto>>> CreateScheduleAsync(Guid trainerId, Guid groupId,
         CreateScheduleRequest request)
     {
-        var group = await groupRepository.GetByIdAsync(groupId);
+        var group = await groupRepository.FindByIdAsync(groupId);
         if (group == null) return Error.NotFound("Group not found");
 
         var schedule = new Schedule(groupId, request.StartDay.Date, request.Until?.Date);
-        await scheduleRepository.AddAsync(schedule);
+        scheduleRepository.Add(schedule);
 
         var schedulePractices = request.Practices
             .Select(practiceRequest =>
@@ -66,9 +66,9 @@ public class ScheduleService(
                     trainerId))
             .ToList();
 
-        await practiceRepository.AddRangeAsync(schedulePractices);
+        practiceRepository.AddRange(schedulePractices);
 
-        var oldSchedule = await scheduleRepository.GetGroupActiveScheduleAsync(group.Id);
+        var oldSchedule = await scheduleRepository.FindGroupActiveScheduleAsync(group.Id);
         oldSchedule?.SetUntil(schedule.StartDay - TimeSpan.FromDays(1));
 
         await practiceRepository.SaveChangesAsync();

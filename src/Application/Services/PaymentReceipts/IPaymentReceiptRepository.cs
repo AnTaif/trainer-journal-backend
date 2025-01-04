@@ -1,20 +1,19 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.PaymentReceipts;
 
-public interface IPaymentReceiptRepository 
+public interface IPaymentReceiptRepository : IUnitOfWork
 {
-    public Task<PaymentReceipt?> GetByIdAsync(Guid id);
+    Task<PaymentReceipt?> FindByIdAsync(Guid id);
 
-    public Task<List<PaymentReceipt>> GetAllByUserIdAsync(Guid userId);
+    Task<List<PaymentReceipt>> SelectByUserIdAsync(Guid userId);
     
-    public Task<List<PaymentReceipt>> GetVerifiedByUserIdAsync(Guid userId, bool verified);
+    Task<List<PaymentReceipt>> SelectByUserIdAsync(Guid userId, bool verified);
     
-    public Task<List<PaymentReceipt>> GetByStudentUsernameAsync(string username);
+    Task<List<PaymentReceipt>> SelectByStudentUsernameAsync(string username);
     
-    public Task<List<PaymentReceipt>> GetVerifiedByStudentUsernameAsync(string username, bool verified);
+    Task<List<PaymentReceipt>> SelectByStudentUsernameAsync(string username, bool verified);
     
-    public void AddPaymentReceipt(PaymentReceipt paymentReceipt);
-    
-    public Task SaveChangesAsync();
+    void AddPaymentReceipt(PaymentReceipt paymentReceipt);
 }

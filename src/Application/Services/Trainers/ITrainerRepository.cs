@@ -1,12 +1,11 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Trainers;
 
-public interface ITrainerRepository
+public interface ITrainerRepository : IUnitOfWork
 {
-    public Task<Trainer?> GetByUserIdAsync(Guid userId);
+    public Task<Trainer?> FindByUserIdAsync(Guid userId);
 
-    Task AddAsync(Trainer trainer);
-
-    Task SaveChangesAsync();
+    void Add(Trainer trainer);
 }

@@ -13,17 +13,17 @@ public class BalanceChangeService(
 {
     public async Task<Result<List<GetStudentBalanceChangeResponse>>> GetStudentBalanceChanges(string username, DateTime start, DateTime end)
     {
-        var student = await studentRepository.GetByUsernameWithIncludesAsync(username);
+        var student = await studentRepository.FindByUsernameWithIncludesAsync(username);
         if (student == null) return Error.NotFound("Student not found");
 
-        var changes = await balanceChangeRepository.GetStudentBalanceChangesAsync(student.Id, start, end);
+        var changes = await balanceChangeRepository.SelectByStudentIdAsync(student.Id, start, end);
 
         return changes.Select(c => c.ToStudentResponse()).ToList();
     }
 
     public async Task<Result<BalanceChangeReportDto>> GetStudentBalanceChangeReportAsync(string username, DateTime start, DateTime end)
     {
-        var student = await studentRepository.GetByUsernameWithIncludesAsync(username);
+        var student = await studentRepository.FindByUsernameWithIncludesAsync(username);
         if (student == null) return Error.NotFound("Student not found");
 
         var report = await balanceChangeManager.GetStudentBalanceReport(student.Id, start, end);

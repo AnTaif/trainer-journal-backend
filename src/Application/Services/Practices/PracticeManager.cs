@@ -12,13 +12,13 @@ public class PracticeManager(
 {
     public async Task<Result<Practice>> GetBasePracticeAsync(Guid id, DateTime time)
     {
-        var practice = await practiceRepository.GetByIdAsync(id);
+        var practice = await practiceRepository.FindByIdAsync(id);
         return await InnerGetBasePracticeAsync(practice, time);
     }
     
     public async Task<Result<Practice>> GetBasePracticeWithIncludesAsync(Guid id, DateTime time)
     {
-        var practice = await practiceRepository.GetByIdWithIncludesAsync(id);
+        var practice = await practiceRepository.FindByIdWithIncludesAsync(id);
         return await InnerGetBasePracticeAsync(practice, time);
     }
 
@@ -110,7 +110,7 @@ public class PracticeManager(
             schedulePractice.Id,
             SchedulePractice.CombineDateAndTime(currentStart, schedulePractice.Start)
         );
-        await practiceRepository.AddAsync(newPractice);
+        practiceRepository.Add(newPractice);
         return newPractice;
     }
     

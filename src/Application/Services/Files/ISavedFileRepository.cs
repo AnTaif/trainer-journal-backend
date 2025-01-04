@@ -1,12 +1,11 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Files;
 
-public interface ISavedFileRepository
+public interface ISavedFileRepository : IUnitOfWork
 {
-    public void Add(SavedFile savedFile);
+    void Add(SavedFile savedFile);
 
-    public void Remove(SavedFile savedFile);
-
-    public Task SaveChangesAsync();
+    void Remove(SavedFile savedFile);
 }

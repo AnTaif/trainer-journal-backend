@@ -9,15 +9,15 @@ public class TrainerRepository(AppDbContext context) : BaseRepository(context), 
 {
     private DbSet<Trainer> trainers => dbContext.Trainers;
     
-    public async Task<Trainer?> GetByUserIdAsync(Guid userId)
+    public async Task<Trainer?> FindByUserIdAsync(Guid userId)
     {
         return await trainers
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.Id == userId);
     }
 
-    public async Task AddAsync(Trainer trainer)
+    public void Add(Trainer trainer)
     {
-        await trainers.AddAsync(trainer);
+        trainers.Add(trainer);
     }
 }

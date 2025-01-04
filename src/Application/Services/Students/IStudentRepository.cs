@@ -1,22 +1,21 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
 
 namespace TrainerJournal.Application.Services.Students;
 
-public interface IStudentRepository
+public interface IStudentRepository : IUnitOfWork
 {
-    public Task<Student?> GetByUserIdAsync(Guid userId);
+    Task<Student?> FindByUserIdAsync(Guid userId);
 
-    public Task<Student?> GetByUsernameAsync(string username);
+    Task<Student?> FindByUsernameAsync(string username);
     
-    public Task<Student?> GetByUsernameWithIncludesAsync(string username);
+    Task<Student?> FindByUsernameWithIncludesAsync(string username);
 
-    public Task<List<Student>> GetAllByGroupIdAsync(Guid groupId);
+    Task<List<Student>> SelectByGroupIdAsync(Guid groupId);
 
-    public Task<List<Student>> GetAllByTrainerIdAsync(Guid trainerId, bool withGroup);
+    Task<List<Student>> SelectByTrainerIdAsync(Guid trainerId, bool withGroup);
 
-    public void AddStudent(Student student);
+    void AddStudent(Student student);
 
-    public Task UpdateContactsAsync(Student student, List<Contact>? contacts);
-
-    public Task SaveChangesAsync();
+    Task UpdateContactsAsync(Student student, List<Contact>? contacts);
 }

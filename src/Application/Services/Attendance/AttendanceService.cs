@@ -24,11 +24,11 @@ public class AttendanceService(
     public async Task<Result<List<GetStudentAttendanceResponse>>> GetGroupAttendanceAsync(
         Guid userId, Guid groupId, DateTime start, DateTime end)
     {
-        var group = await groupRepository.GetByIdAsync(groupId);
+        var group = await groupRepository.FindByIdAsync(groupId);
         if (group == null) return Error.NotFound("Group not found");
         if (group.TrainerId != userId) return Error.Forbidden("You are not a trainer of this group");
 
-        var attendance = await attendanceRepository.GetAttendanceByGroupIdAsync(groupId, start, end);
+        var attendance = await attendanceRepository.SelectByGroupIdAsync(groupId, start, end);
 
         var finances =
             new Dictionary<Guid, (float StartBalance, float Expenses, float Payments, float EndBalance)>();
@@ -49,7 +49,7 @@ public class AttendanceService(
     public async Task<Result<List<AttendanceMarkDto>>> GetStudentAttendanceAsync(
         Guid userId, string studentUsername, DateTime start, DateTime end)
     {
-        var attendance = await attendanceRepository.GetByStudentUsernameAsync(studentUsername, start, end);
+        var attendance = await attendanceRepository.SelectByStudentUsernameAsync(studentUsername, start, end);
 
         return attendance.Select(a => a.ToDto()).ToList();
     }
@@ -57,10 +57,10 @@ public class AttendanceService(
     public async Task<Result<AttendanceMarkDto?>> MarkAttendanceAsync(Guid userId, string studentUsername,
         MarkAttendanceRequest request)
     {
-        var student = await studentRepository.GetByUsernameAsync(studentUsername);
+        var student = await studentRepository.FindByUsernameAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
-        var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeStart);
+        var mark = await attendanceRepository.FindByInfoAsync(studentUsername, request.PracticeId, request.PracticeStart);
         if (mark != null) return mark.ToDto();
 
         var practiceResult = await practiceManager.GetBasePracticeAsync(request.PracticeId, request.PracticeStart);
@@ -82,10 +82,10 @@ public class AttendanceService(
     public async Task<Result> UnmarkAttendanceAsync(Guid userId, string studentUsername,
         MarkAttendanceRequest request)
     {
-        var student = await studentRepository.GetByUsernameWithIncludesAsync(studentUsername);
+        var student = await studentRepository.FindByUsernameWithIncludesAsync(studentUsername);
         if (student == null) return Error.NotFound("Student not found");
 
-        var mark = await attendanceRepository.GetByInfoAsync(studentUsername, request.PracticeId, request.PracticeStart);
+        var mark = await attendanceRepository.FindByInfoAsync(studentUsername, request.PracticeId, request.PracticeStart);
         if (mark == null) return Result.Success();
 
         await balanceChangeManager.ChangeBalanceAsync(student, mark.Practice.Price,
@@ -104,7 +104,7 @@ public class AttendanceService(
         var practice = practiceResult.Value;
 
         var usernames =
-            new HashSet<string>(await attendanceRepository.GetMarkedStudentsByPracticeAsync(practiceId, practiceStart));
+            new HashSet<string>(await attendanceRepository.SelectMarkedStudentsByPracticeAsync(practiceId, practiceStart));
 
         return practice.Group.Students.Select(s => 
             new GetPracticeAttendanceResponse
@@ -122,7 +122,7 @@ public class AttendanceService(
         if (practiceResult.IsError()) return practiceResult.Error;
         var practice = practiceResult.Value;
 
-        var practiceMarks = await attendanceRepository.GetByPracticeAsync(practiceId, request.PracticeStart);
+        var practiceMarks = await attendanceRepository.SelectByPracticeAsync(practiceId, request.PracticeStart);
         var practiceMarkByStudentId = practiceMarks.ToDictionary(a => a.StudentId);
 
         var previousMarkedUsernames = 

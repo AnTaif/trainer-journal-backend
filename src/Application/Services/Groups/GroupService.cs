@@ -15,7 +15,7 @@ public class GroupService(
 {
     public async Task<Result<GetGroupsResponse>> GetGroupsByTrainerIdAsync(Guid userId)
     {
-        var groups = await groupRepository.GetAllByUserIdAsync(userId);
+        var groups = await groupRepository.SelectByUserIdAsync(userId);
 
         return new GetGroupsResponse
         {
@@ -26,14 +26,14 @@ public class GroupService(
 
     public async Task<Result<List<GroupDto>>> GetGroupsByStudentUsernameAsync(string username)
     {
-        var groups = await groupRepository.GetAllByStudentUsernameAsync(username);
+        var groups = await groupRepository.SelectByStudentUsernameAsync(username);
 
         return groups.Select(g => g.ToDto()).ToList();
     }
 
     public async Task<Result<GroupDto>> GetByIdAsync(Guid id)
     {
-        var group = await groupRepository.GetByIdAsync(id);
+        var group = await groupRepository.FindByIdAsync(id);
         if (group == null) return Error.NotFound("Group not found");
 
         return group.ToDto();
@@ -56,7 +56,7 @@ public class GroupService(
 
     public async Task<Result<GroupDto>> UpdateInfoAsync(UpdateGroupInfoRequest request, Guid id, Guid trainerId)
     {
-        var group = await groupRepository.GetByIdAsync(id);
+        var group = await groupRepository.FindByIdAsync(id);
         if (group == null) return Error.NotFound("Group not found");
         if (group.TrainerId != trainerId) return Error.Forbidden("You don't have access to this group");
 
@@ -68,7 +68,7 @@ public class GroupService(
 
     public async Task<Result> DeleteAsync(Guid id, Guid trainerId)
     {
-        var group = await groupRepository.GetByIdAsync(id);
+        var group = await groupRepository.FindByIdAsync(id);
         if (group == null) return Error.NotFound("Group not found");
         if (group.TrainerId != trainerId) return Error.Forbidden("You don't have access to this group");
 

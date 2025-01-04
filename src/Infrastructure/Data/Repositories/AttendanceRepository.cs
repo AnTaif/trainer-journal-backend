@@ -9,7 +9,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
 {
     private DbSet<AttendanceMark> attendanceMarks => dbContext.AttendanceMarks;
 
-    public async Task<AttendanceMark?> GetByInfoAsync(string studentUsername, Guid practiceId, DateTime practiceTime)
+    public async Task<AttendanceMark?> FindByInfoAsync(string studentUsername, Guid practiceId, DateTime practiceTime)
     {
         return await attendanceMarks
             .Include(a => a.Practice)
@@ -20,7 +20,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
                 && a.PracticeId == practiceId && a.PracticeTime == practiceTime);
     }
 
-    public async Task<List<AttendanceMark>> GetByPracticeAsync(Guid practiceId, DateTime practiceStart)
+    public async Task<List<AttendanceMark>> SelectByPracticeAsync(Guid practiceId, DateTime practiceStart)
     {
         return await attendanceMarks
             .Include(a => a.Student)
@@ -30,7 +30,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             .ToListAsync();
     }
 
-    public async Task<List<string>> GetMarkedStudentsByPracticeAsync(Guid practiceId, DateTime practiceStart)
+    public async Task<List<string>> SelectMarkedStudentsByPracticeAsync(Guid practiceId, DateTime practiceStart)
     {
         return await attendanceMarks
             .Include(a => a.Practice)
@@ -42,7 +42,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             .ToListAsync();
     }
 
-    public async Task<List<AttendanceMark>> GetByStudentIdAsync(Guid studentId, DateTime start, DateTime end)
+    public async Task<List<AttendanceMark>> SelectByStudentIdAsync(Guid studentId, DateTime start, DateTime end)
     {
         return await attendanceMarks
             .Where(a => a.StudentId == studentId)
@@ -51,7 +51,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             .ToListAsync();
     }
 
-    public async Task<List<AttendanceMark>> GetByStudentUsernameAsync(string studentUsername, DateTime start, DateTime end)
+    public async Task<List<AttendanceMark>> SelectByStudentUsernameAsync(string studentUsername, DateTime start, DateTime end)
     {
         return await attendanceMarks
             .Include(a => a.Student)
@@ -62,7 +62,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             .ToListAsync();
     }
 
-    public async Task<List<AttendanceMark>> GetAttendanceByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
+    public async Task<List<AttendanceMark>> SelectByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
     {
         return await attendanceMarks
             //.Include(a => a.Practice)

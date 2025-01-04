@@ -1,21 +1,15 @@
+using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Entities;
-using TrainerJournal.Domain.Enums.BalanceChangeReason;
 
 namespace TrainerJournal.Application.Services.BalanceChanges;
 
-public interface IBalanceChangeRepository
+public interface IBalanceChangeRepository : IUnitOfWork
 {
-    public Task<List<BalanceChange>> GetStudentBalanceChangesAsync(Guid studentId, DateTime start, DateTime end);
+    Task<List<BalanceChange>> SelectByStudentIdAsync(Guid studentId, DateTime start, DateTime end);
 
-    public Task<BalanceChange?> GetStudentLeftEdgeBalanceChangeAsync(
-        Guid studentId, DateTime start, DateTime end);
-
-    public Task<List<BalanceChange>> GetStudentBalanceChangesWithReasonAsync(Guid studentId, BalanceChangeReason reason,
-        DateTime start, DateTime end);
+    Task<BalanceChange?> FindLastByStudentIdAsync(Guid studentId, DateTime date);
     
-    public Task<BalanceChange?> GetStudentBalanceChangeOnDateAsync(Guid studentId, DateTime date);
+    Task<BalanceChange?> FindOnDateAsync(Guid studentId, DateTime date);
     
-    public void Add(BalanceChange balanceChange);
-    
-    public Task SaveChangesAsync();
+    void Add(BalanceChange balanceChange);
 }

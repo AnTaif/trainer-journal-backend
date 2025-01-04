@@ -12,26 +12,20 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
     private DbSet<SchedulePractice> schedulePractices => dbContext.SchedulePractices;
     private DbSet<SinglePractice> singlePractices => dbContext.SinglePractices;
     
-    public async Task<Practice?> GetByIdAsync(Guid id)
+    public async Task<Practice?> FindByIdAsync(Guid id)
     {
         return await practices
             .FirstOrDefaultAsync(p => p.Id == id);
     }
     
-    public async Task<Practice?> GetByIdWithIncludesAsync(Guid id)
+    public async Task<Practice?> FindByIdWithIncludesAsync(Guid id)
     {
         return await practices
             .IncludeAll()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<bool> HasOverridenSinglePracticeAsync(Guid overridenPracticeId, DateTime originalStart)
-    {
-        return await singlePractices
-            .AnyAsync(s => s.OverridenPracticeId == overridenPracticeId && s.OriginalStart == originalStart);
-    }
-
-    public async Task<List<SinglePractice>> GetSinglePracticesByUserIdAsync(Guid userId, DateTime start, DateTime end)
+    public async Task<List<SinglePractice>> SelectSinglePracticesByUserIdAsync(Guid userId, DateTime start, DateTime end)
     {
         return await singlePractices
             .Include(p => p.Group)
@@ -43,7 +37,7 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
             .ToListAsync();
     }
 
-    public async Task<List<SinglePractice>> GetSinglePracticesByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
+    public async Task<List<SinglePractice>> SelectSinglePracticesByGroupIdAsync(Guid groupId, DateTime start, DateTime end)
     {
         return await singlePractices
             .Include(p => p.Group)
@@ -54,19 +48,25 @@ public class PracticeRepository(AppDbContext context) : BaseRepository(context),
             .ToListAsync();
     }
 
-    public async Task AddRangeAsync(List<SchedulePractice> newPractices)
+    public void AddRange(List<SchedulePractice> newPractices)
     {
-        await schedulePractices.AddRangeAsync(newPractices);
+        schedulePractices.AddRange(newPractices);
     }
 
-    public async Task AddAsync(SinglePractice practice)
+    public void Add(SinglePractice practice)
     {
-        await singlePractices.AddAsync(practice);
+        singlePractices.Add(practice);
     }
 
     public void Remove(SinglePractice practice)
     {
         singlePractices.Remove(practice);
+    }
+    
+    public async Task<bool> HasOverridenSinglePracticeAsync(Guid overridenPracticeId, DateTime originalStart)
+    {
+        return await singlePractices
+            .AnyAsync(s => s.OverridenPracticeId == overridenPracticeId && s.OriginalStart == originalStart);
     }
 }
 

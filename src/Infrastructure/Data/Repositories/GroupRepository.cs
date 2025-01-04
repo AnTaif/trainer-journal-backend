@@ -9,7 +9,17 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
 {
     private DbSet<Group> groups => dbContext.Groups;
     
-    public async Task<List<Group>> GetAllByUserIdAsync(Guid userId)
+    public async Task<Group?> FindByIdAsync(Guid id)
+    {
+        return await groups
+            .Include(g => g.Students)
+            .ThenInclude(s => s.User)
+            .Include(g => g.Trainer)
+            .ThenInclude(t => t.User)
+            .FirstOrDefaultAsync(g => g.Id == id);
+    }
+    
+    public async Task<List<Group>> SelectByUserIdAsync(Guid userId)
     {
         return await groups
             .Include(g => g.Students)
@@ -20,7 +30,7 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
             .ToListAsync();
     }
 
-    public async Task<List<Group>> GetAllByStudentUsernameAsync(string username)
+    public async Task<List<Group>> SelectByStudentUsernameAsync(string username)
     {
         return await groups
             .Include(g => g.Students)
@@ -29,16 +39,6 @@ public class GroupRepository(AppDbContext context) : BaseRepository(context), IG
             .Where(g => !g.IsDeleted && g.Students.Any(s => s.User.UserName == username))
             .OrderBy(g => g.Name)
             .ToListAsync();
-    }
-
-    public async Task<Group?> GetByIdAsync(Guid id)
-    {
-        return await groups
-            .Include(g => g.Students)
-                .ThenInclude(s => s.User)
-            .Include(g => g.Trainer)
-                .ThenInclude(t => t.User)
-            .FirstOrDefaultAsync(g => g.Id == id);
     }
 
     public void Add(Group group)

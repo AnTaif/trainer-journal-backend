@@ -10,10 +10,10 @@ public class BalanceChangeManager(
 {
     public async Task<float> GetStudentBalanceOnDate(Guid userId, DateTime date)
     {
-        var student = await studentRepository.GetByUserIdAsync(userId);
+        var student = await studentRepository.FindByUserIdAsync(userId);
         if (student == null) return float.NaN;
         
-        var balanceChange = await balanceChangeRepository.GetStudentBalanceChangeOnDateAsync(userId, date);
+        var balanceChange = await balanceChangeRepository.FindOnDateAsync(userId, date);
         
         return balanceChange?.PreviousBalance ?? student.Balance;
     }
@@ -21,16 +21,15 @@ public class BalanceChangeManager(
     public async Task<(float StartBalance, float Expenses, float Payments, float EndBalance)> GetStudentBalanceReport(
         Guid userId, DateTime start, DateTime end)
     {
-        var balanceChanges = await balanceChangeRepository.GetStudentBalanceChangesAsync(
+        var balanceChanges = await balanceChangeRepository.SelectByStudentIdAsync(
             userId, start, end);
 
         if (balanceChanges.Count == 0)
         {
             // Находим последнее изменение баланса, чтобы получить инфу о балансе на период
-            var edgeBalanceChange = await balanceChangeRepository.GetStudentLeftEdgeBalanceChangeAsync
-                (userId, start, end);
+            var lastBalanceChange = await balanceChangeRepository.FindLastByStudentIdAsync(userId, start);
 
-            var balance = edgeBalanceChange?.GetAfterBalance() ?? 0;
+            var balance = lastBalanceChange?.GetAfterBalance() ?? 0;
             
             return (balance, 0, 0, balance);
         }

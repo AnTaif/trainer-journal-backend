@@ -23,7 +23,7 @@ public class GroupChangedEventHandler(
     {
         var date = DateTime.UtcNow;
         
-        var schedules = await scheduleRepository.GetAllByGroupIdAsync(
+        var schedules = await scheduleRepository.SelectByGroupIdAsync(
             domainEvent.Group.Id, date, DateTime.MaxValue);
 
         foreach (var schedule in schedules)
@@ -46,8 +46,8 @@ public class GroupChangedEventHandler(
                             p.TrainerId))
                     .ToList();
 
-                await scheduleRepository.AddAsync(newSchedule);
-                await practiceRepository.AddRangeAsync(newPractices);
+                scheduleRepository.Add(newSchedule);
+                practiceRepository.AddRange(newPractices);
             }
             else
             {
