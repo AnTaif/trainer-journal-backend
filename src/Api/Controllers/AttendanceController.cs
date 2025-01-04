@@ -2,15 +2,14 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
-using TrainerJournal.API.Extensions;
+using TrainerJournal.Api.Extensions;
 using TrainerJournal.Application.Services.Attendance;
 using TrainerJournal.Application.Services.Attendance.Dtos;
 using TrainerJournal.Application.Services.Attendance.Dtos.Requests;
 using TrainerJournal.Application.Services.Attendance.Dtos.Responses;
-using TrainerJournal.Application.Services.Practices.Dtos.Requests;
 using TrainerJournal.Domain.Constants;
 
-namespace TrainerJournal.API.Controllers;
+namespace TrainerJournal.Api.Controllers;
 
 [ApiController]
 [Authorize]

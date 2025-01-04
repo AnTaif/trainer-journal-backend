@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainerJournal.API", "src/TrainerJournal.API\TrainerJournal.API.csproj", "{9109732D-700D-4A0F-B34D-06BC1FA2D220}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{9109732D-700D-4A0F-B34D-06BC1FA2D220}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B02CA8D9-F8D2-4939-94EA-8A1CCE61828B}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainerJournal.Domain", "src\TrainerJournal.Domain\TrainerJournal.Domain.csproj", "{36782D39-D99E-43F4-975A-88B92EFEE0A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{36782D39-D99E-43F4-975A-88B92EFEE0A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainerJournal.Infrastructure", "src\TrainerJournal.Infrastructure\TrainerJournal.Infrastructure.csproj", "{CB349242-6578-4632-A750-76CE2110491D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{CB349242-6578-4632-A750-76CE2110491D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainerJournal.Application", "src\TrainerJournal.Application\TrainerJournal.Application.csproj", "{0F7B1DB7-1A9D-4AAD-B6FD-A8F46BEC2F77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{0F7B1DB7-1A9D-4AAD-B6FD-A8F46BEC2F77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

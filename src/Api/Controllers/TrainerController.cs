@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrainerJournal.API.Extensions;
+using TrainerJournal.Api.Extensions;
 using TrainerJournal.Application.Services.Trainers;
 using TrainerJournal.Application.Services.Trainers.Dtos.Requests;
 using TrainerJournal.Application.Services.Users.Dtos.Responses;
 using TrainerJournal.Domain.Constants;
 
-namespace TrainerJournal.API.Controllers;
+namespace TrainerJournal.Api.Controllers;
 
 [ApiController]
 [Route("trainers")]

@@ -2,13 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrainerJournal.API.Extensions;
+using TrainerJournal.Api.Extensions;
 using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Application.Services.Users.Dtos;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
 using TrainerJournal.Domain.Constants;
 
-namespace TrainerJournal.API.Controllers;
+namespace TrainerJournal.Api.Controllers;
 
 [ApiController]
 [Authorize]

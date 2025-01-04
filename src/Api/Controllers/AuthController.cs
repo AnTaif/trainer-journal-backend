@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using TrainerJournal.API.Extensions;
+using TrainerJournal.Api.Extensions;
 using TrainerJournal.Application.Services.Auth;
 using TrainerJournal.Application.Services.Auth.Dtos.Requests;
 using TrainerJournal.Application.Services.Auth.Dtos.Responses;
 
-namespace TrainerJournal.API.Controllers;
+namespace TrainerJournal.Api.Controllers;
 
 [ApiController]
 [Route("auth")]

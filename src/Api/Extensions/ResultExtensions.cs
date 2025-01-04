@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Common.Result;
 
-namespace TrainerJournal.API.Extensions;
+namespace TrainerJournal.Api.Extensions;
 
 public static class ResultExtensions
 {

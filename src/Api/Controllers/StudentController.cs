@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
-using TrainerJournal.API.Extensions;
+using TrainerJournal.Api.Extensions;
 using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.BalanceChanges.Dtos;
 using TrainerJournal.Application.Services.BalanceChanges.Dtos.Responses;
@@ -14,7 +14,7 @@ using TrainerJournal.Application.Services.Students.Dtos.Requests;
 using TrainerJournal.Application.Services.Students.Dtos.Responses;
 using TrainerJournal.Domain.Constants;
 
-namespace TrainerJournal.API.Controllers;
+namespace TrainerJournal.Api.Controllers;
 
 [ApiController]
 [Route("students")]

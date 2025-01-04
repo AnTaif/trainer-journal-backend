@@ -5,6 +5,8 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <AssemblyName>TrainerJournal.Api</AssemblyName>
+        <RootNamespace>TrainerJournal.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,9 +31,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TrainerJournal.Application\TrainerJournal.Application.csproj" />
-      <ProjectReference Include="..\TrainerJournal.Domain\TrainerJournal.Domain.csproj" />
-      <ProjectReference Include="..\TrainerJournal.Infrastructure\TrainerJournal.Infrastructure.csproj" />
+      <ProjectReference Include="..\Application\Application.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

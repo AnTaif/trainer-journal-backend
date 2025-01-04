@@ -193,11 +193,10 @@ public class UserService(
         if (requestedUser == null) throw new Exception("Cannot find logged in user");
 
         var requestedUserRoles = await userManager.GetRolesAsync(requestedUser);
-        if (requestedUserRoles.Contains(Roles.Trainer) || requestedUserRoles.Contains(Roles.Admin)) return true;
-
-        if (user.Id == requestedUserId) return true;
-
-        return false;
+        
+        return user.Id == requestedUserId 
+               || requestedUserRoles.Contains(Roles.Trainer) 
+               || requestedUserRoles.Contains(Roles.Admin);
     }
 
     private static string GeneratePassword()

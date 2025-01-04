@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace TrainerJournal.API.Swagger;
+namespace TrainerJournal.Api.Swagger;
 
 public class NullDefaultSchemaFilter : ISchemaFilter
 {

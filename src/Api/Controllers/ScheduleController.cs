@@ -2,14 +2,14 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
-using TrainerJournal.API.Extensions;
+using TrainerJournal.Api.Extensions;
 using TrainerJournal.Application.Services.Schedules;
 using TrainerJournal.Application.Services.Schedules.Dtos;
 using TrainerJournal.Application.Services.Schedules.Dtos.Requests;
 using TrainerJournal.Domain.Constants;
 using TrainerJournal.Domain.Enums.ViewSchedule;
 
-namespace TrainerJournal.API.Controllers;
+namespace TrainerJournal.Api.Controllers;
 
 [ApiController]
 [Authorize]

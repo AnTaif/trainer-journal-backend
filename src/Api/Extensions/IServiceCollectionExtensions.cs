@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using TrainerJournal.API.Swagger;
+using TrainerJournal.Api.Swagger;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Options;
 using TrainerJournal.Infrastructure.Data;
 
-namespace TrainerJournal.API.Extensions;
+namespace TrainerJournal.Api.Extensions;
 
 public static class IServiceCollectionExtensions
 {
