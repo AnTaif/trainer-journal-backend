@@ -8,7 +8,7 @@ services:
     image: trainer-journal.api
     build:
       context: .
-      dockerfile: src/TrainerJournal.API/Dockerfile
+      dockerfile: src/Api/Dockerfile
     ports:
       - "8080:8080"
     env_file:
