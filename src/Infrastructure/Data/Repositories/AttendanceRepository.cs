@@ -26,7 +26,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             .Include(a => a.Student)
                 .ThenInclude(s => s.User)
             .Where(a => a.PracticeId == practiceId && a.PracticeTime == practiceStart)
-            .OrderBy(a => a.Student.User.FullName.ToString())
+            .OrderBy(a => a.Student.User.FullName.LastName)
             .ToListAsync();
     }
 
@@ -37,7 +37,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             .Include(a => a.Student)
                 .ThenInclude(s => s.User)
             .Where(a => a.PracticeId == practiceId && a.PracticeTime == practiceStart)
-            .OrderBy(a => a.Student.User.FullName.ToString())
+            .OrderBy(a => a.Student.User.FullName.LastName)
             .Select(a => a.Student.User.UserName!)
             .ToListAsync();
     }
@@ -71,7 +71,7 @@ public class AttendanceRepository(AppDbContext context) : BaseRepository(context
             .Where(a => a.Practice.GroupId != null && a.Practice.GroupId == groupId)
             .Where(a => start <= a.PracticeTime && a.PracticeTime <= end)
             .OrderByDescending(a => a.PracticeTime)
-            .ThenBy(a => a.Student.User.FullName.ToString())
+            .ThenBy(a => a.Student.User.FullName.LastName)
             .ToListAsync();
     }
 

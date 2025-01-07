@@ -40,7 +40,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
             .Include(s => s.User)
             .Include(s => s.Contacts)
             .Where(s => s.Groups.Any(g => g.Id == groupId))
-            .OrderBy(s => s.User.FullName.ToString())
+            .OrderBy(s => s.User.FullName.LastName)
             .ToListAsync();
     }
 
@@ -64,7 +64,7 @@ public class StudentRepository(AppDbContext context) : BaseRepository(context), 
         }
         
         return await includableQuery
-            .OrderBy(s => s.User.FullName.ToString())
+            .OrderBy(s => s.User.FullName.LastName)
             .ToListAsync();
     }
 
