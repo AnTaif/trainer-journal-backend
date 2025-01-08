@@ -73,6 +73,19 @@ public class PaymentReceiptRepository(AppDbContext context) : BaseRepository(con
             .ToListAsync();
     }
 
+    public async Task<List<PaymentReceipt>> SelectByGroupIdAsync(Guid groupId)
+    {
+        return await receipts
+            .Include(r => r.Student)
+            .ThenInclude(s => s.User)
+            .Include(r => r.Student)
+            .ThenInclude(s => s.Groups)
+            .Include(r => r.Image)
+            .Where(r => r.Student.Groups.Any(g => g.Id == groupId))
+            .OrderByDescending(p => p.UploadDate) //TODO: Изменить на время последнего изменения? 
+            .ToListAsync();
+    }
+
     public void AddPaymentReceipt(PaymentReceipt paymentReceipt)
     {
         receipts.Add(paymentReceipt);

@@ -49,6 +49,16 @@ public class PaymentReceiptsController(
         return result.ToActionResult(this);
     }
 
+    [HttpGet("groups/{id}")]
+    public async Task<ActionResult<List<PaymentReceiptDto>>> GetGroupsPaymentReceipts(Guid id)
+    {
+        var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
+        if (userId == null) return Unauthorized();
+        
+        var result = await paymentReceiptService.GetByGroupIdAsync(id);
+        return result.ToActionResult(this);
+    }
+
     [HttpPost]
     public async Task<ActionResult<PaymentReceiptDto>> UploadPaymentReceiptAsync(
         IFormFile file, [FromForm] UploadPaymentReceiptRequest request)

@@ -14,6 +14,8 @@ public interface IPaymentReceiptService
 
     public Task<Result<List<PaymentReceiptDto>>> GetByUserIdAsync(Guid userId, bool? verified);
 
+    Task<Result<List<PaymentReceiptDto>>> GetByGroupIdAsync(Guid groupId);
+
     public Task<Result<PaymentReceiptDto>> UploadAsync(Guid userId, Stream imageStream, string imageName,
         UploadPaymentReceiptRequest request);
 

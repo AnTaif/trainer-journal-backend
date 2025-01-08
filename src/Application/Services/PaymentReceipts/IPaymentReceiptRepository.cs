@@ -14,6 +14,8 @@ public interface IPaymentReceiptRepository : IUnitOfWork
     Task<List<PaymentReceipt>> SelectByStudentUsernameAsync(string username);
     
     Task<List<PaymentReceipt>> SelectByStudentUsernameAsync(string username, bool verified);
+
+    Task<List<PaymentReceipt>> SelectByGroupIdAsync(Guid groupId);
     
     void AddPaymentReceipt(PaymentReceipt paymentReceipt);
 }

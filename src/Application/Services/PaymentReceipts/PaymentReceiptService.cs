@@ -1,5 +1,6 @@
 using TrainerJournal.Application.Services.BalanceChanges;
 using TrainerJournal.Application.Services.Files;
+using TrainerJournal.Application.Services.Groups;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos;
 using TrainerJournal.Application.Services.PaymentReceipts.Dtos.Requests;
 using TrainerJournal.Domain.Common.Result;
@@ -10,6 +11,7 @@ using TrainerJournal.Domain.Enums.BalanceChangeReason;
 namespace TrainerJournal.Application.Services.PaymentReceipts;
 
 public class PaymentReceiptService(
+    IGroupRepository groupRepository,
     IBalanceChangeManager balanceChangeManager,
     IFileManager fileManager,
     IPaymentReceiptRepository paymentReceiptRepository) : IPaymentReceiptService
@@ -46,6 +48,16 @@ public class PaymentReceiptService(
             paymentReceipts = await paymentReceiptRepository.SelectByUserIdAsync(userId, verified.Value);
 
         return paymentReceipts.Select(p => p.ToDto()).ToList();
+    }
+
+    public async Task<Result<List<PaymentReceiptDto>>> GetByGroupIdAsync(Guid groupId)
+    {
+        var group = await groupRepository.FindByIdAsync(groupId);
+        if (group == null) return Error.NotFound("Group not found");
+
+        var receipts = await paymentReceiptRepository.SelectByGroupIdAsync(groupId);
+
+        return receipts.Select(r => r.ToDto()).ToList();
     }
 
     public async Task<Result<PaymentReceiptDto>> UploadAsync(Guid userId, Stream imageStream, string imageName,
