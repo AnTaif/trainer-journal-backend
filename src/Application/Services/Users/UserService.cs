@@ -104,6 +104,7 @@ public class UserService(
         }
 
         await userManager.UpdateAsync(user);
+        await studentRepository.SaveChangesAsync();
         return new FullInfoWithoutCredentialsDto
         {
             Username = user.UserName!,
@@ -141,6 +142,7 @@ public class UserService(
             await studentRepository.UpdateContactsAsync(student, contacts);
         }
 
+        await userManager.UpdateAsync(user);
         await studentRepository.SaveChangesAsync();
         return new FullInfoWithoutCredentialsDto
         {

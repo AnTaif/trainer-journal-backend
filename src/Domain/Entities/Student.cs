@@ -63,10 +63,7 @@ public class Student : Entity<Guid>
         if (contacts == null) return;
         
         Contacts.Clear();
-        foreach (var contact in contacts)
-        {
-            Contacts.Add(new Contact(contact.Name, contact.Relation, contact.Phone));
-        }
+        Contacts.AddRange(contacts);
     }
 
     public void UpdateKyu(int? kyu)
