@@ -36,18 +36,25 @@ public class PaymentReceipt(
     public void Accept()
     {
         IsAccepted = true;
-        VerificationDate = DateTime.UtcNow;
+        DeclineComment = null;
+        Verify();
     }
 
     public void Decline(string declineComment)
     {
         IsAccepted = false;
         DeclineComment = declineComment;
-        VerificationDate = null;
+        Verify();
     }
 
-    public void ChangeImage(Guid newImageid)
+    private void Verify()
     {
-        ImageId = newImageid;
+        IsVerified = true;
+        VerificationDate = DateTime.UtcNow;
+    }
+
+    public void ChangeImage(Guid newImageId)
+    {
+        ImageId = newImageId;
     }
 }
