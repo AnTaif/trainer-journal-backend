@@ -2,6 +2,7 @@ using TrainerJournal.Application.Services.Users.Dtos;
 using TrainerJournal.Application.Services.Users.Dtos.Requests;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Common.Result;
+using TrainerJournal.Domain.Constants;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
 
@@ -20,5 +21,5 @@ public interface IUserService
 
     public string GenerateUsername(string fullName);
 
-    public Task<Result<User>> CreateAsync(string fullName, Gender gender, string role);
+    public Task<Result<User>> CreateAsync(string fullName, Gender gender, string role = Roles.User);
 }
