@@ -20,5 +20,5 @@ public interface IUserService
 
     public string GenerateUsername(string fullName);
 
-    public Task<Result<User>> CreateAsync(string fullName, Gender gender);
+    public Task<Result<User>> CreateAsync(string fullName, Gender gender, string role);
 }

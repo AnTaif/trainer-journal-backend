@@ -152,7 +152,7 @@ public class UserService(
         };
     }
 
-    public async Task<Result<User>> CreateAsync(string fullName, Gender gender)
+    public async Task<Result<User>> CreateAsync(string fullName, Gender gender, string role = Roles.User)
     {
         var username = GenerateUsername(fullName);
         var password = GeneratePassword();
@@ -173,7 +173,7 @@ public class UserService(
             return Error.BadRequest("User not created");
         }
 
-        await userManager.AddToRoleAsync(user, Roles.User);
+        await userManager.AddToRoleAsync(user, role);
 
         return user;
     }

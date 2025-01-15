@@ -3,6 +3,7 @@ using TrainerJournal.Application.Services.Users;
 using TrainerJournal.Application.Services.Users.Dtos.Responses;
 using TrainerJournal.Domain.Common;
 using TrainerJournal.Domain.Common.Result;
+using TrainerJournal.Domain.Constants;
 using TrainerJournal.Domain.Entities;
 using TrainerJournal.Domain.Enums.Gender;
 
@@ -14,7 +15,7 @@ public class TrainerService(
 {
     public async Task<Result<RegisterUserResponse>> RegisterTrainerAsync(RegisterTrainerRequest request)
     {
-        var userResult = await userService.CreateAsync(request.FullName, request.Gender.ToGenderEnum());
+        var userResult = await userService.CreateAsync(request.FullName, request.Gender.ToGenderEnum(), Roles.Trainer);
         if (userResult.IsError()) return userResult.Error;
         var user = userResult.Value;
 
