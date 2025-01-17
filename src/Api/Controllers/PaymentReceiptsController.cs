@@ -32,8 +32,8 @@ public class PaymentReceiptsController(
     public async Task<ActionResult<List<PaymentReceiptDto>>> GetPaymentReceiptsAsync([FromQuery] bool? verified = null)
     {
         var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sid);
-        if (userId == null) return Unauthorized();
-
+        if (userId == null) 
+            return Unauthorized();
         var result = await paymentReceiptService.GetByUserIdAsync(Guid.Parse(userId), verified);
         return result.ToActionResult(this);
     }
