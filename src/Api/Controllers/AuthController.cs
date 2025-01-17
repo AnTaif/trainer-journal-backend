@@ -13,6 +13,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> LoginAsync(LoginRequest request)
     {
+        
         var result = await authService.LoginAsync(request);
         return result.ToActionResult(this);
     }
